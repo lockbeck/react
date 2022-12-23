@@ -1,0 +1,40 @@
+.navbar-custom {
+  background: rgb(249, 247, 247);
+}
+.app-search {
+  width: 800px;
+}
+.input-group {
+  width: 600px;
+  border: 1px solid rgb(147, 140, 140) !important;
+  border-radius: 20px;
+}
+.search-content {
+  width: 700px !important;
+}
+.search-content .form-control {
+  height: 40px !important;
+  color: black !important;
+}
+::-webkit-input-placeholder {
+  color: black !important;
+}
+::placeholder {
+  color: black !important;
+  opacity: 1; /* Firefox */
+}
+#profilpic {
+  background: #e1e9f3;
+  width: 200px;
+  height: 59px;
+  border-radius: 25px;
+}
+.nav-user img {
+  height: 50px;
+  width: 50px;
+  margin-left: -60px;
+  margin-top: -15px;
+}
+.pro-user-name {
+  color: black !important;
+}

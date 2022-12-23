@@ -1,0 +1,63 @@
+[
+
+  {
+    "year": "Jan",
+    "value": 15,
+    "type": "Sertifikat majvud arizalar"
+  },
+  {
+    "year": "Feb",
+    "value": 60,
+    "type": "Sertifikat majvud arizalar"
+  },
+  {
+    "year": "Mar",
+    "value": 18,
+    "type": "Sertifikat majvud arizalar"
+  },
+  {
+    "year": "Apr",
+    "value": 35,
+    "type": "Sertifikat majvud arizalar"
+  },
+  {
+    "year": "Mai",
+    "value": 20,
+    "type": "Sertifikat majvud arizalar"
+  },
+  {
+    "year": "Jun",
+    "value": 10,
+    "type": "Sertifikat majvud arizalar"
+  },
+   {
+    "year": "Jan",
+    "value": 90,
+    "type": "Qabul qilingan arizalar"
+  },
+  {
+    "year": "Feb",
+    "value": 40,
+    "type": "Qabul qilingan arizalar"
+  },
+  {
+    "year": "Mar",
+    "value": 20,
+    "type": "Qabul qilingan arizalar"
+  },
+  {
+    "year": "Apr",
+    "value": 45,
+    "type": "Qabul qilingan arizalar"
+  },
+  {
+    "year": "Mai",
+    "value": 15,
+    "type": "Qabul qilingan arizalar"
+  },
+  {
+    "year": "Jun",
+    "value": 90,
+    "type": "Qabul qilingan arizalar"
+  }
+]

@@ -1,0 +1,107 @@
+.statistics {
+  width: 230px;
+}
+.statistics .card-statistics {
+  position: relative;
+  height: 171px;
+  border-radius: 12px;
+}
+.statistics .card-statistics .card-body h4 {
+  position: absolute;
+  top: 15px;
+  left: 84px;
+  font-family: Inter;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 28px;
+  letter-spacing: 0em;
+  text-align: left;
+}
+.card-body p {
+  position: absolute;
+  top: 50px;
+  left: 80px;
+}
+.card-body .icon-div1 {
+  display: flex;
+  justify-content: center;
+  padding-top: 5px;
+  width: 44px;
+  height: 45px;
+  border-radius: 10px;
+  background: #2f80ed33;
+}
+.card-body .icon-div2 {
+  display: flex;
+  justify-content: center;
+  padding-top: 5px;
+  width: 44px;
+  height: 45px;
+  border-radius: 10px;
+  background: #9181DB33;
+;
+}
+.card-body .icon-div3 {
+  display: flex;
+  justify-content: center;
+  padding-top: 5px;
+  width: 44px;
+  height: 45px;
+  border-radius: 10px;
+  background: #00FF0A33;
+}
+.card-body .icon-div4 {
+  display: flex;
+  justify-content: center;
+  padding-top: 5px;
+  width: 44px;
+  height: 45px;
+  border-radius: 10px;
+  background: #FFB84933;
+}
+.card-body .icon-div5 {
+  display: flex;
+  justify-content: center;
+  padding-top: 5px;
+  width: 44px;
+  height: 45px;
+  border-radius: 10px;
+  background: #F0A0A033;
+}
+.card-body .fa-arrow-up {
+  position: absolute;
+  left: 26px;
+  bottom: 43px;
+}
+.card-body .fa-arrow-down {
+  position: absolute;
+  left: 26px;
+  bottom: 43px;
+}
+.card-body span {
+  position: absolute;
+  left: 53px;
+  bottom: 36px;
+  font-family: Inter;
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 28px;
+  letter-spacing: 0em;
+  text-align: left;
+  color: black;
+}
+.card-body img {
+  position: absolute;
+  left: 104px;
+  bottom: 28px;
+}
+#timeSelect{
+  padding: 0;
+  height: 30px !important;
+}
+.chart-area{
+  height: 500px;
+}
+.horizontal-charts{
+  height: 360px;
+}
