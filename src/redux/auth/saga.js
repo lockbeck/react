@@ -18,6 +18,7 @@ import {
     forgetPasswordSuccess,
     forgetPasswordFailed
 } from './actions';
+import {Api} from "./api.service";
 
 
 /**
@@ -45,25 +46,29 @@ const fetchJSON = (url, options = {}) => {
  * @param {*} user 
  */
 const setSession = (user) => {
-    let cookies = new Cookies();
-    if (user)
-        cookies.set("user", JSON.stringify(user), { path: "/" });
-    else
-        cookies.remove("user");
+    console.log(user);
+    // let cookies = new Cookies();
+    // if (user)
+    //     cookies.set("user", JSON.stringify(user), { path: "/" });
+    // else
+    //     cookies.remove("user");
 };
 /**
  * Login the user
  * @param {*} payload - username and password 
  */
 function* login({ payload: { username, password } }) {
-    const options = {
-        body: JSON.stringify({ username, password }),
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' }
-    };
+    // const options = {
+    //     body: JSON.stringify({ username, password }),
+    //     method: 'POST',
+    //     headers: { 'Content-Type': 'application/json' }
+    // };
 
     try {
-        const response = yield call(fetchJSON, '/users/authenticate', options);
+        const response = yield call(Api.login, {username, password});
+        const token = '';
+        const data = yield call(Api.getMe, {token});
+        console.log(response);
         setSession(response);
         yield put(loginUserSuccess(response));
     } catch (error) {
