@@ -20,6 +20,7 @@ import { isUserAuthenticated } from "../../helpers/authUtils";
 import Loader from "../../components/Loader";
 import logo from "../../assets/images/logo-dark.png";
 import "../../assets/scss/login/login.css";
+import {get} from "lodash";
 
 class Login extends Component {
   _isMounted = false;
@@ -88,7 +89,7 @@ class Login extends Component {
 
               {this.props.error && (
                 <Alert color="danger" isOpen={this.props.error ? true : false}>
-                  <div>{this.props.error}</div>
+                  <div>{get(this.props, 'error.response.data.message', '')}</div>
                 </Alert>
               )}
 
