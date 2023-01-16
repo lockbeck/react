@@ -73,6 +73,18 @@ const SideNavContent = () => {
             </Link>
           </li>
 
+
+          <li>
+            <Link
+              to="/add_application"
+              className="waves-effect has-dropdown"
+              aria-expanded="true"
+            >
+              <i className="fa fa-plus-square fa-2x"></i>
+              <span className="menu-name"> Ariza qo'shish</span>
+            </Link>
+          </li>
+
           {/* 
                                             this is drop-down */}
           {/* <li>

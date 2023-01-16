@@ -19,6 +19,7 @@ import {
     forgetPasswordFailed
 } from './actions';
 import {Api} from "./api.service";
+import { get } from 'lodash';
 
 
 /**
@@ -46,38 +47,46 @@ const fetchJSON = (url, options = {}) => {
  * @param {*} user 
  */
 const setSession = (user) => {
-    console.log(user);
-    // let cookies = new Cookies();
-    // if (user)
-    //     cookies.set("user", JSON.stringify(user), { path: "/" });
-    // else
-    //     cookies.remove("user");
+    let cookies = new Cookies();
+    if (user){
+        cookies.set("user", JSON.stringify(user), { path: "/" });
+    } else {
+        cookies.remove("user");
+        cookies.remove("token");
+    }
+};
+
+const setTokenToSession = (data) => {
+    let cookies = new Cookies();
+    if (data) {
+        cookies.set("token", JSON.stringify(data), { path: "/", expires: new Date(new Date().getTime() + get(data, 'expires_in', 0) * 1000)});
+    } else {
+        cookies.remove("token");
+        cookies.remove("user");
+    }
 };
 /**
  * Login the user
  * @param {*} payload - username and password 
  */
 function* login({ payload: { username, password } }) {
-    // const options = {
-    //     body: JSON.stringify({ username, password }),
-    //     method: 'POST',
-    //     headers: { 'Content-Type': 'application/json' }
-    // };
-
     try {
         const response = yield call(Api.login, {username, password});
-        const token = '';
-        const data = yield call(Api.getMe, {token});
-        console.log(response);
-        setSession(response);
-        yield put(loginUserSuccess(response));
+        setTokenToSession(get(response, 'data', {}));
+
+        const res = yield call(Api.getMe);
+        setSession(get(res, "data.data", {}));
+
+        yield put(loginUserSuccess(get(res, "data.data", {})));
     } catch (error) {
         let message;
+
         switch (error.status) {
             case 500: message = 'Internal Server Error'; break;
             case 401: message = 'Invalid credentials'; break;
             default: message = error;
         }
+
         yield put(loginUserFailed(message));
         setSession(null);
     }
@@ -145,24 +154,23 @@ function* forgetPassword({ payload: { username } }) {
     }
 }
 
-
-export function* watchLoginUser():any {
+export function* watchLoginUser() {
     yield takeEvery(LOGIN_USER, login);
 }
 
-export function* watchLogoutUser():any {
+export function* watchLogoutUser() {
     yield takeEvery(LOGOUT_USER, logout);
 }
 
-export function* watchRegisterUser():any {
+export function* watchRegisterUser() {
     yield takeEvery(REGISTER_USER, register);
 }
 
-export function* watchForgetPassword():any {
+export function* watchForgetPassword() {
     yield takeEvery(FORGET_PASSWORD, forgetPassword);
 }
 
-function* authSaga():any {
+function* authSaga() {
     yield all([
         fork(watchLoginUser),
         fork(watchLogoutUser),

@@ -2799,13 +2799,14 @@
   "resolved" "https://registry.npmjs.org/aws4/-/aws4-1.8.0.tgz"
   "version" "1.8.0"
 
-"axios@^0.27.2":
-  "integrity" "sha512-t+yRIyySRTp/wua5xEr+z1q60QmLq8ABsS5O9Me1AsE5dfKqgnCFzwiCZZ/cGNd1lq4/7akDWMxdhVlucjmnOQ=="
-  "resolved" "https://registry.npmjs.org/axios/-/axios-0.27.2.tgz"
-  "version" "0.27.2"
+"axios@^0.27.2", "axios@^1.2.2":
+  "integrity" "sha512-bz/J4gS2S3I7mpN/YZfGFTqhXTYzRho8Ay38w2otuuDR322KzFIWm/4W2K6gIwvWaws5n+mnb7D1lN9uD+QH6Q=="
+  "resolved" "https://registry.npmjs.org/axios/-/axios-1.2.2.tgz"
+  "version" "1.2.2"
   dependencies:
-    "follow-redirects" "^1.14.9"
+    "follow-redirects" "^1.15.0"
     "form-data" "^4.0.0"
+    "proxy-from-env" "^1.1.0"
 
 "axobject-query@^2.0.1":
   "integrity" "sha512-MCeek8ZH7hKyO1rWUbKNQBbl4l2eY0ntk7OGi+q0RlafrCnfPxC06WZA+uebCfmYp4mNU9jRBP1AhGyf8+W3ww=="
@@ -5847,7 +5848,7 @@
     "tape" "^4.5.1"
     "uglify-js" "^2.6.2"
 
-"follow-redirects@^1.0.0", "follow-redirects@^1.14.9":
+"follow-redirects@^1.0.0", "follow-redirects@^1.15.0":
   "integrity" "sha512-VQLG33o04KaQ8uYi2tVNbdrWp1QWxNNea+nmIB4EVM28v0hmP17z7aG1+wAkNzVq4KeXTq3221ye5qTJP91JwA=="
   "resolved" "https://registry.npmjs.org/follow-redirects/-/follow-redirects-1.15.2.tgz"
   "version" "1.15.2"
@@ -10444,6 +10445,11 @@
   dependencies:
     "forwarded" "~0.1.2"
     "ipaddr.js" "1.8.0"
+
+"proxy-from-env@^1.1.0":
+  "integrity" "sha512-D+zkORCbA9f1tdWRK0RaCR3GPv50cMxcrz4X8k5LTSUD1Dkw47mKJEZQNunItRTkWwgtaUSo1RVFRIG9ZXiFYg=="
+  "resolved" "https://registry.npmjs.org/proxy-from-env/-/proxy-from-env-1.1.0.tgz"
+  "version" "1.1.0"
 
 "prr@~1.0.1":
   "integrity" "sha1-0/wRS6BplaRexok/SEzrHXj19HY=sha512-yPw4Sng1gWghHQWj0B3ZggWUm4qVbPwPFcRG8KyxiU7J2OHFSoEHKS+EZ3fv5l1t9CyCiop6l/ZYeWbrgoQejw== sha512-yPw4Sng1gWghHQWj0B3ZggWUm4qVbPwPFcRG8KyxiU7J2OHFSoEHKS+EZ3fv5l1t9CyCiop6l/ZYeWbrgoQejw=="
