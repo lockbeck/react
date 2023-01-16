@@ -14,9 +14,7 @@ export class Api {
         return request.post('/oauth/token', data, {headers: {"Content-Type": "multipart/form-data"}});
     }
 
-    getMe(token) {
-        return request.get('');
+    static getMe() {
+        return request.get('/api/profile');
     }
-
-
 }

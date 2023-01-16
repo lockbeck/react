@@ -9,7 +9,7 @@ import line3 from "../../assets/images/line3.svg";
 import line4 from "../../assets/images/line4.svg";
 import line5 from "../../assets/images/line5.svg";
 import "../../assets/scss/dashboard/index.css";
-import BarChart from './../../chart/BarChart';
+import BarChart from '../../chart/BarChart';
 import PieChart from "../../chart/PieChart";
 import { TimePicker } from "antd";
 import HorizonBarChart from "../../chart/HorizonBarChart";

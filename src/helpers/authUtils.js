@@ -1,4 +1,4 @@
-import jwtDecode from "jwt-decode";
+import { includes, isEmpty } from "lodash";
 import { Cookies } from "react-cookie";
 
 /**
@@ -9,14 +9,8 @@ const isUserAuthenticated = () => {
   if (!user) {
     return false;
   }
-  const decoded = jwtDecode(user.token);
-  const currentTime = Date.now() / 1000;
-  if (decoded.exp < currentTime) {
-    console.warn("access token expired");
-    return true;
-  } else {
-    return true;
-  }
+
+  return true;
 };
 
 /**
@@ -25,7 +19,12 @@ const isUserAuthenticated = () => {
 const getLoggedInUser = () => {
   const cookies = new Cookies();
   const user = cookies.get("user");
-  return user ? (typeof user == "object" ? user : JSON.parse(user)) : null;
+  const token = cookies.get("token");
+  return user && token ? {...user, ...token} : null;
 };
 
-export { isUserAuthenticated, getLoggedInUser };
+const hasAccess = (roles = [], userRoles = []) => {
+  return !isEmpty(userRoles.filter(role => includes(roles, role.name)));
+}
+
+export { isUserAuthenticated, getLoggedInUser, hasAccess };
