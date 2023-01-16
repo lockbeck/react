@@ -13,6 +13,7 @@
     "chart.js": "^2.9.4",
     "dotenv": "^16.0.3",
     "faker": "5.5.3",
+    "history": "^5.3.0",
     "jwt-decode": "^2.2.0",
     "lodash": "^4.17.21",
     "metismenujs": "^1.0.3",
@@ -31,7 +32,8 @@
     "react-scripts": "^2.1.8",
     "reactstrap": "^8.0.0",
     "redux": "^4.0.1",
-    "redux-saga": "^1.0.2"
+    "redux-saga": "^1.0.2",
+    "redux-saga-routines": "^3.2.3"
   },
   "scripts": {
     "start": "react-scripts start",
