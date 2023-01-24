@@ -1,0 +1,10 @@
+.add-application-content{
+    background: white;
+    width: 100%;
+    margin-top: 60px;
+    padding: 40px;
+}
+.create-device-btn{
+    float: right;
+    margin-top: -40px;
+}

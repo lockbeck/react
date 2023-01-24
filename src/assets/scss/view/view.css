@@ -1,0 +1,19 @@
+.application-data{
+    position: relative;
+    background: white;
+    width: 100%;
+    margin-top: 40px;
+    margin-left: 5px;
+    padding: 40px;
+}
+.device-data-tab{
+    background: white;
+    width: 100%;
+    margin-top: 40px;
+    padding: 20px;
+}
+.application-status-bade{
+    position: absolute;
+    top: 10px;
+    left: 20px;
+}

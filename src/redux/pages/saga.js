@@ -4,10 +4,8 @@ import Api from "./api.service";
 
 function* getAll(action) {
     const {payload: {url, config, storeName}} = action;
-    console.log(action);
     try {
         const {data} = yield call(Api.getAll, url, config);
-        console.log(data);
         yield put({type: Actions.GET_ALL.SUCCESS, payload: {result: data, storeName}});
     } catch (e) {
         yield put({type: Actions.GET_ALL.FAILURE, payload: {storeName, errors: e.response.data}});
@@ -16,31 +14,19 @@ function* getAll(action) {
 
 
 function* getAllTrigger(action) {
-    console.log(action);
     const {payload: {storeName}} = action;
     yield put({type: Actions.GET_ALL.TRIGGER, payload: {storeName}});
 }
 
 function* getOne(action) {
-    // const {payload: {url, config, scheme = {}, storeName, entityName, callback}} = action;
-    // try {
-    //     const {data} = yield call(Api.getOne, url, config);
-    //     const normalizedData = yield call(Normalizer.Normalize, data, scheme);
-    //     yield put({
-    //         type: NormalizerAction.NORMALIZE.REQUEST,
-    //         payload: {...normalizedData, storeName, entityName}
-    //     });
-    //     try {
-    //         yield call(callback, data);
-    //     } catch (e) {
-    //
-    //     }
-    //     yield put({type: Actions.GET_ONE.SUCCESS, payload: normalizedData});
-    //
-    // } catch (e) {
-    //     yield put({type: Actions.GET_ONE.FAILURE, payload: {storeName,errors: e.response.data}});
-    //     yield put({type: NormalizerAction.NORMALIZE.FAILURE, payload: {storeName,errors: e.response.data}});
-    // }
+     const {payload: {url, config,  storeName}} = action;
+    try {
+        const {data} = yield call(Api.getOne, url, config);
+
+        yield put({type: Actions.GET_ONE.SUCCESS, payload: {result: data, storeName}});
+    } catch (e) {
+        yield put({type: Actions.GET_ONE.FAILURE, payload: {storeName,errors: e.response.data}});
+    }
 }
 
 function* getData(action) {

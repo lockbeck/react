@@ -36,7 +36,6 @@ class CallDropdown extends Component {
   };
 
   render() {
-    console.log(icons.phone);
     return (
       <Dropdown
         isOpen={this.state.dropdownOpen}

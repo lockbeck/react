@@ -12,6 +12,10 @@ class PagesApi {
     static Delete = (route, id) => {
         return request.delete(`/${route}/${id}`);
     }
+
+    static Put = (id, route) => {
+        return request.put(`/api/application/${id}/${route}`);
+    }
 }
 
 export default PagesApi;

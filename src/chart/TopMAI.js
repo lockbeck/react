@@ -13,6 +13,7 @@ class TopMAI extends Component {
 
                   <div className="characteristic-card">
                         <table>
+                              <tbody>
                               <tr>
                                     <th>Name</th>
                                     <td>Topmai</td>
@@ -33,6 +34,8 @@ class TopMAI extends Component {
                                     <th>SSD</th>
                                     <td>512 GB</td>
                               </tr>
+                              </tbody>
+                            
                         </table>
                   </div>
         
