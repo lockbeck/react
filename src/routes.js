@@ -16,11 +16,11 @@ const AddNewApplication = React.lazy(() => import("./components/AddNewApplicatio
 // auth
 const Login = React.lazy(() => import("./pages/auth/Login"));
 const Logout = React.lazy(() => import("./pages/auth/Logout"));
-const ForgetPassword = React.lazy(() =>
-  import("./pages/account/ForgetPassword")
-);
-const Register = React.lazy(() => import("./pages/account/Register"));
-const ConfirmAccount = React.lazy(() => import("./pages/account/Confirm"));
+// const ForgetPassword = React.lazy(() =>
+//   import("./pages/account/ForgetPassword")
+// );
+// const Register = React.lazy(() => import("./pages/account/Register"));
+// const ConfirmAccount = React.lazy(() => import("./pages/account/Confirm"));
 
 
 

@@ -1,72 +1,206 @@
-import React, { Component } from "react";
-import { connect } from "react-redux";
-import { Card, CardBody,Table } from "reactstrap";
-import "../assets/scss/rejectedapplication/index.css"
+import React, {useEffect, useState} from "react";
+import {connect} from "react-redux";
+import "../assets/scss/allapplication/allapplication.css";
+import { withRouter, Link } from 'react-router-dom';
+import {get} from "lodash";
+import ApiActions from "../redux/pages/actions"
+import PagesApi from "../pages/dashboards/PagesApi";
+import {Button, Modal, Space, Table} from "antd";
+import { EditOutlined, EyeOutlined } from "@ant-design/icons";
+import moment from "moment";
+import { Badge,Row,Col } from "reactstrap";
+import ModalData from "./view/ModalData";
+
+const RejectedApplication = ({
+                            history,
+                            getItemsList,
+                            items,
+                            isFetched,
+                            total,
+                        }) => {
+
+    const append = ['certificates', ];
+    const include = ['device', 'user'];
+    const [pagination, setPagination] = useState({
+      current: 1,
+      pageSize: 15,
+    })
+
+    useEffect(() => {
+        getItemsList({...pagination, include, append, status: 0});
+    }, [pagination]);
+
+    const path = "api/application"
 
 
-class RejectedApplication extends Component {
-  render() {
+
+    const update = (params = {}, id) => {
+        PagesApi.Update(path, id, params).then((res) => {
+            console.log(res);
+        }).catch((error) => {
+            console.log(error);
+        })
+    }
+
+    const remove = (id) => {
+        PagesApi.Delete(path, id).then((res) => {
+            console.log(res);
+        }).catch((error) => {
+            console.log(error);
+        })
+    }
+
+    ////  modal
+
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
+    const showModal = () => {
+      setIsModalOpen(true);
+    };
+  
+    const handleOk = () => {
+      setIsModalOpen(false);
+    };
+  
+    const handleCancel = () => {
+      setIsModalOpen(false);
+    };
+
+    const inproccess={};
+    
+
+    items = items.map((item, index) => ({
+        ...item,
+        index: index + (15 * (pagination.current - 1)) + 1,
+    }));
+  
+    const columns = [
+        {
+          title: "№",
+          dataIndex: "index",
+          key: "index",
+        },
+        {
+          title: "Name",
+          dataIndex: "name",
+          key: "name",
+        },
+        {
+            title: "Device Id",
+            dataIndex: "device_id",
+            key: "device_id",
+          },
+          
+        {
+          title: "Boshqaruvchi",
+          dataIndex:"user",
+          render: (item) => get(item, "name", "-"),
+          key: "user",
+        },
+        {
+          title: "Status",
+          dataIndex: "status",
+          render: () => <Badge color="danger">rejected</Badge>,
+          key: "status",
+        },
+        {
+            title: "Updated Date",
+            dataIndex: "update_at",
+            render: (date) => moment(date).format('DD-MM-yyyy'),
+            key: "update_at",
+          },
+        {
+            title: "Created Date",
+            dataIndex: 'created_at',
+            render: (date) => moment(date).format('DD-MM-yyyy'),
+            key: "created_at",
+          },
+        {
+          title: "action",
+          dataIndex: 'id',
+          key: "action",
+          render: (id) => {
+            return (
+              <Space size="middle">
+                <Link to={{pathname:"/view", state: id}}>
+                      <Button
+                        shape="circle"
+                        warning
+                        icon={<EyeOutlined />}
+                      />
+                  </Link>
+                <Button
+                  onClick={showModal}
+                  shape="circle"
+                  warning
+                  icon={<EditOutlined />}
+                />
+              </Space>
+            );
+          },
+        },
+      ];
+
     return (
-      <React.Fragment>
-        <div className="application-content">
-            <p className="title-name">Inkor qilingan arizalar</p>
-              <span className="title-badge-count">4</span>
-            <Table>
-                <thead className="table-head">
-                    <tr>
-                      <th>№</th>
-                      <th>Name</th>
-                      <th>SubName</th>
-                      <th>Manager</th>
-                      <th>Date</th>
-                      <th>Contact</th>
-                      <th>View</th>
-                    </tr>
-                </thead>
-              <tbody>
-                    <tr>
-                      <th scope="row">1</th>
-                      <td>ToPMIa</td>
-                      <td>"Default" MchJ</td>
-                      <td>Name Surname</td>
-                      <td>date</td>
-                      <td><i className="fa fa-phone"></i></td>
-                      <td><i className="fa fa-eye text-success"></i></td>
-                    </tr>
-                    <tr>
-                      <th scope="row">2</th>
-                      <td>ToPMIa</td>
-                      <td>"Default" MchJ</td>
-                      <td>Name Surname</td>
-                      <td>date</td>
-                      <td><i className="fa fa-phone"></i></td>
-                      <td><i className="fa fa-eye text-success"></i></td>
-                    </tr>
-                    <tr>
-                      <th scope="row">3</th>
-                      <td>ToPMIa</td>
-                      <td>"Default" MchJ</td>
-                      <td>Name Surname</td>
-                      <td>date</td>
-                      <td><a href=""><i className="fa fa-phone"></i></a></td>
-                      <td><i className="fa fa-eye text-success"></i></td>
-                    </tr>
-                    <tr>
-                      <th scope="row">4</th>
-                      <td>ToPMIa</td>
-                      <td>"Default" MchJ</td>
-                      <td>Name Surname</td>
-                      <td>date</td>
-                      <td><i className="fa fa-phone"></i></td>
-                      <td><i className="fa fa-eye text-success"></i></td>
-                    </tr>
-              </tbody>
-      </Table>
-              
-         </div>
-      </React.Fragment>
+        <React.Fragment>
+            <div className="application-content">
+                <Row>
+                    <Col md={11}>
+                        <p className="title-name">Inkor qilingan arizalar</p>
+                        <span className="title-badge-count">{total}</span>
+                  </Col>
+                    {/* <Col md={1}>
+                        <Button className="add-btn bg-success" onClick={showModal}>Add New</Button>
+                    </Col> */}
+                </Row>
+                
+                    <Table
+                        columns={columns}
+                        dataSource={items}
+                        pagination={{...pagination, total}}
+                        loading={!isFetched}
+                        onChange={({current}) => {setPagination({...pagination, current})}}
+                        scroll={{ x: "auto" }}
+            />
+
+                <Modal title="Edit Page" open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
+                    <ModalData/>
+                </Modal>
+            </div>
+        </React.Fragment>
     );
-  }
 }
 
-export default connect()(RejectedApplication);
+const mapStateToProps = (state) => {
+    return {
+        items: get(state, 'PageReducer.data.item-list.result.data', []),
+        item: get(state, 'PageReducer.data.get-one-item.result.data', {}),
+        isFetched: get(state, 'PageReducer.data.item-list.isFetched', false),
+        isFetchedItem: get(state, 'PageReducer.data.get-one-item.isFetched', false),
+        total: get(state, 'PageReducer.data.item-list.result.total', 0),
+    }
+}
+const mapDispatchToProps = (dispatch) => {
+    return {
+        getItemsList: ({current = 1, pageSize = 15, include = [], append = [], status}) => {
+            const storeName = 'item-list';
+            dispatch({
+                type: ApiActions.GET_ALL.REQUEST,
+                payload: {
+                    url: '/api/application',
+                    config: {
+                        params: {
+                            page: current,
+                            include: include.join(','),
+                            append: append.join(','),
+                            'filter[status]': status,
+                        },
+                    },
+                    storeName,
+                },
+            });
+        },
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(RejectedApplication));

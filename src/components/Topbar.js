@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { Link } from "react-router-dom";
+import { withRouter, Link } from "react-router-dom";
+import { get } from "lodash";
 import NotificationDropdown from "./dropdowns/NotificationDropdown";
 import ProfileDropdown from "./dropdowns/ProfileDropdown";
 import CalendarDropdown from "./dropdowns/CalendarDropdown";
@@ -95,13 +96,8 @@ const ProfileMenus = [
   },
 ];
 
-class Topbar extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {};
-  }
+const Topbar = ({user}) => {
 
-  render() {
     return (
       <React.Fragment>
         <div className="navbar-custom ">
@@ -149,7 +145,7 @@ class Topbar extends Component {
               <ProfileDropdown
                 profilePic={profilePic}
                 menuItems={ProfileMenus}
-                username={"User"}
+                username={user.name}
               />
             </li>
 
@@ -175,7 +171,7 @@ class Topbar extends Component {
             <li>
               <button
                 className="button-menu-mobile waves-effect waves-light"
-                onClick={this.props.menuToggle}
+                // onClick={this.props.menuToggle}
               >
                 <i className="fa fa-bars text-dark"></i>
               </button>
@@ -224,6 +220,20 @@ class Topbar extends Component {
       </React.Fragment>
     );
   }
-}
 
-export default connect()(Topbar);
+  const mapStateToProps = (state) => {
+    return {
+      items: get(state, "PageReducer.data.item-list.result.data", []),
+      item: get(state, "PageReducer.data.get-one-item.result", {}),
+      isFetched: get(state, "PageReducer.data.item-list.isFetched", false),
+      isFetchedItem: get(state, "PageReducer.data.get-one-item.isFetched", false),
+      total: get(state, "PageReducer.data.item-list.result.total", 0),
+      user: get(state, "Auth.user",{})
+    };
+  };
+
+
+
+export default connect(
+  mapStateToProps,
+)(withRouter(Topbar));
