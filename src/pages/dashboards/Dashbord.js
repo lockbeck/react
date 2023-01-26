@@ -3,6 +3,7 @@ import { withRouter, Link } from "react-router-dom";
 import { connect } from "react-redux";
 import { Row, Col, Card, CardBody, Input } from "reactstrap";
 import { get } from "lodash";
+import moment from "moment";
 import ApiActions from "../../redux/pages/actions";
 import line from "../../assets/images/line.svg";
 import line2 from "../../assets/images/line2.svg";
@@ -12,10 +13,14 @@ import line5 from "../../assets/images/line5.svg";
 import "../../assets/scss/dashboard/index.css";
 import BarChart from "../../chart/BarChart";
 import PieChart from "../../chart/PieChart";
-import { TimePicker } from "antd";
 import HorizonBarChart from "../../chart/HorizonBarChart";
 import TopSubChart from "../../chart/TopSubChart";
 import TopMAI from "../../chart/TopMAI";
+import { DatePicker, Space } from "antd";
+import dayjs from 'dayjs';
+const dateFormat = 'DD/MM/YYYY';
+
+const { RangePicker } = DatePicker;
 
 const DefaultDashboard = ({
   history,
@@ -25,25 +30,47 @@ const DefaultDashboard = ({
   total,
   user,
 }) => {
+  //bar-chart-data
   const [labels, setLabels] = useState([]);
   const [statusData, setStatusData] = useState([]);
-
   const [datasets, setDatasets] = useState([]);
 
-  useEffect(() => {
-    getData();
-  }, []);
+  // date-range
+  const [filter, setFilter] = useState({
+    startDate: new Date(new Date().setMonth(new Date().getMonth() - 3)),
+    endDate: new Date(),
+  });
+
+  // const [startDate, setStartDate] = useState();
+  // const [endDate, setEndDate] = useState();
+
+  const onRangeChange = (dates, dateStrings) => {
+    console.log(dates, dateStrings);
+    if (dates) {
+      setFilter({
+        startDate: moment(dateStrings[0], "DD/MM/yyyy").toDate(),
+        endDate: moment(dateStrings[1], "DD/MM/yyyy").toDate()
+      })
+      console.log(dateStrings[0], dateStrings[1]);
+    } else {
+      console.log("Clear");
+    }
+  };
 
   useEffect(() => {
+    getData({
+      startDate: moment(get(filter, "startDate")).format("DD-MM-yyyy"),
+      endDate: moment(get(filter, "endDate")).format("DD-MM-yyyy"),
+    });
+  }, [filter]);
 
+  useEffect(() => {
     let status = [];
-    get(item, 'status', []).forEach(element => {
-      status[get(element,'status')] = get(element, 'total')
+    get(item, "status", []).forEach((element) => {
+      status[get(element, "status")] = get(element, "total");
     });
 
     setStatusData(status);
-
-
 
     const certificate = get(item, "certificate", []);
     const allInMont = get(item, "allInMont", []);
@@ -77,26 +104,23 @@ const DefaultDashboard = ({
       certificateDataset.push(certificateData[val] | 0);
     });
 
-
-
     setDatasets([
-      {
-        label: "Barcha arizalar",
-        backgroundColor: "#165BAA",
-        data: allInMontDataset,
-      },
       {
         label: "Sertifikati mavjud arizalar",
         backgroundColor: "#A155B9",
         data: certificateDataset,
+        barThickness: 50,
+      },
+      {
+        label: "Barcha arizalar",
+        backgroundColor: "#165BAA",
+        data: allInMontDataset,
+        barThickness: 50,
       },
     ]);
-
-
   }, [item]);
 
   console.log(item);
-  console.log(item.status);
 
   return (
     <React.Fragment>
@@ -189,31 +213,42 @@ const DefaultDashboard = ({
 
           <Col lg={8}>
             <Card className="chart-area">
-              <CardBody>
+              <div className="p-3">
                 <Row className="d-flex justify-content-between">
-                  <Col lg={3}>
+                  <Col lg={6}>
                     <h4 className="text-muted">Barcha arizalar</h4>
                   </Col>
                   <Col lg={2}>
-                    <Input id="timeSelect" type="select">
-                      <option value="">kun</option>
+                    <Input id="timeSelect" type="select" className="p-1">
                       <option value="">oy</option>
+                      <option value="">3 oy</option>
+                      <option value="">6 oy</option>
+                      <option value="">1 yil</option>
                     </Input>
                   </Col>
+                  <Col lg={4}>
+                    <Space direction="vertical" size={12}>
+                      <RangePicker
+                        onChange={onRangeChange}
+                        defaultValue={[
+                          dayjs(moment(get(filter, 'startDate')).format("DD-MM-yyyy"),dateFormat),
+                          dayjs(moment(get(filter, 'endDate')).format("DD-MM-yyyy"),dateFormat),
+                        ]}
+                        format={dateFormat}
+                      />
+                    </Space>
+                  </Col>
                 </Row>
-                <BarChart labels={labels} datasets={datasets}/>
-              </CardBody>
+                <BarChart labels={labels} datasets={datasets} />
+              </div>
             </Card>
           </Col>
 
           <Col lg={4}>
             <Card className="chart-area">
               <CardBody>
-                <div>
-                  <TimePicker />
-                </div>
-                <h2>842</h2>
-                <h5>Vaqt mobaynida kelib tushgan arizalar</h5>
+                <h2>{item.applications}</h2>
+                <h5>Kelib tushgan arizalar</h5>
                 <hr />
                 <PieChart />
               </CardBody>
@@ -255,25 +290,24 @@ const DefaultDashboard = ({
 const mapStateToProps = (state) => {
   return {
     items: get(state, "PageReducer.data.item-list.result.data", []),
-    item: get(state, "PageReducer.data.get-one-item.result", {}),
+    item: get(state, "PageReducer.data.get-dashboard-item.result", {}),
     isFetched: get(state, "PageReducer.data.item-list.isFetched", false),
-    isFetchedItem: get(state, "PageReducer.data.get-one-item.isFetched", false),
+    isFetchedItem: get(state, "PageReducer.data.get-dashboard-item.isFetched", false),
     total: get(state, "PageReducer.data.item-list.result.total", 0),
     user: get(state, "Auth.user", {}),
   };
 };
 const mapDispatchToProps = (dispatch) => {
   return {
-    getData: () => {
-      const storeName = "get-one-item";
+    getData: ({ startDate = "", endDate = "" }) => {
+      const storeName = "get-dashboard-item";
       dispatch({
         type: ApiActions.GET_ONE.REQUEST,
         payload: {
           url: `/api/dash`,
           config: {
             params: {
-              // include: include.join(','),
-              // append: append.join(','),
+              between: `${startDate},${endDate}`,
             },
           },
           storeName,

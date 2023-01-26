@@ -39,7 +39,7 @@ class BarChart extends Component {
       //   },
       // ],
     };
-    console.log(data);
+    
     return (
       <React.Fragment>
         <Bar options={options} data={data} height={120} />
