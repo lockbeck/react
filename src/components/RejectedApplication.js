@@ -86,12 +86,6 @@ const RejectedApplication = ({
           key: "name",
         },
         {
-            title: "Device Id",
-            dataIndex: "device_id",
-            key: "device_id",
-          },
-          
-        {
           title: "Boshqaruvchi",
           dataIndex:"user",
           render: (item) => get(item, "name", "-"),
@@ -115,6 +109,12 @@ const RejectedApplication = ({
             render: (date) => moment(date).format('DD-MM-yyyy'),
             key: "created_at",
           },
+          // {
+          //   title: "Contact",
+          //   dataIndex: "user",
+          //   render: (item) => get(item, "phone", "-"),
+          //   key: "user",
+          // },
         {
           title: "action",
           dataIndex: 'id',

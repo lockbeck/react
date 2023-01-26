@@ -176,45 +176,6 @@ const Topbar = ({user}) => {
                 <i className="fa fa-bars text-dark"></i>
               </button>
             </li>
-
-            {/* <li className="dropdown d-none d-lg-block">
-              <UncontrolledDropdown>
-                <DropdownToggle
-                  data-toggle="dropdown"
-                  tag="button"
-                  className="btn btn-link nav-link dropdown-toggle waves-effect waves-light"
-                >
-                  Create New
-                  <i className="mdi mdi-chevron-down"></i>
-                </DropdownToggle>
-                <DropdownMenu
-                  right
-                  className="dropdown-menu-animated topbar-dropdown-menu profile-dropdown"
-                >
-                  <Link to="/" className="dropdown-item">
-                    <i className="fe-briefcase mr-1"></i>
-                    <span>New Projects</span>
-                  </Link>
-                  <Link to="/" className="dropdown-item">
-                    <i className="fe-user mr-1"></i>
-                    <span>Create Users</span>
-                  </Link>
-                  <Link to="/" className="dropdown-item">
-                    <i className="fe-bar-chart-line- mr-1"></i>
-                    <span>Revenue Report</span>
-                  </Link>
-                  <Link to="/" className="dropdown-item">
-                    <i className="fe-settings mr-1"></i>
-                    <span>Settings</span>
-                  </Link>
-                  <DropdownItem divider />
-                  <Link to="/" className="dropdown-item">
-                    <i className="fe-headphones mr-1"></i>
-                    <span>Help & Support</span>
-                  </Link>
-                </DropdownMenu>
-              </UncontrolledDropdown>
-            </li> */}
           </ul>
         </div>
       </React.Fragment>

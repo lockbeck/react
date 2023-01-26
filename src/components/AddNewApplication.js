@@ -68,7 +68,7 @@ error = () => {
 
     this.create(data);
     setTimeout(this.toggleToast, 2000);
-    event.preventDefault();
+   event.preventDefault();
   };
 
    create = (params = {}) => {
@@ -94,7 +94,7 @@ error = () => {
   render() {
     return (
       <React.Fragment>
-          <Button color="success" className="create-device-btn">Create Device</Button>
+          {/* <Button color="success" className="create-device-btn">Create Device</Button> */}
          <div className="add-application-content">
          <Toast className={"position-absolute box-shadow border-" + this.state.toast.class}
                            style={{top: "83px", zIndex: "3", right: "25px"}} isOpen={this.state.toast.isOpen}>
@@ -120,9 +120,7 @@ error = () => {
                                     />
                             </FormGroup>
                         </Col>
-                        <Col sm={6
-                        
-                        }>
+                        <Col sm={4} className="mt-2">
                         <FormGroup>
                                   <Label for="telecommunication_network">
                                     Telecommunication_network
@@ -136,7 +134,7 @@ error = () => {
                                   />
                             </FormGroup>
                         </Col>
-                        <Col sm={6}>
+                        <Col sm={4} className="mt-2">
                         <FormGroup>
                                   <Label for="provide_cyber_security">
                                         Provide_cyber_security
@@ -150,7 +148,7 @@ error = () => {
                                   />
                             </FormGroup>
                         </Col>
-                        <Col sm={6}>
+                        {/* <Col sm={6}>
                               <FormGroup>
                                     <Label for="deivice_id">
                                       Device Id
@@ -163,8 +161,8 @@ error = () => {
                                     >
                                     </Input>
                                 </FormGroup>
-                        </Col>
-                        <Col sm={6}>
+                        </Col> */}
+                        <Col sm={4} className="mt-2">
                               <FormGroup>
                                     <Label for="error_or_broken">
                                       Error or Broken
@@ -185,7 +183,7 @@ error = () => {
                                 </FormGroup>
                         </Col>
 
-                        <Col sm={12}>
+                        <Col sm={12} className="mt-2">
                         <FormGroup>
                                   <Label for="definition">
                                     Definition
@@ -199,7 +197,7 @@ error = () => {
                                   />
                             </FormGroup>
                         </Col>
-                        <Col sm={6}>
+                        <Col sm={6} className="mt-2">
                             <FormGroup>
                                     <Label for="certificates">
                                         Certificates
@@ -212,7 +210,7 @@ error = () => {
                                     />
                                 </FormGroup>
                         </Col>
-                        <Col sm={6}>
+                        <Col sm={6} className="mt-2">
                             <FormGroup>
                                     <Label for="licenses">
                                         Licenses
@@ -226,8 +224,8 @@ error = () => {
                                 </FormGroup>
                         </Col>
                         </Row>
-                        <FormGroup>
-                          <Button color="success">Add</Button>
+                        <FormGroup className="mt-3">
+                          <Button color="success">Arizani qo'shish</Button>
                         </FormGroup>
                 </Form>
             </div>

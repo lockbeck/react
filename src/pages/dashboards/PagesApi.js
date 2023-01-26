@@ -13,8 +13,8 @@ class PagesApi {
         return request.delete(`/${route}/${id}`);
     }
 
-    static Put = (id, route) => {
-        return request.put(`/api/application/${id}/${route}`);
+    static Put = (id, route, params = {}) => {
+        return request.put(`/api/application/${id}/${route}`, params);
     }
 }
 

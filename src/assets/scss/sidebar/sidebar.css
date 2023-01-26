@@ -9,6 +9,6 @@
   text-align: left;
   color: #000000;
 }
-Link:active .menu-name {
-  color: red !important;
+.waves-effect:active{
+  color: red;
 }

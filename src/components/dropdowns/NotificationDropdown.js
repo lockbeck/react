@@ -49,7 +49,7 @@ class NotificationDropdown extends Component {
         >
          <img src={bell} alt="" />
           <span className="badge badge-danger rounded-circle noti-icon-badge">
-            9
+            0
           </span>
         </DropdownToggle>
         <DropdownMenu right className="dropdown-lg">

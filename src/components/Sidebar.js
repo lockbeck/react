@@ -1,15 +1,18 @@
 import React, { Component } from "react";
-import { Link } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import { connect } from "react-redux";
 import "../assets/scss/sidebar/sidebar.css";
 import PerfectScrollbar from "react-perfect-scrollbar";
 import "react-perfect-scrollbar/dist/css/styles.css";
 import MetisMenu from "metismenujs/dist/metismenujs";
-import ariza from "../assets/images/icon/ariza.svg";
-import hand from "../assets/images/icon/hand.svg";
-import barcha from "../assets/images/icon/barcha.svg";
-import jarayon from "../assets/images/icon/jarayon.svg";
-import file from "../assets/images/icon/file.svg";
+import {
+  DashboardOutlined,
+  FileExcelOutlined,
+  FileSyncOutlined,
+  FileAddOutlined,
+  FileOutlined,
+  FileExclamationOutlined,
+} from "@ant-design/icons";
 
 const SideNavContent = () => {
   return (
@@ -19,24 +22,22 @@ const SideNavContent = () => {
           {/* <li className="menu-title">Navigation</li> */}
 
           <li>
-            <Link
-              to="/dashboard"
-              className="waves-effect has-dropdown"
-              aria-expanded="true"
-            >
-              <img src={ariza} alt="" />
-              <span className="menu-name"> Arizalar </span>
+            <Link to="/dashboard" className="waves-effect" aria-expanded="true">
+              <DashboardOutlined
+                style={{ fontSize: "25px", color: "#121211" }}
+              />
+              <span className="menu-name"> Dashboard </span>
             </Link>
           </li>
 
           <li>
             <Link
               to="/all_application"
-              className="waves-effect has-dropdown"
+              className="waves-effect "
               aria-expanded="true"
             >
-              <img src={barcha} alt="" />
-              <span className="menu-name"> Barcha </span>
+              <FileOutlined style={{ fontSize: "25px", color: "#121211" }} />
+              <span className="menu-name"> Barcha Arizalar</span>
             </Link>
           </li>
 
@@ -46,7 +47,9 @@ const SideNavContent = () => {
               className="waves-effect  nav-link"
               aria-expanded="true"
             >
-              <img src={file} alt="" />
+              <FileExclamationOutlined
+                style={{ fontSize: "25px", color: "#121211" }}
+              />
               <span className="menu-name"> Yangi Arizalar </span>
             </Link>
           </li>
@@ -54,76 +57,35 @@ const SideNavContent = () => {
           <li>
             <Link
               to="/in_proccess"
-              className="waves-effect has-dropdown"
+              className="waves-effect"
               aria-expanded="true"
             >
-              <img src={jarayon} alt="" />
+              <FileSyncOutlined
+                style={{ fontSize: "25px", color: "#121211" }}
+              />
               <span className="menu-name"> Jarayondagi </span>
             </Link>
           </li>
 
           <li>
-            <Link
-              to="/rejected_application"
-              className="waves-effect has-dropdown"
-              aria-expanded="true"
-            >
-              <img src={hand} alt="" />
+            <Link to="/rejected_application" aria-expanded="true">
+              <FileExcelOutlined
+                style={{ fontSize: "25px", color: "#121211" }}
+              />
               <span className="menu-name"> Inkor qilingan </span>
             </Link>
           </li>
 
-
           <li>
             <Link
               to="/add_application"
-              className="waves-effect has-dropdown"
+              className="waves-effect"
               aria-expanded="true"
             >
-              <i className="fa fa-plus-square fa-2x"></i>
+              <FileAddOutlined style={{ fontSize: "25px", color: "#121211" }} />
               <span className="menu-name"> Ariza qo'shish</span>
             </Link>
           </li>
-
-          {/* 
-                                            this is drop-down */}
-          {/* <li>
-            <Link
-              to="/"
-              className="waves-effect has-dropdown"
-              aria-expanded="false"
-            >
-              <i className="fe-folder-plus"></i>
-              <span> Multi Level </span>
-              <span className="menu-arrow"></span>
-            </Link>
-
-            <ul className="nav-second-level nav" aria-expanded="false">
-              <li>
-                <Link to="/" className="side-nav-link-ref">
-                  Level 1.1
-                </Link>
-              </li>
-              <li>
-                <Link to="/" className="has-dropdown">
-                  Level 1.2
-                  <span className="menu-arrow"></span>
-                </Link>
-                <ul className="nav-third-level nav" aria-expanded="false">
-                  <li>
-                    <Link to="/" className="side-nav-link-ref">
-                      Level 2.1
-                    </Link>
-                  </li>
-                  <li>
-                    <Link to="/" className="side-nav-link-ref">
-                      Level 2.2
-                    </Link>
-                  </li>
-                </ul>
-              </li>
-            </ul>
-          </li> */}
         </ul>
       </div>
       <div className="clearfix"></div>

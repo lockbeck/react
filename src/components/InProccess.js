@@ -34,11 +34,26 @@ const InProccess = ({
 
     const [api, contextHolder] = notification.useNotification();
 
+    const [apiReject, contextHolderReject] = notification.useNotification();
+
     const openNotification = () => {
       api.open({
-        message: 'Success',
+        message: `Sizning  arizangiz qabul qilindi`,
         duration: 2,
-        color:"success"
+        style:{
+          backgroundColor: "#6bed7a"
+        }
+      });
+    };
+
+    const openNotificationReject = () => {
+      apiReject.open({
+        message: `Sizning  arizangiz inkor qilindi`,
+        duration: 2,
+        style:{
+          backgroundColor: "#f59590",
+          color:"black"
+        }
       });
     };
 
@@ -94,13 +109,7 @@ const InProccess = ({
           title: "Name",
           dataIndex: "name",
           key: "name",
-        },
-        {
-            title: "Device Id",
-            dataIndex: "device_id",
-            key: "device_id",
-          },
-          
+        },  
         {
           title: "Boshqaruvchi",
           dataIndex:"user",
@@ -125,6 +134,12 @@ const InProccess = ({
             render: (date) => moment(date).format('DD-MM-yyyy'),
             key: "created_at",
           },
+          // {
+          //   title: "Contact",
+          //   dataIndex: "user",
+          //   render: (item) => get(item, "phone", "-"),
+          //   key: "user",
+          // },
         {
           title: "action",
           dataIndex: "id",
@@ -140,7 +155,7 @@ const InProccess = ({
                   icon={<CheckOutlined style={{color: "#00b300"}} />}
                 />
                 <Button
-                   onClick={()=>{reject(id);openNotification();}}
+                   onClick={()=>{reject(id); openNotificationReject();}}
                   shape="circle"
                   warning
                   icon={<CloseOutlined style={{color: "#e63900"}}/>}
@@ -169,6 +184,7 @@ const InProccess = ({
         <React.Fragment>
             <div className="application-content">
                  {contextHolder}
+                 {contextHolderReject}
                 <Row>
                     <Col md={11}>
                         <p className="title-name">Jarayondagi arizalar</p>

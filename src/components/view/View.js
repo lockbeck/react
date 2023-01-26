@@ -14,19 +14,21 @@ import {
   CardTitle,
   Badge,
 } from "reactstrap";
-import { Tabs } from "antd";
+import { Tabs, notification } from "antd";
 import moment from "moment";
 import ApiActions from "../../redux/pages/actions";
 import "../../assets/scss/view/view.css";
 import { Modal } from "antd";
 import PagesApi from "../../pages/dashboards/PagesApi";
 
-const View = ({ getItemsList, getSingleItem, item, ...props }) => {
+const View = ({ getSingleItem, item, ...props }) => {
   const id = props.location.state;
   const onChange = (key) => {};
 
   const append = [];
   const include = ["device", "user"];
+
+  const [definition, setDefinition] = useState("");
 
   useEffect(() => {
     getSingleItem({ id, include, append });
@@ -35,7 +37,7 @@ const View = ({ getItemsList, getSingleItem, item, ...props }) => {
   const success = (id) => {
     PagesApi.Put(id, "success")
       .then((res) => {
-        getItemsList({ include, append });
+        getSingleItem({ id, include, append });
       })
       .catch((error) => {
         console.log(error);
@@ -43,9 +45,19 @@ const View = ({ getItemsList, getSingleItem, item, ...props }) => {
   };
 
   const reject = (id) => {
-    PagesApi.Put(id, "reject")
+    PagesApi.Put(id, "reject", {definition})
       .then((res) => {
-        getItemsList({ include, append });
+        getSingleItem({ id, include, append  });
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  const rester = (id) => {
+    PagesApi.Put(id, "register")
+      .then((res) => {
+        getSingleItem({ id, include, append });
       })
       .catch((error) => {
         console.log(error);
@@ -110,47 +122,57 @@ const View = ({ getItemsList, getSingleItem, item, ...props }) => {
     {
       key: "2",
       label: `Xatolik yoki ishdan chiqqan taqdirda`,
-      children: `Content of Tab Pane 2`,
+      children: ``,
     },
     {
       key: "3",
       label: `Telekommunikatsiya tarmog’i`,
-      children: `Content of Tab Pane 3`,
+      children: ``,
     },
     {
       key: "4",
       label: `Kiberxavfsizlikni ta’minlash`,
-      children: `Content of Tab Pane 4`,
+      children: ``,
     },
     {
       key: "5",
       label: `Axborot xavfsizligiga tahdidlar`,
-      children: `Content of Tab Pane 5`,
+      children: ``,
     },
     {
       key: "6",
       label: `Insident yuz berishi
       oqibatlari`,
-      children: `Content of Tab Pane 6`,
+      children: ``,
     },
     {
       key: "7",
       label: `Litsenziyalar`,
-      children: `Content of Tab Pane 7`,
+      children: ``,
     },
     {
       key: "8",
       label: `Sertifikatlar`,
-      children: `Content of Tab Pane 8`,
+      children: ``,
     },
   ];
 
   // const deviceOs = JSON.parse(get(item, 'device.os', '{}'));
 
-  console.log(id);
-  console.log(item);
-  ////  modal
 
+  console.log(definition);
+
+  const [api, contextHolder] = notification.useNotification();
+
+  const openNotification = () => {
+    api.open({
+      message: "Qayta yuborildi",
+      duration: 2,
+      color: "success",
+    });
+  };
+
+  ////  modal
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const showModal = () => {
@@ -158,6 +180,7 @@ const View = ({ getItemsList, getSingleItem, item, ...props }) => {
   };
 
   const handleOk = () => {
+    reject(id)
     setIsModalOpen(false);
   };
 
@@ -172,7 +195,10 @@ const View = ({ getItemsList, getSingleItem, item, ...props }) => {
           <Button
             color="warning"
             className="float-right  mt-4 mb-2"
-            onClick={showModal}
+            onClick={() => {
+              rester(id);
+              openNotification();
+            }}
           >
             Qayta yuborish
           </Button>
@@ -254,6 +280,7 @@ const View = ({ getItemsList, getSingleItem, item, ...props }) => {
             name="definition"
             placeholder="please fill a content..."
             type="textarea"
+            onChange={(evt) => { setDefinition(evt.target.value); }}
           />
         </Modal>
 
@@ -312,6 +339,15 @@ const View = ({ getItemsList, getSingleItem, item, ...props }) => {
           </Col>
         </Row>
 
+        {get(item, "status") === 0 ? (
+          <div className="application-data">
+            <h4 className="rejected-cause-title">Inkor qilinish sababi</h4>
+            <p className="mt-2">{item.definition}</p>
+          </div>
+        ) : (
+          <div></div>
+        )}
+
         <Row className="application-data">
           <Tabs defaultActiveKey="1" items={items} onChange={onChange} />
         </Row>
@@ -329,29 +365,6 @@ const mapStateToProps = (state) => {
 };
 const mapDispatchToProps = (dispatch) => {
   return {
-    getItemsList: ({
-      current = 1,
-      pageSize = 15,
-      include = [],
-      append = [],
-    }) => {
-      const storeName = "item-list";
-      dispatch({
-        type: ApiActions.GET_ALL.REQUEST,
-        payload: {
-          url: "/api/application",
-          config: {
-            params: {
-              page: current,
-              include: include.join(","),
-              append: append.join(","),
-            },
-          },
-          storeName,
-        },
-      });
-    },
-
     getSingleItem: ({ id, include = [], append = [] }) => {
       const storeName = "get-one-item";
       dispatch({
@@ -361,7 +374,7 @@ const mapDispatchToProps = (dispatch) => {
           config: {
             params: {
               include: include.join(","),
-              append: append.join(","),
+              append: append.join(",")
             },
           },
           storeName,
