@@ -17,8 +17,8 @@ import HorizonBarChart from "../../chart/HorizonBarChart";
 import TopSubChart from "../../chart/TopSubChart";
 import TopMAI from "../../chart/TopMAI";
 import { DatePicker, Space } from "antd";
-import dayjs from 'dayjs';
-const dateFormat = 'DD/MM/YYYY';
+import dayjs from "dayjs";
+const dateFormat = "DD/MM/YYYY";
 
 const { RangePicker } = DatePicker;
 
@@ -49,8 +49,8 @@ const DefaultDashboard = ({
     if (dates) {
       setFilter({
         startDate: moment(dateStrings[0], "DD/MM/yyyy").toDate(),
-        endDate: moment(dateStrings[1], "DD/MM/yyyy").toDate()
-      })
+        endDate: moment(dateStrings[1], "DD/MM/yyyy").toDate(),
+      });
       console.log(dateStrings[0], dateStrings[1]);
     } else {
       console.log("Clear");
@@ -220,10 +220,10 @@ const DefaultDashboard = ({
                   </Col>
                   <Col lg={2}>
                     <Input id="timeSelect" type="select" className="p-1">
-                      <option value="">oy</option>
+                      {/* <option value="">oy</option>
                       <option value="">3 oy</option>
                       <option value="">6 oy</option>
-                      <option value="">1 yil</option>
+                      <option value="">1 yil</option> */}
                     </Input>
                   </Col>
                   <Col lg={4}>
@@ -231,8 +231,16 @@ const DefaultDashboard = ({
                       <RangePicker
                         onChange={onRangeChange}
                         defaultValue={[
-                          dayjs(moment(get(filter, 'startDate')).format("DD-MM-yyyy"),dateFormat),
-                          dayjs(moment(get(filter, 'endDate')).format("DD-MM-yyyy"),dateFormat),
+                          dayjs(
+                            moment(get(filter, "startDate")).format(
+                              "DD-MM-yyyy"
+                            ),
+                            dateFormat
+                          ),
+                          dayjs(
+                            moment(get(filter, "endDate")).format("DD-MM-yyyy"),
+                            dateFormat
+                          ),
                         ]}
                         format={dateFormat}
                       />
@@ -273,14 +281,14 @@ const DefaultDashboard = ({
             </Card>
           </Col>
 
-          <Col lg={4}>
+          {/* <Col lg={4}>
             <Card className="horizontal-charts">
               <CardBody>
                 <h4>TopMAI</h4>
                 <TopMAI />
               </CardBody>
             </Card>
-          </Col>
+          </Col> */}
         </Row>
       </div>
     </React.Fragment>
@@ -292,7 +300,11 @@ const mapStateToProps = (state) => {
     items: get(state, "PageReducer.data.item-list.result.data", []),
     item: get(state, "PageReducer.data.get-dashboard-item.result", {}),
     isFetched: get(state, "PageReducer.data.item-list.isFetched", false),
-    isFetchedItem: get(state, "PageReducer.data.get-dashboard-item.isFetched", false),
+    isFetchedItem: get(
+      state,
+      "PageReducer.data.get-dashboard-item.isFetched",
+      false
+    ),
     total: get(state, "PageReducer.data.item-list.result.total", 0),
     user: get(state, "Auth.user", {}),
   };
