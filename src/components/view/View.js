@@ -45,9 +45,9 @@ const View = ({ getSingleItem, item, ...props }) => {
   };
 
   const reject = (id) => {
-    PagesApi.Put(id, "reject", {definition})
+    PagesApi.Put(id, "reject", { definition })
       .then((res) => {
-        getSingleItem({ id, include, append  });
+        getSingleItem({ id, include, append });
       })
       .catch((error) => {
         console.log(error);
@@ -159,7 +159,6 @@ const View = ({ getSingleItem, item, ...props }) => {
 
   // const deviceOs = JSON.parse(get(item, 'device.os', '{}'));
 
-
   console.log(definition);
 
   const [api, contextHolder] = notification.useNotification();
@@ -180,7 +179,7 @@ const View = ({ getSingleItem, item, ...props }) => {
   };
 
   const handleOk = () => {
-    reject(id)
+    reject(id);
     setIsModalOpen(false);
   };
 
@@ -280,7 +279,9 @@ const View = ({ getSingleItem, item, ...props }) => {
             name="definition"
             placeholder="please fill a content..."
             type="textarea"
-            onChange={(evt) => { setDefinition(evt.target.value); }}
+            onChange={(evt) => {
+              setDefinition(evt.target.value);
+            }}
           />
         </Modal>
 
@@ -374,7 +375,7 @@ const mapDispatchToProps = (dispatch) => {
           config: {
             params: {
               include: include.join(","),
-              append: append.join(",")
+              append: append.join(","),
             },
           },
           storeName,

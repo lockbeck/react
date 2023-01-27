@@ -3,6 +3,7 @@ import { connect } from "react-redux";
 import { Button,  Col,  Form, FormGroup, Input, Label, Row, Toast, ToastBody } from "reactstrap";
 import "../assets/scss/addapplication/addapplication.css";
 import PagesApi from '../pages/dashboards/PagesApi';
+import AddDevice from "./view/AddDevice";
 
 
 class AddNewApplication extends Component {
@@ -17,7 +18,7 @@ class AddNewApplication extends Component {
       definition: "",
       certificates:"",
       licenses: "",
-      device_id: null,
+      device_id: "",
       error_or_broken: "",
       telecommunication_network:"",
       provide_cyber_security:"",
@@ -102,7 +103,7 @@ error = () => {
                             <i className={this.state.toast.icon}></i> {this.state.toast.message}
                         </ToastBody>
           </Toast>
-            <p className="title-name">Yangi ariza qo'shish</p>
+            <h3 className="title-name">Yangi ariza qo'shish</h3>
                       <Form onSubmit={this.handleValidSubmit}>
                         <Row>
                         <Col sm={12}>
@@ -148,7 +149,7 @@ error = () => {
                                   />
                             </FormGroup>
                         </Col>
-                        {/* <Col sm={6}>
+                        <Col sm={6}>
                               <FormGroup>
                                     <Label for="deivice_id">
                                       Device Id
@@ -161,7 +162,7 @@ error = () => {
                                     >
                                     </Input>
                                 </FormGroup>
-                        </Col> */}
+                        </Col>
                         <Col sm={4} className="mt-2">
                               <FormGroup>
                                     <Label for="error_or_broken">
@@ -228,6 +229,11 @@ error = () => {
                           <Button color="success">Arizani qo'shish</Button>
                         </FormGroup>
                 </Form>
+            </div>
+
+            <div>
+              <AddDevice updateDeviceID={(device_id => {
+                this.setState({...this.state, device_id})})}/>
             </div>
       </React.Fragment>
     );
