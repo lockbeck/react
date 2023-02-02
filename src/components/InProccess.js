@@ -9,7 +9,6 @@ import {Button, Modal, Space, Table, notification} from "antd";
 import { CloseOutlined,CheckOutlined, EyeOutlined } from "@ant-design/icons";
 import moment from "moment";
 import { Badge,Row,Col } from "reactstrap";
-import ModalData from "./view/ModalData";
 
 const InProccess = ({
                             history,
@@ -205,7 +204,7 @@ const InProccess = ({
             />
 
                 <Modal title="Edit Page" open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
-                    <ModalData/>
+                   <h1>Modal</h1>
                 </Modal>
             </div>
         </React.Fragment>

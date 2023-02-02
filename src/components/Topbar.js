@@ -7,7 +7,7 @@ import ProfileDropdown from "./dropdowns/ProfileDropdown";
 import CalendarDropdown from "./dropdowns/CalendarDropdown";
 import logoSm from "../assets/images/logo-dark.png";
 import logo from "../assets/images/logo-dark.png";
-import profilePic from "../assets/images/users/user-1.jpg";
+import profilePic from "../assets/images/userpic.png";
 import "../assets/scss/topbar/topbar.css";
 import GiftDropdown from "./dropdowns/GiftDropdown";
 import CallDropdown from "./dropdowns/CallDropdown";
@@ -121,7 +121,7 @@ const Topbar = ({user}) => {
               </form>
             </li>
 
-            <li>
+            {/* <li>
               <NotificationDropdown notifications={Notifications} />
             </li>
 
@@ -139,11 +139,11 @@ const Topbar = ({user}) => {
 
             <li>
               <CalendarDropdown />
-            </li>
+            </li> */}
 
             <li>
               <ProfileDropdown
-                profilePic={profilePic}
+                 profilePic={profilePic}
                 menuItems={ProfileMenus}
                 username={user.name}
               />

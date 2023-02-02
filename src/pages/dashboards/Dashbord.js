@@ -18,6 +18,7 @@ import TopSubChart from "../../chart/TopSubChart";
 import TopMAI from "../../chart/TopMAI";
 import { DatePicker, Space } from "antd";
 import dayjs from "dayjs";
+import { hasAccess } from "../../helpers/authUtils";
 const dateFormat = "DD/MM/YYYY";
 
 const { RangePicker } = DatePicker;
@@ -45,7 +46,6 @@ const DefaultDashboard = ({
   // const [endDate, setEndDate] = useState();
 
   const onRangeChange = (dates, dateStrings) => {
-    console.log(dates, dateStrings);
     if (dates) {
       setFilter({
         startDate: moment(dateStrings[0], "DD/MM/yyyy").toDate(),
@@ -74,7 +74,7 @@ const DefaultDashboard = ({
 
     const certificate = get(item, "certificate", []);
     const allInMont = get(item, "allInMont", []);
-
+    
     const allInMontLabels = allInMont.map(
       ({ year, month }) => `${month} ${year}`
     );
@@ -120,7 +120,8 @@ const DefaultDashboard = ({
     ]);
   }, [item]);
 
-  console.log(item);
+  const access = hasAccess(['admin', 'manager'], get(user, 'roles', []));
+
 
   return (
     <React.Fragment>
@@ -128,12 +129,12 @@ const DefaultDashboard = ({
         <Row>
           <Col>
             <div className="page-title-box">
-              <Row>
+              {hasAccess(['admin', 'manager'], get(user, 'roles', [])) && <Row>
                 <Col lg={7}>
                   <h4 className="page-title">Welcome, {user.name}</h4>
                 </Col>
                 <Col lg={5} className="mt-lg-3 mt-md-0"></Col>
-              </Row>
+              </Row>}
             </div>
           </Col>
         </Row>
@@ -188,7 +189,9 @@ const DefaultDashboard = ({
                 <div className="icon-div4">
                   <i className="fa fa-users fa-2x text-warning"></i>
                 </div>
-                <h4>Ko'rilmagan</h4>
+
+                
+                {hasAccess(['admin', 'manager'], get(user, 'roles', [])) && <h4>Ko'rilmagan</h4>}
                 <p>Ko'rilmagan arizalar</p>
                 <i className="fa fa-arrow-down text-dark mr-1"></i>
                 <span>{statusData[1]}</span>
@@ -219,12 +222,12 @@ const DefaultDashboard = ({
                     <h4 className="text-muted">Barcha arizalar</h4>
                   </Col>
                   <Col lg={2}>
-                    <Input id="timeSelect" type="select" className="p-1">
-                      {/* <option value="">oy</option>
+                    {/* <Input id="timeSelect" type="select" className="p-1">
+                      <option value="">oy</option>
                       <option value="">3 oy</option>
                       <option value="">6 oy</option>
-                      <option value="">1 yil</option> */}
-                    </Input>
+                      <option value="">1 yil</option>
+                    </Input> */}
                   </Col>
                   <Col lg={4}>
                     <Space direction="vertical" size={12}>
@@ -258,12 +261,12 @@ const DefaultDashboard = ({
                 <h2>{item.applications}</h2>
                 <h5>Kelib tushgan arizalar</h5>
                 <hr />
-                <PieChart />
+                <PieChart data={statusData}/>
               </CardBody>
             </Card>
           </Col>
 
-          <Col lg={4}>
+          {/* <Col lg={4}>
             <Card className="horizontal-charts">
               <CardBody>
                 <h4>Sertifikat va litsenziyalar bo'yicha</h4>
@@ -279,7 +282,7 @@ const DefaultDashboard = ({
                 <TopSubChart />
               </CardBody>
             </Card>
-          </Col>
+          </Col> */}
 
           {/* <Col lg={4}>
             <Card className="horizontal-charts">
