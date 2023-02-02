@@ -9,7 +9,6 @@ import { Button, Modal, Space, Table, notification } from "antd";
 import { CloseOutlined, EyeOutlined, CheckOutlined, IssuesCloseOutlined } from "@ant-design/icons";
 import moment from "moment";
 import { Badge, Row, Col } from "reactstrap";
-import ModalData from "./view/ModalData";
 
 const NewApplication = ({ history, getItemsList, items, isFetched, total }) => {
   const append = ["certificates"];
@@ -210,7 +209,7 @@ const NewApplication = ({ history, getItemsList, items, isFetched, total }) => {
           onOk={handleOk}
           onCancel={handleCancel}
         >
-          <ModalData />
+          <h1>modal</h1>
         </Modal>
       </div>
     </React.Fragment>

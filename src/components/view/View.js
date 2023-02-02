@@ -75,9 +75,9 @@ const View = ({ getSingleItem, item, ...props }) => {
               <CardBody>
                 <CardTitle tag="h5">RAM{" | "}HDD</CardTitle>
                 <CardText>
-                  {JSON.parse(get(item, "device.ram", "{}")).key}
-                  {" | "}
-                  {JSON.parse(get(item, "device.hdd", "{}")).key}
+                  {get(item, "device.ram", "0")}
+                  {" "}
+                  {get(item, "device.hdd", "0")}
                 </CardText>
               </CardBody>
             </Card>
@@ -87,9 +87,7 @@ const View = ({ getSingleItem, item, ...props }) => {
             <Card>
               <CardBody>
                 <CardTitle tag="h5">CPU</CardTitle>
-                <CardText>
-                  {JSON.parse(get(item, "device.cpu", "{}")).key}
-                </CardText>
+                <CardText>{get(item, "device.cpu", "{}")}</CardText>
               </CardBody>
             </Card>
           </Col>
@@ -98,9 +96,7 @@ const View = ({ getSingleItem, item, ...props }) => {
             <Card>
               <CardBody>
                 <CardTitle tag="h5">OS</CardTitle>
-                <CardText>
-                  {JSON.parse(get(item, "device.os", "{}")).key}
-                </CardText>
+                <CardText>{get(item, "device.os", "{}")}</CardText>
               </CardBody>
             </Card>
           </Col>
@@ -109,9 +105,7 @@ const View = ({ getSingleItem, item, ...props }) => {
             <Card>
               <CardBody>
                 <CardTitle tag="h5">Server Case</CardTitle>
-                <CardText>
-                  {JSON.parse(get(item, "device.case", "{}")).key}
-                </CardText>
+                <CardText>{get(item, "device.case", "{}")}</CardText>
               </CardBody>
             </Card>
           </Col>

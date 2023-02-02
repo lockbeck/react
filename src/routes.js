@@ -12,7 +12,8 @@ const NewApplication = React.lazy(() => import("./components/NewApplication"));
 const RejectedApplication = React.lazy(() => import("./components/RejectedApplication"));
 const InProccess = React.lazy(() => import("./components/InProccess"));
 const View = React.lazy(() => import("./components/view/View"));
-const AddNewApplication = React.lazy(() => import("./components/AddNewApplication"));
+const Users = React.lazy(() => import("./components/Users"));
+const CreateApplication = React.lazy(() => import("./components/CreateApplication"));
 // auth
 const Login = React.lazy(() => import("./pages/auth/Login"));
 const Logout = React.lazy(() => import("./pages/auth/Logout"));
@@ -27,6 +28,7 @@ const Logout = React.lazy(() => import("./pages/auth/Logout"));
 // handle auth and authorization
 
 const PrivateRoute = ({ component: Component, roles, ...rest }) => (
+  
   <Route
     {...rest}
     render={(props) => {
@@ -64,49 +66,56 @@ const routes = [
     name: "Dashboard",
     component: Dashboard,
     route: PrivateRoute,
-    roles: ["admin"],
+    roles: ["admin","manager", "user"],
   },
   {
     path: "/all_application",
     name: "AllApplication",
     component: AllApplication,
     route: PrivateRoute,
-    roles: ["admin"],
+    roles: ["admin","manager", "user"],   
   },
   {
     path: "/new_application",
     name: "NewApplication",
     component: NewApplication,
     route: PrivateRoute,
-    roles: ["admin"],
+    roles: ["admin","manager", "user"],  
   },
   {
     path: "/rejected_application",
     name: "RejectedApplication",
     component: RejectedApplication,
     route: PrivateRoute,
-    roles: ["admin"],
+    roles: ["admin","manager", "user"],  
   },
   {
     path: "/in_proccess",
     name: "InProccess",
     component: InProccess,
     route: PrivateRoute,
-    roles: ["admin"],
+    roles: ["admin","manager", "user"],  
   },
    {
     path: "/view",
     name: "View",
     component: View,
     route: PrivateRoute,
-    roles: ["admin"],
+    roles: ["admin","manager", "user"],  
   },
   {
-    path: "/add_application",
-    name: "AddNewApplication",
-    component: AddNewApplication,
+    path: "/users",
+    name: "Users",
+    component: Users,
     route: PrivateRoute,
-    roles: ["admin"],
+    roles: ["admin","manager", "user"],  
+  },
+  {
+    path: "/create_application",
+    name: "CreateApplication",
+    component: CreateApplication,
+    route: PrivateRoute,
+    roles: ["admin","manager", "user"],  
   },
 
   {
@@ -114,7 +123,7 @@ const routes = [
     exact: true,
     component: () => <Redirect to="/dashboard" />,
     route: PrivateRoute,
-    roles: ["admin"],
+    roles: ["admin","manager", "user"],  
   },
 ];
 

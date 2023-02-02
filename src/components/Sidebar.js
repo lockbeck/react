@@ -1,6 +1,7 @@
 import React, { Component } from "react";
-import { Link, NavLink } from "react-router-dom";
+import { Link, NavLink, withRouter } from "react-router-dom";
 import { connect } from "react-redux";
+import { get } from "lodash";
 import "../assets/scss/sidebar/sidebar.css";
 import PerfectScrollbar from "react-perfect-scrollbar";
 import "react-perfect-scrollbar/dist/css/styles.css";
@@ -12,9 +13,12 @@ import {
   FileAddOutlined,
   FileOutlined,
   FileExclamationOutlined,
+  UsergroupAddOutlined
 } from "@ant-design/icons";
+import { hasAccess } from "../helpers/authUtils";
 
-const SideNavContent = () => {
+const SideNavContent = ({roles, ...props}) => {
+  const access = hasAccess(['admin', 'manager'], roles);
   return (
     <React.Fragment>
       <div id="sidebar-menu">
@@ -22,27 +26,27 @@ const SideNavContent = () => {
           {/* <li className="menu-title">Navigation</li> */}
 
           <li>
-            <Link to="/dashboard" className="waves-effect" aria-expanded="true">
+            <NavLink to="/dashboard"   aria-expanded="true">
               <DashboardOutlined
                 style={{ fontSize: "25px", color: "#121211" }}
               />
               <span className="menu-name"> Dashboard </span>
-            </Link>
+            </NavLink>
           </li>
 
           <li>
-            <Link
+            <NavLink
               to="/all_application"
               className="waves-effect "
               aria-expanded="true"
             >
               <FileOutlined style={{ fontSize: "25px", color: "#121211" }} />
               <span className="menu-name"> Barcha Arizalar</span>
-            </Link>
+            </NavLink>
           </li>
 
           <li>
-            <Link
+            <NavLink
               to="/new_application"
               className="waves-effect  nav-link"
               aria-expanded="true"
@@ -51,11 +55,11 @@ const SideNavContent = () => {
                 style={{ fontSize: "25px", color: "#121211" }}
               />
               <span className="menu-name"> Yangi Arizalar </span>
-            </Link>
+            </NavLink>
           </li>
 
           <li>
-            <Link
+            <NavLink
               to="/in_proccess"
               className="waves-effect"
               aria-expanded="true"
@@ -64,28 +68,41 @@ const SideNavContent = () => {
                 style={{ fontSize: "25px", color: "#121211" }}
               />
               <span className="menu-name"> Jarayondagi </span>
-            </Link>
+            </NavLink>
           </li>
 
           <li>
-            <Link to="/rejected_application" aria-expanded="true">
+            <NavLink to="/rejected_application" aria-expanded="true">
               <FileExcelOutlined
                 style={{ fontSize: "25px", color: "#121211" }}
               />
               <span className="menu-name"> Inkor qilingan </span>
-            </Link>
+            </NavLink>
           </li>
 
-          <li>
-            <Link
-              to="/add_application"
+         {hasAccess(['admin', 'manager'], roles) && 
+         <li>
+            <NavLink
+              to="/create_application"
               className="waves-effect"
               aria-expanded="true"
             >
               <FileAddOutlined style={{ fontSize: "25px", color: "#121211" }} />
               <span className="menu-name"> Ariza qo'shish</span>
-            </Link>
-          </li>
+            </NavLink>
+          </li>}
+
+          {hasAccess(['admin'], roles) && 
+         <li>
+            <NavLink
+              to="/users"
+              className="waves-effect"
+              aria-expanded="true"
+            >
+              <UsergroupAddOutlined style={{ fontSize: "25px", color: "#121211" }} />
+              <span className="menu-name">Foydalanuvchilar</span>
+            </NavLink>
+          </li>}
         </ul>
       </div>
       <div className="clearfix"></div>
@@ -94,10 +111,12 @@ const SideNavContent = () => {
 };
 
 class Sidebar extends Component {
+  roles = get(this.props, "user.roles",[])
   constructor(props) {
     super(props);
     this.handleOtherClick = this.handleOtherClick.bind(this);
     this.initMenu = this.initMenu.bind(this);
+    console.log(this.roles);
   }
 
   /**
@@ -195,8 +214,9 @@ class Sidebar extends Component {
   };
 
   render() {
+    
     const isCondensed = this.props.isCondensed || false;
-
+  const roles = get(this.props, 'user.roles', []);
     return (
       <React.Fragment>
         <div
@@ -205,7 +225,7 @@ class Sidebar extends Component {
         >
           {!isCondensed && (
             <PerfectScrollbar>
-              <SideNavContent />
+              <SideNavContent  roles={this.roles}/>
             </PerfectScrollbar>
           )}
           {isCondensed && <SideNavContent />}
@@ -215,4 +235,13 @@ class Sidebar extends Component {
   }
 }
 
-export default connect()(Sidebar);
+const mapStateToProps = (state) => {
+  return {
+    user: get(state, "Auth.user", {}),
+  };
+};
+
+
+export default connect(
+  mapStateToProps,
+)(withRouter(Sidebar));

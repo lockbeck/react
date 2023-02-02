@@ -9,7 +9,6 @@ import {Button, Modal, Space, Table} from "antd";
 import { EditOutlined, EyeOutlined } from "@ant-design/icons";
 import moment from "moment";
 import { Badge,Row,Col } from "reactstrap";
-import ModalData from "./view/ModalData";
 
 const RejectedApplication = ({
                             history,
@@ -164,7 +163,7 @@ const RejectedApplication = ({
             />
 
                 <Modal title="Edit Page" open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
-                    <ModalData/>
+                    <h1>Modal</h1>
                 </Modal>
             </div>
         </React.Fragment>

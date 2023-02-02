@@ -1,7 +1,6 @@
 import React, { Component, useState } from "react";
 import { connect } from "react-redux";
 import { Button,  Col,  Form, FormGroup, Input, Label, Row, Toast, ToastBody } from "reactstrap";
-import "../assets/scss/addapplication/addapplication.css";
 import PagesApi from '../pages/dashboards/PagesApi';
 import AddDevice from "./view/AddDevice";
 
@@ -63,11 +62,13 @@ error = () => {
 
   handleValidSubmit = (event) => {
     const formData = new FormData(event.target);
+    formData.append("device_id", this.state.device_id);
     
     let data = {};
     formData.forEach((value, key) => data[key] = value);   
 
     this.create(data);
+    console.log(data);
     setTimeout(this.toggleToast, 2000);
    event.preventDefault();
   };
@@ -149,7 +150,7 @@ error = () => {
                                   />
                             </FormGroup>
                         </Col>
-                        <Col sm={6}>
+                        {/* <Col sm={6}>
                               <FormGroup>
                                     <Label for="deivice_id">
                                       Device Id
@@ -162,7 +163,7 @@ error = () => {
                                     >
                                     </Input>
                                 </FormGroup>
-                        </Col>
+                        </Col> */}
                         <Col sm={4} className="mt-2">
                               <FormGroup>
                                     <Label for="error_or_broken">
