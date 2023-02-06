@@ -24,7 +24,6 @@ const getLoggedInUser = () => {
 };
 
 const hasAccess = (roles = [], userRoles = []) => {
-  console.log(roles);
   return !isEmpty(userRoles.filter(role => includes(roles, role.name)));
 }
 

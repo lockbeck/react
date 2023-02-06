@@ -14,7 +14,8 @@ request.interceptors.request.use((conf) => {
 
     if (get(data, "access_token")) {
         conf.headers = {
-            "Authorization": `${get(data, "token_type")} ${get(data, "access_token")}`
+            "Authorization": `${get(data, "token_type")} ${get(data, "access_token")}`,
+            "Accept": "application/json"
         }
     }
     
