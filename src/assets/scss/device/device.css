@@ -21,10 +21,7 @@
     float: right;
 }
 .device-span{
-    margin-top: 10px;
     width: auto;
-    height: 30px;
-    background-color: rgb(228, 235, 240);
 }
 .device-cancel{
     background-color: rgb(228, 235, 240);
