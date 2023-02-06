@@ -121,8 +121,7 @@ const DefaultDashboard = ({
   }, [item]);
 
   const access = hasAccess(['admin', 'manager'], get(user, 'roles', []));
-
-
+ 
   return (
     <React.Fragment>
       <div className="">

@@ -9,8 +9,17 @@ import { routes } from './routes';
 import { configureFakeBackend } from './helpers';
 import { isUserAuthenticated } from './helpers/authUtils';
 
+
 // Themes
 import './assets/scss/DefaultTheme.scss';
+
+
+
+window.Popper = require("popper.js").default;
+window.$ = window.jQuery = require("jquery");
+
+
+
 
 
 // Lazy loading and code splitting - 

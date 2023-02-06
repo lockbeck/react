@@ -1,16 +1,19 @@
 import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import "../assets/scss/createapplication/createapplication.css";
-import { withRouter, Link } from "react-router-dom";
+import { withRouter } from "react-router-dom";
 import { get } from "lodash";
 import ApiActions from "../redux/pages/actions";
 import PagesApi from "../pages/dashboards/PagesApi";
 import moment from "moment";
 import { Col, Form, FormGroup, Input, Label, Row, Button } from "reactstrap";
-import { Modal, Tabs } from "antd"
+import { Tabs } from "antd";
 import Stuff from "./Stuff";
 import Device from "./Device";
 import Telecomunication from "./Telecomunication";
+import TextEditor from "./TextEditor";
+import FileUpload from "./fileUpload/FileUpload";
+
 const CreateApplication = ({
   history,
   getItemsList,
@@ -20,8 +23,6 @@ const CreateApplication = ({
   isFetched,
   total,
 }) => {
-
-
   useEffect(() => {}, []);
 
   const path = "";
@@ -31,40 +32,55 @@ const CreateApplication = ({
   const onChange = (key) => {
     console.log(key);
   };
+  const saveCertificate = (params)=>{
+
+  };
+  const saveLicense = (params)=>{
+    
+  };
+  const saveRent = (params)=>{
+    
+  };
+
+  const saveStuff = (params)=>{
+    console.log(params);
+  };
+
+
+ 
 
   const tabItems = [
     {
-      key: '1',
+      key: "1",
       label: `MAI obyektining maqsadi`,
-      children: `Content of Tab Pane 1`,
+      children: <TextEditor/>
     },
     {
-      key: '2',
+      key: "2",
       label: `Xatolik yoki ishdan chiqqan taqdirda`,
-      children: `Content of Tab Pane 2`,
+      children:<TextEditor/>
     },
     {
-      key: '3',
+      key: "3",
       label: `Kiberxavfsizlikni ta’minlash`,
-      children: `Content of Tab Pane 3`,
+      children: <TextEditor/>
     },
     {
-      key: '4',
+      key: "4",
       label: `Insident yuz berishi oqibatlari`,
-      children: `data area`
+      children: <TextEditor/>
     },
     {
-      key: '5',
+      key: "5",
       label: `Xavfsizlikni ta’minlash tashkiliy va texnik choralari`,
-      children: `data area5`
+      children: <TextEditor/>
     },
     {
-      key: '6',
+      key: "6",
       label: `Axborot xavfsizligiga tahdidlar`,
-      children: `data area6`
-    }
+      children: <TextEditor/>
+    },
   ];
-
 
   const create = (params = {}) => {
     PagesApi.Create(path, params)
@@ -97,11 +113,11 @@ const CreateApplication = ({
   return (
     <React.Fragment>
       <div className="add-application-content">
-        <h3 className="title-name">Yangi ariza qo'shish</h3>
+        <h3 className="title-name p-2">Yangi ariza qo'shish</h3>
 
-        <Form>
+        <Form className="p-2">
           <Row>
-            <Col md={6}>
+            <Col md={4}>
               <FormGroup>
                 <Label for="name">Nomi</Label>
                 <Input
@@ -112,7 +128,7 @@ const CreateApplication = ({
                 />
               </FormGroup>
             </Col>
-            <Col md={6}>
+            <Col md={4}>
               <FormGroup>
                 <Label for="subject">Subyekt</Label>
                 <Input
@@ -123,7 +139,7 @@ const CreateApplication = ({
                 />
               </FormGroup>
             </Col>
-            <Col md={3}>
+            <Col md={4}>
               <FormGroup>
                 <Label for="subject_type">Subyekt turi</Label>
                 <Input
@@ -139,58 +155,43 @@ const CreateApplication = ({
                 </Input>
               </FormGroup>
             </Col>
-            <Col md={3}>
+            <Col md={4} className="mt-2">
               {subjectType === "ijara shartnoma" ? (
                 <FormGroup>
-                  <Label for="subject">Ijara Shartnoma</Label>
-                  <Input id="subject_file" name="subject_file" type="button" defaultValue="Faylni Yuklang"/>
+                   <FileUpload label={"Ijara shartnoma"} save={saveRent}/>
                 </FormGroup>
               ) : (
                 <div></div>
               )}
             </Col>
-            <Col md={3}>
+            <Col md={4} className="mt-2">
               <FormGroup>
-                <Label for="subject_type">MAI sertifikati</Label>
-                <Input
-                  id="certificates"
-                  name="certificates"
-                  type="button"
-                  defaultValue="Faylni Yuklang"
-                  onClick={showModal}
-                />
+               <FileUpload label={"MAI sertifikati"} save={saveCertificate}/>
               </FormGroup>
             </Col>
-            <Col md={3}>
-            <FormGroup>
-                <Label for="subject_type">MAI litsenziyasi</Label>
-                <Input
-                  id="certificates"
-                  name="certificates"
-                  type="button"
-                  defaultValue="Faylni Yuklang"
-                  onClick={showModal}
-                />
+            <Col md={4} className="mt-2">
+              <FormGroup>
+              <FileUpload label={"MAI litsenziyasi"} save={saveLicense}/>
               </FormGroup>
             </Col>
-            <Col md={4}>
+            <Col md={12} className="mt-2">
               <FormGroup>
-                <Stuff/>
+                <Stuff save={saveStuff} />
               </FormGroup>
             </Col>
-            <Col md={4}>
+            <Col md={12} className="mt-2">
               <FormGroup>
-                <Device/>
+                <Device />
               </FormGroup>
             </Col>
-            <Col md={4}>
+            <Col md={12} className="mt-2">
               <FormGroup>
-                <Telecomunication/>
+                <Telecomunication />
               </FormGroup>
             </Col>
           </Row>
-          <Tabs defaultActiveKey="1" items={tabItems} onChange={onChange} />
-          <Button color="success">Arizani qo'shish</Button>
+          <Tabs defaultActiveKey="1" items={tabItems} onChange={onChange} className="mt-5"/>
+          <Button className="mt-3" color="primary">Arizani qo'shish</Button>
         </Form>
       </div>
     </React.Fragment>
@@ -207,9 +208,7 @@ const mapStateToProps = (state) => {
   };
 };
 const mapDispatchToProps = (dispatch) => {
-  return {
-
-  };
+  return {};
 };
 
 export default connect(
