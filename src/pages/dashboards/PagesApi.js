@@ -2,7 +2,6 @@ import request from "../../helpers/axios.intercepter";
 
 class PagesApi {
     static Create = (route, params, options = {}) => {
-        console.log(params);
         return request.post(`/${route}/`, params, options);
     }
 
