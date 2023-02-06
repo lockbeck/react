@@ -7,6 +7,7 @@ import { Modal } from "antd";
 import dayjs from "dayjs";
 import { DatePicker, Space } from "antd";
 import PagesApi from "../../pages/dashboards/PagesApi";
+import request from "../../helpers/axios.intercepter";
 
 const { RangePicker } = DatePicker;
 const dateFormat = "DD/MM/YYYY";
@@ -58,11 +59,8 @@ const FileUpload = ({ label, save }) => {
     data.append("definition", filter.definition);
     data.append("from", moment(filter.from).format("DD-MM-yyyy"));
     data.append("to", moment(filter.to).format("DD-MM-yyyy"));
-    for (let file of filter.files) {
-      data.append("files[]", file);
-    }
-    for (let e of data.entries()) {
-      console.log(e);
+    for (let file of get(filter, "files", [])) {
+      data.append("files", file);
     }
     create(data);
   };
@@ -70,7 +68,7 @@ const FileUpload = ({ label, save }) => {
   const create = (params) => {
     PagesApi.Create(path, params, {
       headers: {
-        "Content-Type": "multipart/form-data"
+        "Content-Type": "multipart/form-data",
       },
     })
       .then((res) => {
@@ -124,16 +122,6 @@ const FileUpload = ({ label, save }) => {
           <Space direction="vertical" size={12}>
             <RangePicker
               onChange={onRangeChange}
-              defaultValue={[
-                dayjs(
-                  moment(get(filter, "startDate")).format("DD-MM-yyyy"),
-                  dateFormat
-                ),
-                dayjs(
-                  moment(get(filter, "endDate")).format("DD-MM-yyyy"),
-                  dateFormat
-                ),
-              ]}
               format={dateFormat}
             />
           </Space>
