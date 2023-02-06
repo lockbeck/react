@@ -6,14 +6,15 @@ import { get } from "lodash";
 import ApiActions from "../redux/pages/actions";
 import PagesApi from "../pages/dashboards/PagesApi";
 import { Button, Modal, Space, Table } from "antd";
-import { EyeOutlined, DeleteOutlined } from "@ant-design/icons";
+import { EyeOutlined, DeleteOutlined,ExclamationCircleOutlined } from "@ant-design/icons";
 import moment from "moment";
 import { Col, Form, FormGroup, Input, Label, Row } from "reactstrap";
 
 const Users = ({
   history,
   getItemsList,
-  getSingleItem,
+  getRoles,
+  roles,
   items,
   item,
   isFetched,
@@ -24,11 +25,21 @@ const Users = ({
     pageSize: 10,
   });
 
+
   useEffect(() => {
+    getRoles();
     getItemsList({ ...pagination });
   }, [pagination]);
 
   const path = "api/users";
+
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    password: "",
+    password_confirmation: "",
+    role: null,
+  });
 
   const update = (params = {}, id) => {
     PagesApi.Update(path, id, params)
@@ -54,11 +65,11 @@ const Users = ({
     PagesApi.Create(path, params)
       .then((res) => {
         if (res.status === 201) {
-          console.log(res.data);
+          getItemsList({ ...pagination });
         }
       })
       .catch((error) => {
-        this.error();
+        console.log(error);
       });
   };
 
@@ -71,6 +82,7 @@ const Users = ({
   };
 
   const handleOk = () => {
+    create(formData);
     setIsModalOpen(false);
   };
 
@@ -78,7 +90,21 @@ const Users = ({
     setIsModalOpen(false);
   };
 
+
+  // modal confirmation
+  const [modal, contextHolder] = Modal.useModal();
+  const confirm = () => {
+    modal.confirm({
+      title: 'Confirm',
+      icon: <ExclamationCircleOutlined />,
+      content: 'Bla bla ...',
+      okText: 'OK',
+      cancelText: 'Cancel',
+    });
+  };
+
   console.log(items);
+  console.log(roles);
 
   items = items.map((item, index) => ({
     ...item,
@@ -130,9 +156,10 @@ const Users = ({
             </Link>
             <Button
               shape="circle"
-              onClick={() => {
-                remove(id);
-              }}
+              onClick={confirm}
+              // onClick={() => {
+              //   remove(id);
+              // }}
               icon={<DeleteOutlined style={{ color: "#f24b3f" }} />}
             ></Button>
           </Space>
@@ -184,6 +211,9 @@ const Users = ({
                       name="name"
                       placeholder="arizachi nomini kiriting..."
                       type="text"
+                      onChange={(e) =>
+                        setFormData({ ...formData, name: e.target.value })
+                      }
                       required
                     />
                   </FormGroup>
@@ -196,6 +226,9 @@ const Users = ({
                       name="email"
                       placeholder="email..."
                       type="email"
+                      onChange={(e) =>
+                        setFormData({ ...formData, email: e.target.value })
+                      }
                     />
                   </FormGroup>
                 </Col>
@@ -207,6 +240,9 @@ const Users = ({
                       name="password"
                       placeholder="password..."
                       type="password"
+                      onChange={(e) =>
+                        setFormData({ ...formData, password: e.target.value })
+                      }
                     />
                   </FormGroup>
                 </Col>
@@ -220,7 +256,32 @@ const Users = ({
                       name="password_confirmation"
                       placeholder="parolni tasdiqlang"
                       type="password"
+                      onChange={(e) =>
+                        setFormData({
+                          ...formData,
+                          password_confirmation: e.target.value,
+                        })
+                      }
                     />
+                  </FormGroup>
+                </Col>
+                <Col sm={12}>
+                  <FormGroup>
+                    <Label for="role">Role</Label>
+                    <Input
+                      id="role"
+                      name="role"
+                      type="select"
+                      onChange={(e) =>
+                        setFormData({ ...formData, role: e.target.value })
+                      }
+                    >
+                      {roles.map((rol, i) => (
+                        <option key={i} value={rol.id}>
+                          {rol.name}
+                        </option>
+                      ))}
+                    </Input>
                   </FormGroup>
                 </Col>
               </Row>
@@ -233,16 +294,21 @@ const Users = ({
 };
 
 const mapStateToProps = (state) => {
+  console.log(state);
   return {
     items: get(state, "PageReducer.data.item-list.result.data", []),
+    roles: get(state, "PageReducer.data.roles.result", []),
     item: get(state, "PageReducer.data.get-one-item.result", {}),
     isFetched: get(state, "PageReducer.data.item-list.isFetched", false),
     isFetchedItem: get(state, "PageReducer.data.get-one-item.isFetched", false),
     total: get(state, "PageReducer.data.item-list.result.total", 0),
   };
 };
+
 const mapDispatchToProps = (dispatch) => {
+
   return {
+
     getItemsList: ({ current = 1, pageSize = 10 }) => {
       const storeName = "item-list";
       dispatch({
@@ -259,19 +325,18 @@ const mapDispatchToProps = (dispatch) => {
       });
     },
 
-    getSingleItem: ({ id }) => {
-      const storeName = "get-one-item";
+    getRoles: () => {
+      const storeName = "roles";
       dispatch({
-        type: ApiActions.GET_ONE.REQUEST,
+        type: ApiActions.GET_ALL.REQUEST,
         payload: {
-          url: `/api/users/${id}`,
-          config: {
-            params: {},
-          },
+          url: "/api/roles",
           storeName,
         },
       });
     },
+
+
   };
 };
 

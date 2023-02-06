@@ -27,6 +27,7 @@ export default function PageReducer(state = {}, action) {
                 return {
                     ...state,
                     data: {
+                        ...state.data,
                         [storeName]: { result, isFetched: true },
                     },
                 };

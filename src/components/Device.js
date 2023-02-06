@@ -1,16 +1,36 @@
 import React, { useState } from "react";
 import { connect } from "react-redux";
-import { Col, Form, FormGroup, Input, Label, Row } from "reactstrap";
+import "../assets/scss/device/device.css";
+import { Input, Label } from "reactstrap";
 import { Modal } from "antd";
+import { PlusOutlined, CloseOutlined } from "@ant-design/icons";
+import PagesApi from "../pages/dashboards/PagesApi";
+import FileUpload from './fileUpload/FileUpload';
 
 const Device = () => {
+
+  const path = "api/device";
+
+  const saveDevice = (params)=>{
+    
+  };
+
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const [data, setData] = useState({
+    name: "",
+    manafucture: "",
+    model: "",
+    version: "",
+    file: [],
+  });
 
   const showModal = () => {
     setIsModalOpen(true);
   };
 
   const handleOk = () => {
+    create(data);
     setIsModalOpen(false);
   };
 
@@ -18,17 +38,35 @@ const Device = () => {
     setIsModalOpen(false);
   };
 
+  const create = (params = {}) => {
+    PagesApi.Create(path, params)
+      .then((res) => {
+        if (res.status === 201) {
+          console.log(res.data);
+        }
+      })
+      .catch((error) => {
+        console.log(error());
+      });
+  };
+
+  console.log(data);
+
   return (
     <React.Fragment>
       <div className="modal-data">
         <Label for="device">Dasturiy apparat</Label>
-        <Input
-          id="device"
-          name="device"
-          type="button"
-          onClick={showModal}
-        />
-
+        <div className="device-name-area">
+          <div className="device-name">
+            <span className="device-span">Name</span>
+            <span className="device-cancel">
+              <CloseOutlined style={{ fontSize: "10px", color: "#08c" }} />
+            </span>
+          </div>
+          <div className="device-add" onClick={showModal}>
+            <PlusOutlined />
+          </div>
+        </div>
         <Modal
           title="Xodim qo'shish"
           open={isModalOpen}
@@ -38,28 +76,24 @@ const Device = () => {
           okText="Qo'shish"
           okType="primary"
         >
-          <Label for="name" className="mt-3">
+          <Label for="name" className="mt-1">
             Dasturiy apparat nomi
           </Label>
           <Input
             id="name"
             name="name"
             type="text"
-            // onChange={(evt) => {
-            //   setDefinition(evt.target.value);
-            // }}
+            onChange={(e) => setData({ ...data, name: e.target.value })}
           />
-          <Label for="phone" className="mt-3">
-             Ishlab chiqaruvchi
+          <Label for="manafucture" className="mt-3">
+            Ishlab chiqaruvchi
           </Label>
           <Input
-            id="phone"
-            name="phone"
+            id="manafucture"
+            name="manafucture"
             required
             type="text"
-            // onChange={(evt) => {
-            //   setDefinition(evt.target.value);
-            // }}
+            onChange={(e) => setData({ ...data, manafucture: e.target.value })}
           />
           <Label for="model" className="mt-3">
             Dasturiy apparat modeli
@@ -68,9 +102,7 @@ const Device = () => {
             id="model"
             name="model"
             type="text"
-            // onChange={(evt) => {
-            //   setDefinition(evt.target.value);
-            // }}
+            onChange={(e) => setData({ ...data, model: e.target.value })}
           />
           <Label for="version" className="mt-3">
             Dasturiy apparat versiyasi
@@ -79,21 +111,9 @@ const Device = () => {
             id="version"
             name="version"
             type="text"
-            // onChange={(evt) => {
-            //   setDefinition(evt.target.value);
-            // }}
+            onChange={(e) => setData({ ...data, version: e.target.value })}
           />
-          <Label for="certificate" className="mt-3">
-            Dasturiy apparat sertifikati
-          </Label>
-          <Input
-            id="certificate"
-            name="certificate"
-            type="file"
-            // onChange={(evt) => {
-            //   setDefinition(evt.target.value);
-            // }}
-          />
+           <FileUpload label={"Dasturiy apparat sertifikati"} save={saveDevice}/>
         </Modal>
       </div>
     </React.Fragment>

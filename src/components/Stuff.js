@@ -1,9 +1,23 @@
 import React, { useState } from "react";
 import { connect } from "react-redux";
-import { Col, Form, FormGroup, Input, Label, Row } from "reactstrap";
+import { constant, get } from "lodash";
+import "../assets/scss/device/device.css";
+import { Input, Label } from "reactstrap";
 import { Modal } from "antd";
+import { PlusOutlined, CloseOutlined } from "@ant-design/icons";
+import PagesApi from '../pages/dashboards/PagesApi';
 
-const Stuff = () => {
+const Stuff = ({save = ()=> {}, ...props}) => {
+
+  const path = "api/staff";
+  const [emp, setEmp]= useState({})
+  const [stuff, setStuff] = useState({
+    name:"",
+    phone:null,
+    statue:"",
+    definition:""
+  })
+
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const showModal = () => {
@@ -11,6 +25,7 @@ const Stuff = () => {
   };
 
   const handleOk = () => {
+    create(stuff);
     setIsModalOpen(false);
   };
 
@@ -18,16 +33,35 @@ const Stuff = () => {
     setIsModalOpen(false);
   };
 
+
+  const create = (params = {}) => {
+    PagesApi.Create(path, params)
+      .then((res) => {
+        console.log(res);
+        if (res.status === 201) {
+          save(res.data)
+          setEmp(res.data)
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
   return (
     <React.Fragment>
       <div className="modal-data">
         <Label for="name">Xodim</Label>
-        <Input
-          id="name"
-          name="name"
-          type="button"
-          onClick={showModal}
-        />
+        <div className="device-name-area">
+          <div className="device-name">
+            <span className="device-span">{emp.name}</span>
+            <span className="device-cancel">
+              <CloseOutlined style={{ fontSize: "10px", color: "#08c" }} />
+            </span>
+          </div>
+          <div className="device-add" onClick={showModal}>
+            <PlusOutlined />
+          </div>
+        </div>
 
         <Modal
           title="Xodim qo'shish"
@@ -37,7 +71,7 @@ const Stuff = () => {
           cancelText="Bekor qilish"
           okText="Qo'shish"
           okType="primary"
-        >
+          >
           <Label for="name" className="mt-3">
             Ismi
           </Label>
@@ -45,9 +79,9 @@ const Stuff = () => {
             id="name"
             name="name"
             type="text"
-            // onChange={(evt) => {
-            //   setDefinition(evt.target.value);
-            // }}
+            onChange={(e) =>
+              setStuff({ ...stuff, name: get(e, "target.value", "") })
+            }
           />
           <Label for="phone" className="mt-3">
             Telefon
@@ -57,9 +91,9 @@ const Stuff = () => {
             name="phone"
             required
             type="number"
-            // onChange={(evt) => {
-            //   setDefinition(evt.target.value);
-            // }}
+            onChange={(e) =>
+              setStuff({ ...stuff, phone: get(e, "target.value", null) })
+            }
           />
           <Label for="name" className="mt-3">
             Ustavi
@@ -68,9 +102,9 @@ const Stuff = () => {
             id="name"
             name="name"
             type="text"
-            // onChange={(evt) => {
-            //   setDefinition(evt.target.value);
-            // }}
+            onChange={(e) =>
+              setStuff({ ...stuff, statue: get(e, "target.value", "") })
+            }
           />
           <Label for="name" className="mt-3">
             definition
@@ -79,9 +113,9 @@ const Stuff = () => {
             id="name"
             name="name"
             type="textarea"
-            // onChange={(evt) => {
-            //   setDefinition(evt.target.value);
-            // }}
+            onChange={(e) =>
+              setStuff({ ...stuff, definition: get(e, "target.value", "") })
+            }
           />
         </Modal>
       </div>

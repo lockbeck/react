@@ -26,13 +26,14 @@
 #profilpic {
   background: #e1e9f3;
   width: 200px;
-  height: 59px;
+  height: 55px;
+  margin-top: 5px;
   border-radius: 25px;
 }
 .nav-user img {
-  height: 50px;
-  width: 50px;
-  margin-left: -60px;
+  height: 40px;
+  width: 40px;
+  margin-left: 0;
   margin-top: -15px;
 }
 .pro-user-name {

@@ -105,7 +105,7 @@ const Topbar = ({user}) => {
             <li className="search-content">
               <form className="app-search">
                 <div className="app-search-box">
-                  <div className="input-group">
+                  <div className="input-group" style={{width:"400px"}}>
                     <input
                       type="text"
                       className="form-control"

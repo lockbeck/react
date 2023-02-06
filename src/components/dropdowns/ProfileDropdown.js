@@ -42,7 +42,7 @@ class ProfileDropdown extends Component {
           onClick={this.toggleDropdown}
           aria-expanded={this.state.dropdownOpen}
         >
-          <img src={profilePic} className="rounded-circle" alt="user" />
+          <img src={profilePic} className="rounded-circle" alt="user" width="30" height="30"/>
           <span className="pro-user-name ml-1">
             {this.props.username} <i className="mdi mdi-chevron-down"></i>{" "}
           </span>

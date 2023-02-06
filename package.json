@@ -5,6 +5,8 @@
   "dependencies": {
     "@ant-design/charts": "^1.4.2",
     "@ant-design/plots": "^1.2.2",
+    "@easylogic/react-summernote": "^0.0.9",
+    "@popperjs/core": "^2.11.6",
     "@react-icons/all-files": "^4.1.0",
     "antd": "^5.0.2",
     "availity-reactstrap-validation": "^2.5.1",
@@ -14,11 +16,13 @@
     "dotenv": "^16.0.3",
     "faker": "5.5.3",
     "history": "^5.3.0",
+    "jquery": "^3.6.3",
     "jwt-decode": "^2.2.0",
     "lodash": "^4.17.21",
     "metismenujs": "^1.0.3",
     "moment": "^2.29.4",
     "node-sass": "^4.14.1",
+    "popper.js": "^1.16.1",
     "react": "^16.7.0",
     "react-axios": "^2.0.6",
     "react-bootstrap": "^2.7.0",
@@ -34,10 +38,12 @@
     "react-router-auth": "^1.0.1",
     "react-router-dom": "^5.0.0",
     "react-scripts": "^2.1.8",
+    "react-summernote": "^2.0.2",
     "reactstrap": "^8.0.0",
     "redux": "^4.0.1",
     "redux-saga": "^1.0.2",
-    "redux-saga-routines": "^3.2.3"
+    "redux-saga-routines": "^3.2.3",
+    "store": "^2.0.12"
   },
   "scripts": {
     "start": "react-scripts start",

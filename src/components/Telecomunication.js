@@ -1,7 +1,10 @@
 import React, { useState } from "react";
 import { connect } from "react-redux";
-import { Col, Form, FormGroup, Input, Label, Row } from "reactstrap";
+import { Input, Label} from "reactstrap";
+import "../assets/scss/device/device.css";
 import { Modal } from "antd";
+import { PlusOutlined, CloseOutlined } from "@ant-design/icons";
+import FileUpload from './fileUpload/FileUpload';
 
 const Telecomunication = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -18,16 +21,25 @@ const Telecomunication = () => {
     setIsModalOpen(false);
   };
 
+ const saveTelecomunication = (params) =>{
+
+ }
+
   return (
     <React.Fragment>
       <div className="modal-data">
         <Label for="subject">Foydalaniladigan tarmoq</Label>
-        <Input
-          id="subject_file"
-          name="subject_file"
-          type="button"
-          onClick={showModal}
-        />
+        <div className="device-name-area">
+          <div className="device-name">
+            <span className="device-span">Name</span>
+            <span className="device-cancel">
+              <CloseOutlined style={{ fontSize: "10px", color: "#08c" }} />
+            </span>
+          </div>
+          <div className="device-add" onClick={showModal}>
+            <PlusOutlined />
+          </div>
+        </div>
 
         <Modal
           title="Xodim qo'shish"
@@ -50,28 +62,19 @@ const Telecomunication = () => {
             // }}
           />
           <Label for="contact" className="mt-3">
-             Ishlab chiqaruvchi
+            Ishlab chiqaruvchi
           </Label>
           <Input
             id="contact"
             name="contact"
             required
             type="number"
+            className="mb-2"
             // onChange={(evt) => {
             //   setDefinition(evt.target.value);
             // }}
           />
-          <Label for="name" className="mt-3">
-            Tarmoq sertifikati
-          </Label>
-          <Input
-            id="name"
-            name="name"
-            type="file"
-            // onChange={(evt) => {
-            //   setDefinition(evt.target.value);
-            // }}
-          />
+         <FileUpload label={"Hujjat"} save={saveTelecomunication}/>
         </Modal>
       </div>
     </React.Fragment>
