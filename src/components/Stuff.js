@@ -5,18 +5,17 @@ import "../assets/scss/device/device.css";
 import { Input, Label } from "reactstrap";
 import { Modal } from "antd";
 import { PlusOutlined, CloseOutlined } from "@ant-design/icons";
-import PagesApi from '../pages/dashboards/PagesApi';
+import PagesApi from "../pages/dashboards/PagesApi";
 
-const Stuff = ({save = ()=> {}, ...props}) => {
-
+const Stuff = ({ save = () => {}, ...props }) => {
   const path = "api/staff";
-  const [emp, setEmp]= useState({})
+  const [emp, setEmp] = useState({});
   const [stuff, setStuff] = useState({
-    name:"",
-    phone:null,
-    statue:"",
-    definition:""
-  })
+    name: "",
+    phone: null,
+    statue: "",
+    definition: "",
+  });
 
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -33,30 +32,44 @@ const Stuff = ({save = ()=> {}, ...props}) => {
     setIsModalOpen(false);
   };
 
+  const remove = (id) => {
+    PagesApi.Delete(path, id)
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
 
   const create = (params = {}) => {
     PagesApi.Create(path, params)
       .then((res) => {
-        console.log(res);
         if (res.status === 201) {
-          save(res.data)
-          setEmp(res.data)
+          save(res.data);
+          setEmp(res.data);
         }
       })
       .catch((error) => {
         console.log(error);
       });
   };
+  console.log(emp);
   return (
     <React.Fragment>
       <div className="modal-data">
         <Label for="name">Xodim</Label>
         <div className="device-name-area">
           <div className="device-name">
-            <span className="device-span">{emp.name}</span>
-            <span className="device-cancel">
+            <p className="device-span">{emp.name}</p>
+            {/* <span
+              className="device-cancel"
+              // onClick={() => {
+              //   remove(emp.id);
+              // }}
+            >
               <CloseOutlined style={{ fontSize: "10px", color: "#08c" }} />
-            </span>
+            </span> */}
           </div>
           <div className="device-add" onClick={showModal}>
             <PlusOutlined />
@@ -71,7 +84,7 @@ const Stuff = ({save = ()=> {}, ...props}) => {
           cancelText="Bekor qilish"
           okText="Qo'shish"
           okType="primary"
-          >
+        >
           <Label for="name" className="mt-3">
             Ismi
           </Label>

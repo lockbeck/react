@@ -29,6 +29,25 @@ const CreateApplication = ({
 
   const [subjectType, setSubjectType] = useState("");
 
+  const [application, setApplication] = useState({
+    name:"",
+    subject:"",
+    subject_type:"",
+    subject_definition: "",
+    subject_document: null,
+    staffs:null,
+    scope_and_purpose: "",
+    error_or_broken: "",
+    devices:null,
+    license_id:null,
+    certificate_id:null,
+    telecommunications: null,
+    provide_cyber_security: "",
+    threats_to_information_security: "",
+    consequences_of_an_incident: "",
+    organizational_and_technical_measures_to_ensure_security: ""
+  });
+
   const onChange = (key) => {
     console.log(key);
   };

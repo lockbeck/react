@@ -70,7 +70,8 @@ const FileUpload = ({ label, save }) => {
   const create = (params) => {
     PagesApi.Create(path, params, {
       headers: {
-        "Content-Type": "multipart/form-data"
+        "Content-Type": "multipart/form-data",
+        "Accept":"application/json"
       },
     })
       .then((res) => {
