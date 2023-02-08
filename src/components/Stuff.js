@@ -54,12 +54,11 @@ const Stuff = ({ save = () => {}, ...props }) => {
         console.log(error);
       });
   };
-  console.log(emp);
   return (
     <React.Fragment>
       <div className="modal-data">
         <Label for="name">Xodim</Label>
-        <div className="device-name-area">
+        <div className="device-name-area" onClick={showModal}>
           <div className="device-name">
             <p className="device-span">{emp.name}</p>
             {/* <span
@@ -71,9 +70,9 @@ const Stuff = ({ save = () => {}, ...props }) => {
               <CloseOutlined style={{ fontSize: "10px", color: "#08c" }} />
             </span> */}
           </div>
-          <div className="device-add" onClick={showModal}>
+          {/* <div className="device-add" onClick={showModal}>
             <PlusOutlined />
-          </div>
+          </div> */}
         </div>
 
         <Modal

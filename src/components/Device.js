@@ -6,24 +6,29 @@ import { Modal } from "antd";
 import { PlusOutlined, CloseOutlined } from "@ant-design/icons";
 import PagesApi from "../pages/dashboards/PagesApi";
 import FileUpload from './fileUpload/FileUpload';
+import { get } from "lodash";
 
-const Device = () => {
+const Device = ({ sendDeviceID = () => {}, ...props }) => {
 
   const path = "api/device";
 
+  const[device, setDevice] = useState({});
+
+  const [data, setData] = useState({
+    name: "",
+    manufacturer: "",
+    model: "",
+    version: "",
+    documents: [],
+  });
+
   const saveDevice = (params)=>{
-    
+    setData({...data, documents: [get(params, "id", "")]})
   };
 
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const [data, setData] = useState({
-    name: "",
-    manafucture: "",
-    model: "",
-    version: "",
-    file: [],
-  });
+
 
   const showModal = () => {
     setIsModalOpen(true);
@@ -42,30 +47,30 @@ const Device = () => {
     PagesApi.Create(path, params)
       .then((res) => {
         if (res.status === 201) {
-          console.log(res.data);
+          sendDeviceID(res.data)
+          setDevice(res.data)
         }
       })
       .catch((error) => {
-        console.log(error());
+        console.log(error);
       });
   };
 
-  console.log(data);
 
   return (
     <React.Fragment>
       <div className="modal-data">
         <Label for="device">Dasturiy apparat</Label>
-        <div className="device-name-area">
+        <div className="device-name-area" onClick={showModal}>
           <div className="device-name">
-            <span className="device-span">Name</span>
-            <span className="device-cancel">
+            <span className="device-span">{device.name}</span>
+            {/* <span className="device-cancel">
               <CloseOutlined style={{ fontSize: "10px", color: "#08c" }} />
-            </span>
+            </span> */}
           </div>
-          <div className="device-add" onClick={showModal}>
+          {/* <div className="device-add" onClick={showModal}>
             <PlusOutlined />
-          </div>
+          </div> */}
         </div>
         <Modal
           title="Xodim qo'shish"
@@ -93,7 +98,7 @@ const Device = () => {
             name="manafucture"
             required
             type="text"
-            onChange={(e) => setData({ ...data, manafucture: e.target.value })}
+            onChange={(e) => setData({ ...data, manufacturer: e.target.value })}
           />
           <Label for="model" className="mt-3">
             Dasturiy apparat modeli

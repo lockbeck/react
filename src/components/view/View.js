@@ -8,10 +8,6 @@ import {
   Row,
   Label,
   Input,
-  Card,
-  CardBody,
-  CardText,
-  CardTitle,
   Badge,
 } from "reactstrap";
 import { Tabs, notification } from "antd";
@@ -20,15 +16,16 @@ import ApiActions from "../../redux/pages/actions";
 import "../../assets/scss/view/view.css";
 import { Modal } from "antd";
 import PagesApi from "../../pages/dashboards/PagesApi";
+import { hasAccess } from "../../helpers/authUtils";
 
-const View = ({ getSingleItem, item, ...props }) => {
+const View = ({ getSingleItem, item, user, ...props }) => {
   const id = props.location.state;
   const onChange = (key) => {};
 
   const append = [];
   const include = ["device", "user"];
 
-  const [definition, setDefinition] = useState("");
+  const [reason, setReason] = useState("");
 
   useEffect(() => {
     getSingleItem({ id, include, append });
@@ -45,7 +42,7 @@ const View = ({ getSingleItem, item, ...props }) => {
   };
 
   const reject = (id) => {
-    PagesApi.Put(id, "reject", { definition })
+    PagesApi.Put(id, "reject", { reason })
       .then((res) => {
         getSingleItem({ id, include, append });
       })
@@ -64,50 +61,64 @@ const View = ({ getSingleItem, item, ...props }) => {
       });
   };
 
+  console.log(item.device);
+
   const items = [
     {
       key: "1",
-      label: `Texnik xarakteristika`,
+      label: <b>Foydalaniladigan qurilma</b>,
       children: (
         <Row>
-          <Col md={3}>
-            <Card>
-              <CardBody>
-                <CardTitle tag="h5">RAM{" | "}HDD</CardTitle>
-                <CardText>
-                  {get(item, "device.ram", "0")}
-                  {" "}
-                  {get(item, "device.hdd", "0")}
-                </CardText>
-              </CardBody>
-            </Card>
+          <Col md={4}>
+            <Row>
+              <Col md={12}>
+                <h5>Qurilma Nomi:</h5>
+              </Col>
+              <Col md={12}><i>{get(item,"device[0].name","mavjud emas")}</i></Col>
+            </Row>
           </Col>
 
-          <Col md={3}>
-            <Card>
-              <CardBody>
-                <CardTitle tag="h5">CPU</CardTitle>
-                <CardText>{get(item, "device.cpu", "{}")}</CardText>
-              </CardBody>
-            </Card>
+          <Col md={4}>
+            <Row>
+              <Col md={12}>
+                <h5>Ishlab chiqaruvchi:</h5>
+              </Col>
+              <Col md={12}>
+                <i>{get(item,"device[0].manufacturer","mavjud emas")}</i>
+              </Col>
+            </Row>
           </Col>
 
-          <Col md={3}>
-            <Card>
-              <CardBody>
-                <CardTitle tag="h5">OS</CardTitle>
-                <CardText>{get(item, "device.os", "{}")}</CardText>
-              </CardBody>
-            </Card>
+          <Col md={4}>
+            <Row>
+              <Col md={12}>
+                <h5>Model:</h5>
+              </Col>
+              <Col md={12}>
+                <i>{get(item,"device[0].model","mavjud emas")}</i>
+              </Col>
+            </Row>
           </Col>
 
-          <Col md={3}>
-            <Card>
-              <CardBody>
-                <CardTitle tag="h5">Server Case</CardTitle>
-                <CardText>{get(item, "device.case", "{}")}</CardText>
-              </CardBody>
-            </Card>
+          <Col md={4}>
+            <Row>
+              <Col md={12}>
+                <h5>Version:</h5>
+              </Col>
+              <i><Col md={12}>{get(item,"device[0].version","mavjud emas")}</Col></i>
+            </Row>
+          </Col>
+          <Col md={4}>
+            <Row>
+              <Col md={12}>
+                <h5>Document:</h5>
+              </Col>
+              <Col md={12}>
+                <a href={get(item, "device[0].document[0].file", 0)} download>
+                  Faylni Yuklash
+                </a>
+              </Col>
+            </Row>
           </Col>
         </Row>
       ),
@@ -115,45 +126,113 @@ const View = ({ getSingleItem, item, ...props }) => {
 
     {
       key: "2",
-      label: `Xatolik yoki ishdan chiqqan taqdirda`,
-      children: ``,
+      label: <b>MAI obyektining maqsadi</b>,
+      children: (
+        <div
+          dangerouslySetInnerHTML={{
+            __html: get(item, "scope_and_purpose", ""),
+          }}
+        ></div>
+      ),
     },
     {
       key: "3",
-      label: `Telekommunikatsiya tarmog’i`,
-      children: ``,
+      label: <b>Telekommunikatsiya tarmog’i</b>,
+      children: (
+        <Row>
+          <Col md={4}>
+            <Row>
+              <Col md={12}>
+                <h5>Provider:</h5>
+              </Col>
+              <Col md={12}>
+                {get(item, "telecommunication[0].provider", "mavjud emas")}
+              </Col>
+            </Row>
+          </Col>
+
+          <Col md={4}>
+            <Row>
+              <Col md={12}>
+                <h5>Contract:</h5>
+              </Col>
+              <Col md={12}>
+                {get(item, "telecommunication[0].contract", "mavjud emas")}
+              </Col>
+            </Row>
+          </Col>
+
+          <Col md={4}>
+            <Row>
+              <Col md={12}>
+                <h5>Document:</h5>
+              </Col>
+              <Col md={12}>
+                <a
+                  href={get(item, "telecommunication[0].document[0].file", "0")}
+                  download
+                >
+                  Faylni Yuklash
+                </a>
+              </Col>
+            </Row>
+          </Col>
+        </Row>
+      ),
     },
     {
       key: "4",
-      label: `Kiberxavfsizlikni ta’minlash`,
-      children: ``,
+      label: <b>Kiberxavfsizlikni ta’minlash</b>,
+      children: (
+        <div
+          dangerouslySetInnerHTML={{
+            __html: get(item, "provide_cyber_security", ""),
+          }}
+        ></div>
+      ),
     },
     {
       key: "5",
-      label: `Axborot xavfsizligiga tahdidlar`,
-      children: ``,
+      label: <b>Axborot xavfsizligiga tahdidlar</b>,
+      children: (
+        <div
+          dangerouslySetInnerHTML={{
+            __html: get(item, "threats_to_information_security", ""),
+          }}
+        ></div>
+      ),
     },
     {
       key: "6",
-      label: `Insident yuz berishi
-      oqibatlari`,
-      children: ``,
+      label: <b>Insident yuz berishi oqibatlari</b>,
+      children: (
+        <div
+          dangerouslySetInnerHTML={{
+            __html: get(item, "consequences_of_an_incident", ""),
+          }}
+        ></div>
+      ),
     },
     {
       key: "7",
-      label: `Litsenziyalar`,
-      children: ``,
-    },
-    {
-      key: "8",
-      label: `Sertifikatlar`,
-      children: ``,
+      label: <b>Xavfsizlikni ta’minlash <br/> tashkiliy va texnik choralari</b>,
+      children: (
+        <div
+          dangerouslySetInnerHTML={{
+            __html: get(
+              item,
+              "organizational_and_technical_measures_to_ensure_security",
+              ""
+            ),
+          }}
+        ></div>
+      ),
     },
   ];
 
   // const deviceOs = JSON.parse(get(item, 'device.os', '{}'));
 
-  console.log(definition);
+  console.log(reason);
 
   const [api, contextHolder] = notification.useNotification();
 
@@ -180,11 +259,13 @@ const View = ({ getSingleItem, item, ...props }) => {
   const handleCancel = () => {
     setIsModalOpen(false);
   };
-
   return (
     <React.Fragment>
       <div className="">
+      
+        <div>
         {get(item, "status") === 0 ? (
+          hasAccess(['user'], get(user, 'roles', [])) &&
           <Button
             color="warning"
             className="float-right  mt-4 mb-2"
@@ -195,7 +276,8 @@ const View = ({ getSingleItem, item, ...props }) => {
           >
             Qayta yuborish
           </Button>
-        ) : (
+        ) : get(item, "status") === 2 ? (
+          hasAccess(['admin'], get(user, 'roles', [])) &&
           <div>
             <Button
               color="danger"
@@ -214,18 +296,28 @@ const View = ({ getSingleItem, item, ...props }) => {
               Tasdiqlash
             </Button>
           </div>
-        )}
-        {/* <Button
-          color="danger"
-          className="float-right  mt-4 mb-2"
-          onClick={showModal}
-        >
-          Inkor qilish
-        </Button>
-        <Button color="success" className="float-right mr-2 mt-4 mb-2" onClick={() => { success(id)}}>
-          Tasdiqlash
-        </Button> */}
-
+        ):get(item, "status") === 1 ? (
+          hasAccess(['manager'], get(user, 'roles', [])) &&
+          <div>
+            <Button
+              color="danger"
+              className="float-right  mt-4 mb-2"
+              onClick={showModal}
+            >
+              Inkor qilish
+            </Button>
+            <Button
+              color="success"
+              className="float-right mr-2 mt-4 mb-2"
+              onClick={() => {
+                success(id);
+              }}
+            >
+              Tasdiqlash
+            </Button>
+          </div>
+        ):("")}
+        </div>
         <Modal
           title="Arizani inkor qilish!"
           open={isModalOpen}
@@ -249,9 +341,9 @@ const View = ({ getSingleItem, item, ...props }) => {
             <Col md={6}>
               <h4>Ariza yuboruvchi:</h4>
             </Col>
-            <Col md={6}>{get(item, "user.name")}</Col>
+            <Col md={6}> {get(item, "staff[0].name")}</Col>
 
-            <Col md={6}>
+            {/* <Col md={6}>
               <h4>Sertifikat:</h4>
             </Col>
             <Col md={6}>
@@ -262,7 +354,7 @@ const View = ({ getSingleItem, item, ...props }) => {
             </Col>
             <Col md={6}>
               {item.licenses === null ? "Mavjud emas" : item.licenses}
-            </Col>
+            </Col> */}
           </Row>
 
           <Label for="definition" className="mt-3">
@@ -274,7 +366,7 @@ const View = ({ getSingleItem, item, ...props }) => {
             placeholder="please fill a content..."
             type="textarea"
             onChange={(evt) => {
-              setDefinition(evt.target.value);
+              setReason(evt.target.value);
             }}
           />
         </Modal>
@@ -303,7 +395,7 @@ const View = ({ getSingleItem, item, ...props }) => {
               </Col>
               <Col md={12} className="mt-2">
                 <h5>Subyekt nomi</h5>
-                {get(item, "user.subject")}
+                {get(item, "subject", "mavjud emas")}
               </Col>
             </Row>
           </Col>
@@ -312,7 +404,7 @@ const View = ({ getSingleItem, item, ...props }) => {
             <Row>
               <Col md={12}>
                 <h5>Boshqaruvchi</h5>
-                {get(item, "user.name")}
+                {get(item, "staff[0].name")}
               </Col>
               <Col md={12} className="mt-2">
                 <h5>Ariza topshirilgan vaqt</h5>
@@ -325,10 +417,23 @@ const View = ({ getSingleItem, item, ...props }) => {
             <Row>
               <Col md={12}>
                 <h5>Sertifikat</h5>
-                {item.certificates === null ? "Mavjud emas" : "Mavjud"}
+                {item.certificate_id === null ? (
+                  "Mavjud emas"
+                ) : (
+                  <a href={get(item, "certificate.file", "")} download>
+                    Mavjud
+                  </a>
+                )}
               </Col>
               <Col md={12} className="mt-2">
-                <h5>Subyekt topshirgan arizalar soni</h5>
+                <h5>Litsenziya</h5>
+                {item.license_id === null ? (
+                  "Mavjud emas"
+                ) : (
+                  <a href={get(item, "license.file", "")} download>
+                    Mavjud
+                  </a>
+                )}
               </Col>
             </Row>
           </Col>
@@ -337,7 +442,7 @@ const View = ({ getSingleItem, item, ...props }) => {
         {get(item, "status") === 0 ? (
           <div className="application-data">
             <h4 className="rejected-cause-title">Inkor qilinish sababi</h4>
-            <p className="mt-2">{item.definition}</p>
+            <p className="mt-2">{item.reason}</p>
           </div>
         ) : (
           <div></div>
@@ -356,6 +461,7 @@ const mapStateToProps = (state) => {
     item: get(state, "PageReducer.data.get-one-item.result", {}),
     isFetchedItem: get(state, "PageReducer.data.get-one-item.isFetched", false),
     total: get(state, "PageReducer.data.item-list.result.total", 0),
+    user: get(state, "Auth.user", {}),
   };
 };
 const mapDispatchToProps = (dispatch) => {
@@ -368,8 +474,8 @@ const mapDispatchToProps = (dispatch) => {
           url: `/api/application/${id}`,
           config: {
             params: {
-              include: include.join(","),
-              append: append.join(","),
+              // include: include.join(","),
+              // append: append.join(","),
             },
           },
           storeName,

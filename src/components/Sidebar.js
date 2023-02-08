@@ -18,13 +18,13 @@ import {
 import { hasAccess } from "../helpers/authUtils";
 
 const SideNavContent = ({roles, ...props}) => {
-  const access = hasAccess(['admin', 'manager'], roles);
+  const access = hasAccess(['admin', 'manager','user'], roles);
   return (
     <React.Fragment>
       <div id="sidebar-menu">
         <ul className="metismenu" id="side-menu">
           {/* <li className="menu-title">Navigation</li> */}
-
+          {hasAccess(['admin', 'manager'], roles) && 
           <li>
             <NavLink to="/dashboard"   aria-expanded="true">
               <DashboardOutlined
@@ -32,7 +32,7 @@ const SideNavContent = ({roles, ...props}) => {
               />
               <span className="menu-name"> Dashboard </span>
             </NavLink>
-          </li>
+          </li>}
 
           <li>
             <NavLink
@@ -44,7 +44,7 @@ const SideNavContent = ({roles, ...props}) => {
               <span className="menu-name"> Barcha Arizalar</span>
             </NavLink>
           </li>
-
+          {hasAccess(['manager','user'], roles)&&
           <li>
             <NavLink
               to="/new_application"
@@ -56,7 +56,7 @@ const SideNavContent = ({roles, ...props}) => {
               />
               <span className="menu-name"> Yangi Arizalar </span>
             </NavLink>
-          </li>
+          </li>}
 
           <li>
             <NavLink
@@ -80,7 +80,7 @@ const SideNavContent = ({roles, ...props}) => {
             </NavLink>
           </li>
 
-         {hasAccess(['admin', 'manager'], roles) && 
+         {hasAccess(['user'], roles) && 
          <li>
             <NavLink
               to="/create_application"

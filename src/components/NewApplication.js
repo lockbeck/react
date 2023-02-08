@@ -9,8 +9,11 @@ import { Button, Modal, Space, Table, notification } from "antd";
 import { CloseOutlined, EyeOutlined, CheckOutlined, IssuesCloseOutlined } from "@ant-design/icons";
 import moment from "moment";
 import { Badge, Row, Col } from "reactstrap";
+import { hasAccess } from "../helpers/authUtils";
 
-const NewApplication = ({ history, getItemsList, items, isFetched, total }) => {
+const NewApplication = ({ history, getItemsList, items, isFetched, total,user }) => {
+
+
   const append = ["certificates"];
   const include = ["device", "user"];
   const [pagination, setPagination] = useState({
@@ -28,7 +31,7 @@ const NewApplication = ({ history, getItemsList, items, isFetched, total }) => {
     api.open({
       message: "Success",
       style:{
-        backgroundColor:"red"
+        backgroundColor:"#6af7a5"
       },
       duration: 2,
     });
@@ -83,6 +86,8 @@ const NewApplication = ({ history, getItemsList, items, isFetched, total }) => {
   items = items.map((item, index) => ({
     ...item,
     index: index + 15 * (pagination.current - 1) + 1,
+    staff: get(item,"staff",[]).map((stuf)=>(get(stuf,"name"))),
+    phone:get(item,"staff",[]).map((stuf)=>(get(stuf,"phone"))),
   }));
 
   const columns = [
@@ -98,9 +103,9 @@ const NewApplication = ({ history, getItemsList, items, isFetched, total }) => {
     },
     {
       title: "Boshqaruvchi",
-      dataIndex: "user",
-      render: (item) => get(item, "name", "-"),
-      key: "user",
+      dataIndex: "staff",
+      //render: (item) => get(item, "name", "-"),
+      key: "staff",
     },
     {
       title: "Status",
@@ -120,13 +125,12 @@ const NewApplication = ({ history, getItemsList, items, isFetched, total }) => {
       render: (date) => moment(date).format("DD-MM-yyyy"),
       key: "created_at",
     },
-    // {
-    //   title: "Contact",
-    //   dataIndex: "user",
-    //   render: (item) => get(item, "phone", "-"),
-    //   key: "user",
-    // },
-
+    {
+      title: "Contact",
+      dataIndex: "phone",
+      //render: (item) => get(item, "phone", "-"),
+      key: "phone",
+    },
     {
       title: "action",
       key: "action",
@@ -134,6 +138,7 @@ const NewApplication = ({ history, getItemsList, items, isFetched, total }) => {
       render: (id) => {
         return (
           <Space size="middle">
+            {hasAccess(['admin'], get(user, 'roles', []))&&
             <Button
               onClick={() => {
                 success(id);
@@ -143,7 +148,8 @@ const NewApplication = ({ history, getItemsList, items, isFetched, total }) => {
               warning
               icon={<CheckOutlined style={{ color: "#00b300" }} />}
             />
-
+            }
+           { hasAccess(['manager'], get(user, 'roles', []))&&
             <Button
               onClick={() => {
                 rester(id);
@@ -152,7 +158,8 @@ const NewApplication = ({ history, getItemsList, items, isFetched, total }) => {
               shape="circle"
               warning
               icon={<IssuesCloseOutlined style={{ color: "#4257f5" }} />}
-            />
+            />}
+            {hasAccess(['admin'], get(user, 'roles', []))&&
             <Button
               onClick={() => {
                 reject(id);
@@ -161,8 +168,7 @@ const NewApplication = ({ history, getItemsList, items, isFetched, total }) => {
               shape="circle"
               warning
               icon={<CloseOutlined style={{ color: "#e63900" }} />}
-            />
-
+            />}
             <Link to={{ pathname: "/view", state: id }}>
               <Button shape="circle" warning icon={<EyeOutlined />} />
             </Link>
@@ -223,6 +229,7 @@ const mapStateToProps = (state) => {
     isFetched: get(state, "PageReducer.data.item-list.isFetched", false),
     isFetchedItem: get(state, "PageReducer.data.get-one-item.isFetched", false),
     total: get(state, "PageReducer.data.item-list.result.total", 0),
+    user: get(state, "Auth.user", {}),
   };
 };
 const mapDispatchToProps = (dispatch) => {
@@ -242,7 +249,7 @@ const mapDispatchToProps = (dispatch) => {
           config: {
             params: {
               page: current,
-              include: include.join(","),
+              // include: include.join(","),
               append: append.join(","),
               "filter[status]": status,
             },

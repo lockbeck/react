@@ -7,114 +7,113 @@ import ApiActions from "../redux/pages/actions";
 import PagesApi from "../pages/dashboards/PagesApi";
 import moment from "moment";
 import { Col, Form, FormGroup, Input, Label, Row, Button } from "reactstrap";
-import { Tabs } from "antd";
+import { Tabs, notification } from "antd";
 import Stuff from "./Stuff";
 import Device from "./Device";
 import Telecomunication from "./Telecomunication";
 import TextEditor from "./TextEditor";
 import FileUpload from "./fileUpload/FileUpload";
 
-const CreateApplication = ({
-  history,
-  getItemsList,
-  getSingleItem,
-  items,
-  item,
-  isFetched,
-  total,
-}) => {
+const CreateApplication = () => {
   useEffect(() => {}, []);
 
-  const path = "";
-
-  const [subjectType, setSubjectType] = useState("");
+  const path = "api/application";
 
   const [application, setApplication] = useState({
-    name:"",
-    subject:"",
-    subject_type:"",
+    name: "",
+    subject: "",
+    subject_type: "",
     subject_definition: "",
     subject_document: null,
-    staffs:null,
+    staffs: [],
     scope_and_purpose: "",
     error_or_broken: "",
-    devices:null,
-    license_id:null,
-    certificate_id:null,
-    telecommunications: null,
+    devices: [],
+    license_id: null,
+    certificate_id: null,
+    telecommunications: [],
     provide_cyber_security: "",
     threats_to_information_security: "",
     consequences_of_an_incident: "",
-    organizational_and_technical_measures_to_ensure_security: ""
+    organizational_and_technical_measures_to_ensure_security: "",
   });
+
+  const [api, contextHolder] = notification.useNotification();
+
+  const openNotification = () => {
+    api.open({
+      message: "Arizangiz qo'shildi",
+      style: {
+        backgroundColor: "#6af7a5",
+      },
+      duration: 2,
+    });
+  };
+
+  useEffect(() => {
+    console.log(application);
+  }, [application]);
 
   const onChange = (key) => {
     console.log(key);
   };
-  const saveCertificate = (params)=>{
 
-  };
-  const saveLicense = (params)=>{
-    
-  };
-  const saveRent = (params)=>{
-    
+  const saveTelecomunication = (params) => {
+    setApplication({
+      ...application,
+      telecommunications: [get(params, "id", "")],
+    });
   };
 
-  const saveStuff = (params)=>{
-    console.log(params);
+  const savePurpose = (params) => {
+    setApplication((applic) => ({ ...applic, scope_and_purpose: params }));
+  };
+  const saveBroken = (params) => {
+    setApplication((applic) => ({ ...applic, error_or_broken: params }));
   };
 
+  const saveIncident = (params) => {
+    setApplication((applic) => ({
+      ...applic,
+      consequences_of_an_incident: params,
+    }));
+  };
 
- 
+  const saveOrganizational = (params) => {
+    setApplication((applic) => ({
+      ...applic,
+      organizational_and_technical_measures_to_ensure_security: params,
+    }));
+  };
 
-  const tabItems = [
-    {
-      key: "1",
-      label: `MAI obyektining maqsadi`,
-      children: <TextEditor/>
-    },
-    {
-      key: "2",
-      label: `Xatolik yoki ishdan chiqqan taqdirda`,
-      children:<TextEditor/>
-    },
-    {
-      key: "3",
-      label: `Kiberxavfsizlikni ta’minlash`,
-      children: <TextEditor/>
-    },
-    {
-      key: "4",
-      label: `Insident yuz berishi oqibatlari`,
-      children: <TextEditor/>
-    },
-    {
-      key: "5",
-      label: `Xavfsizlikni ta’minlash tashkiliy va texnik choralari`,
-      children: <TextEditor/>
-    },
-    {
-      key: "6",
-      label: `Axborot xavfsizligiga tahdidlar`,
-      children: <TextEditor/>
-    },
-  ];
+  const saveThreads = (params) => {
+    setApplication((applic) => ({
+      ...applic,
+      threats_to_information_security: params,
+    }));
+  };
+  const saveSecurity = (params) => {
+    setApplication((applic) => ({ ...applic, provide_cyber_security: params }));
+  };
+
+  const submitData = () => {
+    create(application);
+  };
 
   const create = (params = {}) => {
     PagesApi.Create(path, params)
       .then((res) => {
         if (res.status === 201) {
-          console.log(res.data);
+          openNotification();
+          console.log("Data Created!!!");
         }
       })
       .catch((error) => {
-        this.error();
+        console.log(error);
       });
   };
 
-  ////  modal
-
+  ///modal
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const showModal = () => {
@@ -132,6 +131,7 @@ const CreateApplication = ({
   return (
     <React.Fragment>
       <div className="add-application-content">
+        {contextHolder}
         <h3 className="title-name p-2">Yangi ariza qo'shish</h3>
 
         <Form className="p-2">
@@ -144,6 +144,12 @@ const CreateApplication = ({
                   name="name"
                   placeholder="name..."
                   type="text"
+                  onChange={($e) =>
+                    setApplication({
+                      ...application,
+                      name: get($e, "target.value", ""),
+                    })
+                  }
                 />
               </FormGroup>
             </Col>
@@ -155,6 +161,12 @@ const CreateApplication = ({
                   name="subject"
                   placeholder="subyekt nomi..."
                   type="text"
+                  onChange={($e) =>
+                    setApplication({
+                      ...application,
+                      subject: get($e, "target.value", ""),
+                    })
+                  }
                 />
               </FormGroup>
             </Col>
@@ -165,7 +177,12 @@ const CreateApplication = ({
                   id="subject_type"
                   name="subject_type"
                   type="select"
-                  onChange={(e) => setSubjectType(`${e.target.value}`)}
+                  onChange={($e) =>
+                    setApplication({
+                      ...application,
+                      subject_type: get($e, "target.value", ""),
+                    })
+                  }
                 >
                   <option></option>
                   <option>mulkchilik</option>
@@ -175,9 +192,18 @@ const CreateApplication = ({
               </FormGroup>
             </Col>
             <Col md={4} className="mt-2">
-              {subjectType === "ijara shartnoma" ? (
+              {application.subject_type === "ijara shartnoma" ? (
                 <FormGroup>
-                   <FileUpload label={"Ijara shartnoma"} save={saveRent}/>
+                  <FileUpload
+                    label={"Ijara shartnoma"}
+                    save={(file) =>
+                      setApplication({
+                        ...application,
+                        subject_document: get(file, "id", ""),
+                        subject_definition: get(file, "definition", ""),
+                      })
+                    }
+                  />
                 </FormGroup>
               ) : (
                 <div></div>
@@ -185,33 +211,102 @@ const CreateApplication = ({
             </Col>
             <Col md={4} className="mt-2">
               <FormGroup>
-               <FileUpload label={"MAI sertifikati"} save={saveCertificate}/>
+                <FileUpload
+                  label={"MAI sertifikati"}
+                  save={(file) =>
+                    setApplication({
+                      ...application,
+                      certificate_id: get(file, "id", ""),
+                    })
+                  }
+                />
               </FormGroup>
             </Col>
             <Col md={4} className="mt-2">
               <FormGroup>
-              <FileUpload label={"MAI litsenziyasi"} save={saveLicense}/>
+                <FileUpload
+                  label={"MAI litsenziyasi"}
+                  save={(file) =>
+                    setApplication({
+                      ...application,
+                      license_id: get(file, "id", ""),
+                    })
+                  }
+                />
               </FormGroup>
             </Col>
-            <Col md={12} className="mt-2">
+            <Col md={4} className="mt-2">
               <FormGroup>
-                <Stuff save={saveStuff} />
+                <Stuff
+                  save={(params) =>
+                    setApplication({
+                      ...application,
+                      staffs: [get(params, "id", "")],
+                    })
+                  }
+                />
               </FormGroup>
             </Col>
-            <Col md={12} className="mt-2">
+            <Col md={4} className="mt-2">
               <FormGroup>
-                <Device />
+                <Device
+                  sendDeviceID={(params) =>
+                    setApplication({
+                      ...application,
+                      devices: [get(params, "id", "")],
+                    })
+                  }
+                />
               </FormGroup>
             </Col>
-            <Col md={12} className="mt-2">
+            <Col md={4} className="mt-2">
               <FormGroup>
-                <Telecomunication />
+                <Telecomunication sendTelId={saveTelecomunication} />
               </FormGroup>
             </Col>
           </Row>
-          <Tabs defaultActiveKey="1" items={tabItems} onChange={onChange} className="mt-5"/>
-          <Button className="mt-3" color="primary">Arizani qo'shish</Button>
+          <Tabs
+            defaultActiveKey="1"
+            items={[
+              {
+                key: "1",
+                label: `MAI obyektining maqsadi`,
+                children: <TextEditor saveText={savePurpose} />,
+              },
+              {
+                key: "2",
+                label: `Xatolik yoki ishdan chiqqan taqdirda`,
+                children: <TextEditor saveText={saveBroken} />,
+              },
+              {
+                key: "3",
+                label: `Kiberxavfsizlikni ta’minlash`,
+                children: <TextEditor saveText={saveSecurity} />,
+              },
+              {
+                key: "4",
+                label: `Insident yuz berishi oqibatlari`,
+                children: <TextEditor saveText={saveIncident} />,
+              },
+              {
+                key: "5",
+                label: `Xavfsizlikni ta’minlash tashkiliy va texnik choralari`,
+                children: <TextEditor saveText={saveOrganizational} />,
+              },
+              {
+                key: "6",
+                label: `Axborot xavfsizligiga tahdidlar`,
+                children: <TextEditor saveText={saveThreads} />,
+              },
+            ]}
+            onChange={onChange}
+            className="mt-5"
+          />
         </Form>
+
+        <Button className="mt-3" color="primary" onClick={submitData}>
+          Arizani qo'shish
+        </Button>
       </div>
     </React.Fragment>
   );

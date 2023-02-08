@@ -4,15 +4,12 @@ import { Input, Label } from "reactstrap";
 import { get } from "lodash";
 import moment from "moment";
 import { Modal } from "antd";
-import dayjs from "dayjs";
 import { DatePicker, Space } from "antd";
 import PagesApi from "../../pages/dashboards/PagesApi";
-import request from "../../helpers/axios.intercepter";
-
 const { RangePicker } = DatePicker;
 const dateFormat = "DD/MM/YYYY";
 
-const FileUpload = ({ label, save }) => {
+const FileUpload = ({ label, save = () => {}, ...props }) => {
 
 
   const path = "api/file";
@@ -27,6 +24,7 @@ const FileUpload = ({ label, save }) => {
   const onRangeChange = (dates, dateStrings) => {
     if (dates) {
       setFilter({
+        ...filter,
         from: moment(dateStrings[0], "DD/MM/yyyy").toDate(),
         to: moment(dateStrings[1], "DD/MM/yyyy").toDate(),
       });
@@ -59,9 +57,7 @@ const FileUpload = ({ label, save }) => {
     data.append("definition", filter.definition);
     data.append("from", moment(filter.from).format("DD-MM-yyyy"));
     data.append("to", moment(filter.to).format("DD-MM-yyyy"));
-    for (let file of get(filter, "files", [])) {
-      data.append("files", file);
-    }
+    data.append("files", get(filter, "files[0]"));
     create(data);
   };
 
@@ -74,6 +70,7 @@ const FileUpload = ({ label, save }) => {
       .then((res) => {
         if (res.status === 201) {
           console.log(res.data);
+          save(res.data);
         }
       })
       .catch((error) => {
@@ -112,7 +109,7 @@ const FileUpload = ({ label, save }) => {
             multiple={true}
             className="mt-2"
             onChange={($e) =>
-              setFilter({ ...filter, files: get($e, "target.files", []) })
+                setFilter({ ...filter, files: get($e, "target.files", []) })
             }
           />
 
