@@ -65,12 +65,13 @@ const RejectedApplication = ({
       setIsModalOpen(false);
     };
 
-    const inproccess={};
     
 
     items = items.map((item, index) => ({
         ...item,
         index: index + (15 * (pagination.current - 1)) + 1,
+        staff: get(item,"staff",[]).map((stuf)=>(get(stuf,"name"))),
+        phone:get(item,"staff",[]).map((stuf)=>(get(stuf,"phone"))),
     }));
   
     const columns = [
@@ -86,9 +87,9 @@ const RejectedApplication = ({
         },
         {
           title: "Boshqaruvchi",
-          dataIndex:"user",
-          render: (item) => get(item, "name", "-"),
-          key: "user",
+          dataIndex:"staff",
+         // render: (item) => get(item, "name", "-"),
+          key: "staff",
         },
         {
           title: "Status",
@@ -108,12 +109,12 @@ const RejectedApplication = ({
             render: (date) => moment(date).format('DD-MM-yyyy'),
             key: "created_at",
           },
-          // {
-          //   title: "Contact",
-          //   dataIndex: "user",
-          //   render: (item) => get(item, "phone", "-"),
-          //   key: "user",
-          // },
+          {
+            title: "Contact",
+            dataIndex: "phone",
+            //render: (item) => get(item, "phone", "-"),
+            key: "phone",
+          },
         {
           title: "action",
           dataIndex: 'id',
@@ -128,12 +129,12 @@ const RejectedApplication = ({
                         icon={<EyeOutlined />}
                       />
                   </Link>
-                <Button
+                {/* <Button
                   onClick={showModal}
                   shape="circle"
                   warning
                   icon={<EditOutlined />}
-                />
+                /> */}
               </Space>
             );
           },
@@ -190,8 +191,8 @@ const mapDispatchToProps = (dispatch) => {
                     config: {
                         params: {
                             page: current,
-                            include: include.join(','),
-                            append: append.join(','),
+                            // include: include.join(','),
+                            // append: append.join(','),
                             'filter[status]': status,
                         },
                     },

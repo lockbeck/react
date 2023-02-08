@@ -54,7 +54,9 @@ const Users = ({
   const remove = (id) => {
     PagesApi.Delete(path, id)
       .then((res) => {
-        console.log(res);
+        if (res.status === 204) {
+          getItemsList({ ...pagination });
+        }
       })
       .catch((error) => {
         console.log(error);
@@ -93,15 +95,7 @@ const Users = ({
 
   // modal confirmation
   const [modal, contextHolder] = Modal.useModal();
-  const confirm = () => {
-    modal.confirm({
-      title: 'Confirm',
-      icon: <ExclamationCircleOutlined />,
-      content: 'Bla bla ...',
-      okText: 'OK',
-      cancelText: 'Cancel',
-    });
-  };
+ 
 
   console.log(items);
   console.log(roles);
@@ -129,16 +123,16 @@ const Users = ({
       dataIndex: "email",
       key: "email",
     },
-    {
-      title: "Subject",
-      dataIndex: "subject",
-      key: "subject",
-    },
-    {
-      title: "Phone",
-      dataIndex: "phone",
-      key: "phone",
-    },
+    // {
+    //   title: "Subject",
+    //   dataIndex: "subject",
+    //   key: "subject",
+    // },
+    // {
+    //   title: "Phone",
+    //   dataIndex: "phone",
+    //   key: "phone",
+    // },
     {
       title: "Created Date",
       dataIndex: "created_at",
@@ -151,15 +145,20 @@ const Users = ({
       render: (id) => {
         return (
           <Space size="middle">
-            <Link to={{ pathname: "/view", state: id }}>
-              <Button shape="circle" icon={<EyeOutlined />} />
-            </Link>
             <Button
               shape="circle"
-              onClick={confirm}
-              // onClick={() => {
-              //   remove(id);
-              // }}
+              onClick={() => {
+                Modal.confirm({
+                  title: `O'chirishni xohlaysizmi`,
+                  icon: <ExclamationCircleOutlined />,
+                  //content: 'Bla bla ...',
+                  okText: 'OK',
+                  cancelText: 'Cancel',
+                  onOk: () => {
+                    remove(id);
+                  },
+                });
+              }}
               icon={<DeleteOutlined style={{ color: "#f24b3f" }} />}
             ></Button>
           </Space>

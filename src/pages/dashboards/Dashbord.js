@@ -13,9 +13,9 @@ import line5 from "../../assets/images/line5.svg";
 import "../../assets/scss/dashboard/index.css";
 import BarChart from "../../chart/BarChart";
 import PieChart from "../../chart/PieChart";
-import HorizonBarChart from "../../chart/HorizonBarChart";
-import TopSubChart from "../../chart/TopSubChart";
-import TopMAI from "../../chart/TopMAI";
+// import HorizonBarChart from "../../chart/HorizonBarChart";
+// import TopSubChart from "../../chart/TopSubChart";
+// import TopMAI from "../../chart/TopMAI";
 import { DatePicker, Space } from "antd";
 import dayjs from "dayjs";
 import { hasAccess } from "../../helpers/authUtils";
@@ -120,7 +120,6 @@ const DefaultDashboard = ({
     ]);
   }, [item]);
 
-  const access = hasAccess(['admin', 'manager'], get(user, 'roles', []));
  
   return (
     <React.Fragment>

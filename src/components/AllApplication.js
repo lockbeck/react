@@ -19,15 +19,16 @@ const AllApplication = ({
   isFetched,
   total,
 }) => {
-  const append = ["certificates"];
-  const include = ["device", "user"];
+   const append = ["staff","telecommunication","device"];
+    const include = ["certificate", "license"];
   const [pagination, setPagination] = useState({
     current: 1,
     pageSize: 15,
   });
 
+
   useEffect(() => {
-    getItemsList({ ...pagination, include, append });
+    getItemsList({ ...pagination, append, include  });
   }, [pagination]);
 
   const path = "api/application";
@@ -69,13 +70,15 @@ const AllApplication = ({
     setIsModalOpen(false);
   };
 
-  console.log(items);
+
 
   items = items.map((item, index) => ({
     ...item,
     index: index + 15 * (pagination.current - 1) + 1,
     created_at: moment(get(item, "created_at")).format("DD-MM-yyyy"),
     update_at: moment(get(item, "update_at")).format("DD-MM-yyyy"),
+    staff: get(item,"staff",[]).map((stuf)=>(get(stuf,"name"))),
+    phone:get(item,"staff",[]).map((stuf)=>(get(stuf,"phone"))),
     status:
       get(item, "status") === 0 ? (
         <Badge color="danger">rejected</Badge>
@@ -87,6 +90,8 @@ const AllApplication = ({
         <Badge color="success">success</Badge>
       ),
   }));
+
+
 
   const columns = [
     {
@@ -101,9 +106,9 @@ const AllApplication = ({
     },
     {
       title: "Boshqaruvchi",
-      dataIndex: "user",
-      render: (item) => get(item, "name", "-"),
-      key: "user",
+      dataIndex: "staff",
+      // render: (stuf) => get(stuf, "name", "-"),
+      key: "staff",
     },
     {
       title: "Status",
@@ -120,12 +125,12 @@ const AllApplication = ({
       dataIndex: "created_at",
       key: "created_at",
     },
-    // {
-    //   title: "Contact",
-    //   dataIndex: "user",
-    //   render: (item) => get(item, "phone", "-"),
-    //   key: "user",
-    // },
+    {
+      title: "Contact",
+      dataIndex: "phone",
+      // render: (item) => get(item, "phone", "-"),
+      key: "phone",
+    },
     {
       title: "action",
       dataIndex: "id",
@@ -141,7 +146,7 @@ const AllApplication = ({
       },
     },
   ];
-
+  console.log(items);
   return (
     <React.Fragment>
       <div className="application-content">
@@ -204,8 +209,8 @@ const mapDispatchToProps = (dispatch) => {
           config: {
             params: {
               page: current,
-              include: include.join(","),
-              append: append.join(","),
+               include: include.join(","),
+               append: append.join(","),
             },
           },
           storeName,
@@ -221,8 +226,8 @@ const mapDispatchToProps = (dispatch) => {
           url: `/api/application/${id}`,
           config: {
             params: {
-              include: include.join(","),
-              append: append.join(","),
+               include: include.join(","),
+               append: append.join(","),
             },
           },
           storeName,
