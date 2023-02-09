@@ -307,10 +307,10 @@ const View = ({ getSingleItem, item, user, ...props }) => {
               Inkor qilish
             </Button>
             <Button
-              color="success"
+              color="primary"
               className="float-right mr-2 mt-4 mb-2"
               onClick={() => {
-                success(id);
+                rester(id);
               }}
             >
               Tasdiqlash
