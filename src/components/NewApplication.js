@@ -5,13 +5,15 @@ import { withRouter, Link } from "react-router-dom";
 import { get } from "lodash";
 import ApiActions from "../redux/pages/actions";
 import PagesApi from "../pages/dashboards/PagesApi";
-import { Button, Modal, Space, Table, notification } from "antd";
-import { CloseOutlined, EyeOutlined, CheckOutlined, IssuesCloseOutlined } from "@ant-design/icons";
+import { Button, Modal, Space, Table, notification, DatePicker } from "antd";
+import { CloseOutlined, EyeOutlined, CheckOutlined, IssuesCloseOutlined, EditOutlined } from "@ant-design/icons";
 import moment from "moment";
 import { Badge, Row, Col } from "reactstrap";
 import { hasAccess } from "../helpers/authUtils";
+const { RangePicker } = DatePicker;
+const dateFormat = "DD/MM/YYYY";
 
-const NewApplication = ({ history, getItemsList, items, isFetched, total,user }) => {
+const NewApplication = ({ history, getItemsList, getSingleItem, items, item, isFetched, total,user }) => {
 
 
   const append = ["certificates"];
@@ -22,8 +24,8 @@ const NewApplication = ({ history, getItemsList, items, isFetched, total,user })
   });
 
   useEffect(() => {
-    getItemsList({ ...pagination, include, append, status: 1 });
-  }, [pagination]);
+    getItemsList({ ...pagination, include, append, status: 1, ...filter });
+  }, [pagination,filter]);
 
   const [api, contextHolder] = notification.useNotification();
 
@@ -36,6 +38,25 @@ const NewApplication = ({ history, getItemsList, items, isFetched, total,user })
       duration: 2,
     });
   };
+
+
+  const [filter, setFilter] = useState({
+    from: new Date(new Date().setMonth(new Date().getMonth() - 3)),
+    to: new Date(),
+  });
+
+  const onRangeChange = (dates, dateStrings) => {
+    if (dates) {
+      setFilter({
+        ...filter,
+        from: moment(dateStrings[0], "DD/MM/yyyy").toDate(),
+        to: moment(dateStrings[1], "DD/MM/yyyy").toDate(),
+      });
+    } else {
+      console.log("Clear");
+    }
+  };
+
   const success = (id) => {
     PagesApi.Put(id, "success")
       .then((res) => {
@@ -56,6 +77,16 @@ const NewApplication = ({ history, getItemsList, items, isFetched, total,user })
       });
   };
 
+  const update = (params = {}, id) => {
+    PagesApi.Put(id, "edit", params)
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
   const rester = (id) => {
     PagesApi.Put(id, "register")
       .then((res) => {
@@ -70,7 +101,8 @@ const NewApplication = ({ history, getItemsList, items, isFetched, total,user })
 
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const showModal = () => {
+  const showModal = (id) => {
+    getSingleItem({ id });
     setIsModalOpen(true);
   };
 
@@ -92,12 +124,12 @@ const NewApplication = ({ history, getItemsList, items, isFetched, total,user })
 
   const columns = [
     {
-      title: "№",
+      title: "T/r",
       dataIndex: "index",
       key: "index",
     },
     {
-      title: "Name",
+      title: "MAI nomi",
       dataIndex: "name",
       key: "name",
     },
@@ -114,13 +146,13 @@ const NewApplication = ({ history, getItemsList, items, isFetched, total,user })
       key: "status",
     },
     {
-      title: "Updated Date",
+      title: "O'zgartirilgan vaqt",
       dataIndex: "update_at",
       render: (date) => moment(date).format("DD-MM-yyyy"),
       key: "update_at",
     },
     {
-      title: "Created Date",
+      title: "Kiritilgan vaqt",
       dataIndex: "created_at",
       render: (date) => moment(date).format("DD-MM-yyyy"),
       key: "created_at",
@@ -172,12 +204,13 @@ const NewApplication = ({ history, getItemsList, items, isFetched, total,user })
             <Link to={{ pathname: "/view", state: id }}>
               <Button shape="circle" warning icon={<EyeOutlined />} />
             </Link>
-            {/* <Button
-                  onClick={showModal}
+            <Link to={{pathname: "/edit", state: id}}>
+            <Button
                   shape="circle"
                   warning
                   icon={<EditOutlined />}
-                /> */}
+                />
+                </Link>
           </Space>
         );
       },
@@ -188,14 +221,16 @@ const NewApplication = ({ history, getItemsList, items, isFetched, total,user })
     <React.Fragment>
       <div className="application-content">
         {contextHolder}
-        <Row>
-          <Col md={11}>
+        <Row className="mb-3">
+          <Col md={8}>
             <p className="title-name">Yangi arizalar</p>
             <span className="title-badge-count">{total}</span>
           </Col>
-          {/* <Col md={1}>
-                        <Button className="add-btn bg-success" onClick={showModal}>Add New</Button>
-                    </Col> */}
+          <Col md={4}>
+          <Space direction="vertical" size={12}>
+              <RangePicker onChange={onRangeChange} format={dateFormat} />
+            </Space>
+          </Col>
         </Row>
 
         <Table
@@ -240,6 +275,8 @@ const mapDispatchToProps = (dispatch) => {
       include = [],
       append = [],
       status,
+      from="",
+      to=""
     }) => {
       const storeName = "item-list";
       dispatch({
@@ -252,12 +289,32 @@ const mapDispatchToProps = (dispatch) => {
               // include: include.join(","),
               append: append.join(","),
               "filter[status]": status,
+              from:moment(from).format("yyyy-MM-DD"),
+              to:moment(to).format("yyyy-MM-DD")
             },
           },
           storeName,
         },
       });
     },
+
+    getSingleItem: ({ id, include = [], append = [] }) => {
+      const storeName = "get-one-item";
+      dispatch({
+        type: ApiActions.GET_ONE.REQUEST,
+        payload: {
+          url: `/api/application/${id}`,
+          config: {
+            params: {
+               include: include.join(","),
+               append: append.join(","),
+            },
+          },
+          storeName,
+        },
+      });
+    },
+
   };
 };
 

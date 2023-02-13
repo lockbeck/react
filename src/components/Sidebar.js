@@ -13,7 +13,8 @@ import {
   FileAddOutlined,
   FileOutlined,
   FileExclamationOutlined,
-  UsergroupAddOutlined
+  UsergroupAddOutlined,
+  FileDoneOutlined
 } from "@ant-design/icons";
 import { hasAccess } from "../helpers/authUtils";
 
@@ -42,6 +43,16 @@ const SideNavContent = ({roles, ...props}) => {
             >
               <FileOutlined style={{ fontSize: "25px", color: "#121211" }} />
               <span className="menu-name"> Barcha Arizalar</span>
+            </NavLink>
+          </li>
+          <li>
+            <NavLink
+              to="/success_application"
+              className="waves-effect "
+              aria-expanded="true"
+            >
+              <FileDoneOutlined style={{ fontSize: "25px", color: "#121211" }} />
+              <span className="menu-name">Qabul qilingan</span>
             </NavLink>
           </li>
           {hasAccess(['manager','user'], roles)&&
@@ -116,7 +127,6 @@ class Sidebar extends Component {
     super(props);
     this.handleOtherClick = this.handleOtherClick.bind(this);
     this.initMenu = this.initMenu.bind(this);
-    console.log(this.roles);
   }
 
   /**

@@ -61,7 +61,7 @@ const View = ({ getSingleItem, item, user, ...props }) => {
       });
   };
 
-  console.log(item.device);
+  console.log(item);
 
   const items = [
     {
@@ -266,16 +266,7 @@ const View = ({ getSingleItem, item, user, ...props }) => {
         <div>
         {get(item, "status") === 0 ? (
           hasAccess(['user'], get(user, 'roles', [])) &&
-          <Button
-            color="warning"
-            className="float-right  mt-4 mb-2"
-            onClick={() => {
-              rester(id);
-              openNotification();
-            }}
-          >
-            Qayta yuborish
-          </Button>
+          <div></div>
         ) : get(item, "status") === 2 ? (
           hasAccess(['admin'], get(user, 'roles', [])) &&
           <div>
