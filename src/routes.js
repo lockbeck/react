@@ -8,12 +8,14 @@ import { isUserAuthenticated, getLoggedInUser, hasAccess } from "./helpers/authU
 // lazy load all the views
 const Dashboard = React.lazy(() => import("./pages/dashboards/Dashbord"));
 const AllApplication = React.lazy(() => import("./components/AllApplication"));
+const Success_Application = React.lazy(() => import("./components/Success_Application"));
 const NewApplication = React.lazy(() => import("./components/NewApplication"));
 const RejectedApplication = React.lazy(() => import("./components/RejectedApplication"));
 const InProccess = React.lazy(() => import("./components/InProccess"));
 const View = React.lazy(() => import("./components/view/View"));
 const Users = React.lazy(() => import("./components/Users"));
 const CreateApplication = React.lazy(() => import("./components/CreateApplication"));
+const EditPage = React.lazy(() => import("./components/EditPage"));
 // auth
 const Login = React.lazy(() => import("./pages/auth/Login"));
 const Logout = React.lazy(() => import("./pages/auth/Logout"));
@@ -76,6 +78,13 @@ const routes = [
     roles: ["admin","manager", "user"],   
   },
   {
+    path: "/success_application",
+    name: "Success_Application",
+    component: Success_Application,
+    route: PrivateRoute,
+    roles: ["admin","manager", "user"],   
+  },
+  {
     path: "/new_application",
     name: "NewApplication",
     component: NewApplication,
@@ -114,6 +123,13 @@ const routes = [
     path: "/create_application",
     name: "CreateApplication",
     component: CreateApplication,
+    route: PrivateRoute,
+    roles: ["admin","manager", "user"],  
+  },
+  {
+    path: "/edit",
+    name: "EditPage",
+    component: EditPage,
     route: PrivateRoute,
     roles: ["admin","manager", "user"],  
   },

@@ -96,7 +96,7 @@ const FileUpload = ({ label, save = () => {}, ...props }) => {
           onOk={handleOk}
           onCancel={handleCancel}
           cancelText="Bekor qilish"
-          okText="Yuborish"
+          okText="Saqlash"
           okType="primary"
         >
           <Label for="name" className="mt-3">
@@ -114,7 +114,7 @@ const FileUpload = ({ label, save = () => {}, ...props }) => {
           />
 
           <Label for="date" className="mt-3 d-block">
-            Date:
+            Amal qilish muddati:
           </Label>
           <Space direction="vertical" size={12}>
             <RangePicker
@@ -123,7 +123,7 @@ const FileUpload = ({ label, save = () => {}, ...props }) => {
             />
           </Space>
           <Label for="name" className="mt-3 d-block">
-            Definition:
+            Tarif:
           </Label>
           <Input
             id="definition"

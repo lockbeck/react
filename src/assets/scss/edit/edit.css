@@ -1,0 +1,37 @@
+.add-application-content{
+    background: white;
+    width: 100%;
+    margin-top: 40px;
+    padding: 20px;
+}
+.rejected-definition{
+background-color: rgb(248, 224, 224) !important;
+padding: 20px;
+border-radius: 5px;
+}
+.rejected-definition h5{
+    color: red;
+}
+.excist-data{
+    display: inline-block;
+    width: 100px;
+    height: 30px;
+    padding: 3px;
+    border: 1px solid black;
+    border-radius: 5px 0 0 5px;
+}
+.delete-button{
+    display: inline-block;
+    padding: 3px;
+    width: 20px;
+    height: 30px;
+    border: 1px solid black;
+    border-left: 0px;
+    border-radius: 0 5px 5px 0;
+    cursor: pointer;
+    color: red;
+    background-color: rgb(243, 192, 192);
+}
+.text-editor{
+    height: 300px !important;
+}
