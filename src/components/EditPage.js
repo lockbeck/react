@@ -15,21 +15,19 @@ import {
   Button,
   Badge,
 } from "reactstrap";
-import { Tabs, notification, Modal } from "antd";
+import {DeleteOutlined} from "@ant-design/icons";
+import { Tabs, notification } from "antd";
+import {FileOutlined} from "@ant-design/icons";
 import Stuff from "./Stuff";
 import Device from "./Device";
 import Telecomunication from "./Telecomunication";
 import FileUpload from "./fileUpload/FileUpload";
-import ReactSummernote from "react-summernote";
-import "react-summernote/dist/react-summernote.css";
-import "react-summernote/lang/summernote-ru-RU";
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
 import "bootstrap/dist/css/bootstrap.css";
 import "bootstrap/js/dist/modal";
 import "bootstrap/js/dist/dropdown";
 import "bootstrap/js/dist/tooltip";
-import ReactQuill from 'react-quill';
-import 'react-quill/dist/quill.snow.css';
-
 const EditPage = ({ getSingleItem, item, user, ...props }) => {
   const id = props.location.state;
 
@@ -178,7 +176,11 @@ const EditPage = ({ getSingleItem, item, user, ...props }) => {
     PagesApi.Delete("api/telecommunication", id)
       .then((res) => {
         if (res.status === 200) {
-          setApplication({ ...application, telecommunications: [], telecommunication: [] });
+          setApplication({
+            ...application,
+            telecommunications: [],
+            telecommunication: [],
+          });
         }
       })
       .catch((error) => {
@@ -306,6 +308,11 @@ const EditPage = ({ getSingleItem, item, user, ...props }) => {
             </Col>
             <Col md={4} className="mt-2">
               <FormGroup>
+                <Row>
+                  <Col md={12}>
+
+                  </Col>
+                </Row>
                 <FileUpload
                   label={"MAI litsenziyasi"}
                   save={(file) =>
@@ -322,14 +329,14 @@ const EditPage = ({ getSingleItem, item, user, ...props }) => {
                 <Row>
                   {!isEmpty(get(application, "staff", [])) && (
                     <Col md={12}>
-                      <Label>Xodim:</Label>
-                      <div className="excist-data">
+                      <Label className="d-block">Xodim:</Label>
+                      <div className="excist-data pl-2 pt-1">
                         {get(application, "staff", []).map((itm) =>
                           get(itm, "name", "")
                         )}
                       </div>
                       <div
-                        className="delete-button"
+                        className="delete-button pt-1 pr-1"
                         onClick={() =>
                           removeStaff(get(application, "staffs[0]", ""))
                         }
@@ -362,22 +369,22 @@ const EditPage = ({ getSingleItem, item, user, ...props }) => {
             </Col>
             <Col md={4} className="mt-2">
               <FormGroup>
-              <Row>
+                <Row>
                   {!isEmpty(get(application, "device", [])) && (
                     <Col md={12}>
-                      <Label>Device:</Label>
-                      <div className="excist-data">
+                      <Label className="d-block">Device:</Label>
+                      <div className="excist-data pl-2 pt-1">
                         {get(application, "device", []).map((itm) =>
                           get(itm, "name", "")
                         )}
                       </div>
                       <div
-                        className="delete-button"
+                        className="delete-button pt-1 pr-1"
                         onClick={() =>
                           removeDevice(get(application, "devices[0]", ""))
                         }
                       >
-                        x
+                       <DeleteOutlined />
                       </div>
                     </Col>
                   )}
@@ -405,22 +412,24 @@ const EditPage = ({ getSingleItem, item, user, ...props }) => {
             </Col>
             <Col md={4} className="mt-2">
               <FormGroup>
-              <Row>
+                <Row>
                   {!isEmpty(get(application, "telecommunication", [])) && (
                     <Col md={12}>
-                      <Label>Telecomunication:</Label>
-                      <div className="excist-data">
+                      <Label className="d-block">Telecomunication:</Label>
+                      <div className="excist-data pl-2 pt-1">
                         {get(application, "telecommunication", []).map((itm) =>
                           get(itm, "provider", "")
                         )}
                       </div>
                       <div
-                        className="delete-button"
+                        className="delete-button pt-1 pr-1"
                         onClick={() =>
-                          removeTele(get(application, "telecommunications[0]", ""))
+                          removeTele(
+                            get(application, "telecommunications[0]", "")
+                          )
                         }
                       >
-                        x
+                        <DeleteOutlined />
                       </div>
                     </Col>
                   )}
@@ -454,42 +463,80 @@ const EditPage = ({ getSingleItem, item, user, ...props }) => {
                 key: "1",
                 label: `MAI obyektining maqsadi`,
                 children: (
-                  <ReactQuill theme="snow" className="text-editor" value={get(application,"scope_and_purpose")} onChange={onChangeScope} />
+                  <ReactQuill
+                    theme="snow"
+                    className="text-editor"
+                    value={get(application, "scope_and_purpose")}
+                    onChange={onChangeScope}
+                  />
                 ),
               },
               {
                 key: "2",
                 label: `Xatolik yoki ishdan chiqqan taqdirda`,
                 children: (
-                  <ReactQuill theme="snow" className="text-editor" value={get(application,"error_or_broken")} onChange={onChangeErr} />
+                  <ReactQuill
+                    theme="snow"
+                    className="text-editor"
+                    value={get(application, "error_or_broken")}
+                    onChange={onChangeErr}
+                  />
                 ),
               },
               {
                 key: "3",
                 label: `Kiberxavfsizlikni ta’minlash`,
                 children: (
-                  <ReactQuill theme="snow" className="text-editor" value={get(application,"provide_cyber_security")} onChange={onChangeProvide} />
+                  <ReactQuill
+                    theme="snow"
+                    className="text-editor"
+                    value={get(application, "provide_cyber_security")}
+                    onChange={onChangeProvide}
+                  />
                 ),
               },
               {
                 key: "4",
                 label: `Insident yuz berishi oqibatlari`,
                 children: (
-                  <ReactQuill theme="snow" className="text-editor" value={get(application,"consequences_of_an_incident")} onChange={onChangeConsequences} />
+                  <ReactQuill
+                    theme="snow"
+                    className="text-editor"
+                    value={get(application, "consequences_of_an_incident")}
+                    onChange={onChangeConsequences}
+                  />
                 ),
               },
               {
                 key: "5",
                 label: `Xavfsizlikni ta’minlash tashkiliy va texnik choralari`,
                 children: (
-                  <ReactQuill theme="snow" className="text-editor" value={get(application,"organizational_and_technical_measures_to_ensure_security","")} onChange={onChangeOrganizational} />
+                  <ReactQuill
+                    theme="snow"
+                    className="text-editor"
+                    value={get(
+                      application,
+                      "organizational_and_technical_measures_to_ensure_security",
+                      ""
+                    )}
+                    onChange={onChangeOrganizational}
+                  />
                 ),
               },
               {
                 key: "6",
                 label: `Axborot xavfsizligiga tahdidlar`,
                 children: (
-                  <ReactQuill theme="snow" className="text-editor" value={get(application,"threats_to_information_security","")} onChange={onChangeThreads} />
+                  <ReactQuill
+                    theme="snow"
+                    className="text-editor"
+                    value={get(
+                      application,
+                      "threats_to_information_security",
+                      ""
+                    )}
+                    onChange={onChangeThreads}
+                  />
                 ),
               },
             ]}

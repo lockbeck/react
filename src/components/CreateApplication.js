@@ -39,12 +39,23 @@ const CreateApplication = () => {
   });
 
   const [api, contextHolder] = notification.useNotification();
+  const[warn, warnText] = notification.useNotification();
 
   const openNotification = () => {
     api.open({
       message: "Arizangiz qo'shildi",
       style: {
         backgroundColor: "#6af7a5",
+      },
+      duration: 2,
+    });
+  };
+
+  const warnNotification = () => {
+    warn.open({
+      message: "Noto'g'ri ma`lumot kiritilgan!",
+      style: {
+        backgroundColor: "#f5a595",
       },
       duration: 2,
     });
@@ -109,7 +120,12 @@ const CreateApplication = () => {
         }
       })
       .catch((error) => {
-        console.log(error);
+        if (error.response.status === 422) {
+          warnNotification();
+        } 
+        else {
+          console.log(error);
+        }
       });
   };
 
@@ -132,6 +148,7 @@ const CreateApplication = () => {
     <React.Fragment>
       <div className="add-application-content">
         {contextHolder}
+        {warnText}
         <h3 className="title-name p-2">Yangi ariza qo'shish</h3>
 
         <Form className="p-2">
@@ -140,6 +157,7 @@ const CreateApplication = () => {
               <FormGroup>
                 <Label for="name">Nomi</Label>
                 <Input
+                required={true}
                   id="name"
                   name="name"
                   placeholder="name..."

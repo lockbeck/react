@@ -14,17 +14,17 @@ border-radius: 5px;
 }
 .excist-data{
     display: inline-block;
-    width: 100px;
-    height: 30px;
-    padding: 3px;
-    border: 1px solid black;
+    width: 94%;
+    height: 38px;
+    padding: 2px;
+    border: 1px solid rgb(184, 182, 182);
     border-radius: 5px 0 0 5px;
 }
 .delete-button{
     display: inline-block;
     padding: 3px;
-    width: 20px;
-    height: 30px;
+    width: 6%;
+    height: 37px;
     border: 1px solid black;
     border-left: 0px;
     border-radius: 0 5px 5px 0;
