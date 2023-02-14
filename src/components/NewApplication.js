@@ -204,13 +204,14 @@ const NewApplication = ({ history, getItemsList, getSingleItem, items, item, isF
             <Link to={{ pathname: "/view", state: id }}>
               <Button shape="circle" warning icon={<EyeOutlined />} />
             </Link>
+            {hasAccess(['user'], get(user, 'roles', []))&&
             <Link to={{pathname: "/edit", state: id}}>
             <Button
                   shape="circle"
                   warning
                   icon={<EditOutlined />}
                 />
-                </Link>
+                </Link>}
           </Space>
         );
       },
