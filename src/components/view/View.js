@@ -2,14 +2,7 @@ import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import { withRouter, Link } from "react-router-dom";
 import { get } from "lodash";
-import {
-  Button,
-  Col,
-  Row,
-  Label,
-  Input,
-  Badge,
-} from "reactstrap";
+import { Button, Col, Row, Label, Input, Badge, FormGroup } from "reactstrap";
 import { Tabs, notification } from "antd";
 import moment from "moment";
 import ApiActions from "../../redux/pages/actions";
@@ -18,21 +11,31 @@ import { Modal } from "antd";
 import PagesApi from "../../pages/dashboards/PagesApi";
 import { hasAccess } from "../../helpers/authUtils";
 
-const View = ({ getSingleItem, item, user, ...props }) => {
+const View = ({
+  getSingleItem,
+  getImportance,
+  importance,
+  item,
+  user,
+  ...props
+}) => {
   const id = props.location.state;
   const onChange = (key) => {};
 
   const append = [];
-  const include = ["device", "user"];
+  const include = ["certificate", "license"];
 
   const [reason, setReason] = useState("");
+  const [important, setImportant] = useState("");
 
   useEffect(() => {
+    getImportance();
     getSingleItem({ id, include, append });
   }, [id]);
 
+
   const success = (id) => {
-    PagesApi.Put(id, "success")
+    PagesApi.Put(id, "success",{important})
       .then((res) => {
         getSingleItem({ id, include, append });
       })
@@ -61,7 +64,7 @@ const View = ({ getSingleItem, item, user, ...props }) => {
       });
   };
 
-  console.log(item);
+  console.log(importance);
 
   const items = [
     {
@@ -74,7 +77,9 @@ const View = ({ getSingleItem, item, user, ...props }) => {
               <Col md={12}>
                 <h5>Qurilma Nomi:</h5>
               </Col>
-              <Col md={12}><i>{get(item,"device[0].name","mavjud emas")}</i></Col>
+              <Col md={12}>
+                <i>{get(item, "device[0].name", "mavjud emas")}</i>
+              </Col>
             </Row>
           </Col>
 
@@ -84,7 +89,7 @@ const View = ({ getSingleItem, item, user, ...props }) => {
                 <h5>Ishlab chiqaruvchi:</h5>
               </Col>
               <Col md={12}>
-                <i>{get(item,"device[0].manufacturer","mavjud emas")}</i>
+                <i>{get(item, "device[0].manufacturer", "mavjud emas")}</i>
               </Col>
             </Row>
           </Col>
@@ -95,7 +100,7 @@ const View = ({ getSingleItem, item, user, ...props }) => {
                 <h5>Model:</h5>
               </Col>
               <Col md={12}>
-                <i>{get(item,"device[0].model","mavjud emas")}</i>
+                <i>{get(item, "device[0].model", "mavjud emas")}</i>
               </Col>
             </Row>
           </Col>
@@ -105,7 +110,11 @@ const View = ({ getSingleItem, item, user, ...props }) => {
               <Col md={12}>
                 <h5>Version:</h5>
               </Col>
-              <i><Col md={12}>{get(item,"device[0].version","mavjud emas")}</Col></i>
+              <i>
+                <Col md={12}>
+                  {get(item, "device[0].version", "mavjud emas")}
+                </Col>
+              </i>
             </Row>
           </Col>
           <Col md={4}>
@@ -215,7 +224,11 @@ const View = ({ getSingleItem, item, user, ...props }) => {
     },
     {
       key: "7",
-      label: <b>Xavfsizlikni ta’minlash <br/> tashkiliy va texnik choralari</b>,
+      label: (
+        <b>
+          Xavfsizlikni ta’minlash <br /> tashkiliy va texnik choralari
+        </b>
+      ),
       children: (
         <div
           dangerouslySetInnerHTML={{
@@ -230,10 +243,6 @@ const View = ({ getSingleItem, item, user, ...props }) => {
     },
   ];
 
-  // const deviceOs = JSON.parse(get(item, 'device.os', '{}'));
-
-  console.log(reason);
-
   const [api, contextHolder] = notification.useNotification();
 
   const openNotification = () => {
@@ -245,10 +254,19 @@ const View = ({ getSingleItem, item, user, ...props }) => {
   };
 
   ////  modal
+  const [isModalOpen1, setIsModalOpen1] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
-
   const showModal = () => {
     setIsModalOpen(true);
+  };
+
+  const showModalSuccess = () => {
+    setIsModalOpen1(true);
+  };
+
+  const handleOkSuccess = () => {
+    success(id);
+    setIsModalOpen1(false);
   };
 
   const handleOk = () => {
@@ -256,59 +274,94 @@ const View = ({ getSingleItem, item, user, ...props }) => {
     setIsModalOpen(false);
   };
 
+  const handleCancel1 = () => {
+    setIsModalOpen1(false);
+  };
   const handleCancel = () => {
     setIsModalOpen(false);
   };
   return (
     <React.Fragment>
       <div className="">
-      
         <div>
-        {get(item, "status") === 0 ? (
-          hasAccess(['user'], get(user, 'roles', [])) &&
-          <div></div>
-        ) : get(item, "status") === 2 ? (
-          hasAccess(['admin'], get(user, 'roles', [])) &&
-          <div>
-            <Button
-              color="danger"
-              className="float-right  mt-4 mb-2"
-              onClick={showModal}
-            >
-              Inkor qilish
-            </Button>
-            <Button
-              color="success"
-              className="float-right mr-2 mt-4 mb-2"
-              onClick={() => {
-                success(id);
-              }}
-            >
-              Tasdiqlash
-            </Button>
-          </div>
-        ):get(item, "status") === 1 ? (
-          hasAccess(['manager'], get(user, 'roles', [])) &&
-          <div>
-            <Button
-              color="danger"
-              className="float-right  mt-4 mb-2"
-              onClick={showModal}
-            >
-              Inkor qilish
-            </Button>
-            <Button
-              color="success"
-              className="float-right mr-2 mt-4 mb-2"
-              onClick={() => {
-                rester(id);
-              }}
-            >
-              Tasdiqlash
-            </Button>
-          </div>
-        ):("")}
+          {get(item, "status") === 0
+            ? hasAccess(["user"], get(user, "roles", [])) && <div></div>
+            : get(item, "status") === 2
+            ? hasAccess(["admin"], get(user, "roles", [])) && (
+                <div>
+                  <Button
+                    color="danger"
+                    className="float-right  mt-4 mb-2"
+                    onClick={showModal}
+                  >
+                    Inkor qilish
+                  </Button>
+                  <Button
+                    color="success"
+                    className="float-right mr-2 mt-4 mb-2"
+                    onClick={()=>{
+                      success(id)
+                    }}
+                  >
+                    Tasdiqlash
+                  </Button>
+                </div>
+              )
+            : get(item, "status") === 1
+            ? hasAccess(["manager"], get(user, "roles", [])) && (
+                <div>
+                  <Button
+                    color="danger"
+                    className="float-right  mt-4 mb-2"
+                    onClick={showModal}
+                  >
+                    Inkor qilish
+                  </Button>
+                  <Button
+                    color="success"
+                    className="float-right mr-2 mt-4 mb-2"
+                    onClick={() => {
+                      rester(id);
+                    }}
+                  >
+                    Tasdiqlash
+                  </Button>
+                </div>
+              )
+            : ""}
         </div>
+
+        <Modal
+          title="Arizani tasdiqlash!"
+          open={isModalOpen1}
+          onOk={handleOkSuccess}
+          onCancel={handleCancel1}
+          cancelText="Bekor qilish"
+          okText="Xa, Tasdiqlash"
+          okType="success"
+        >
+          <FormGroup>
+          <Label for="definition" className="mt-3">
+            Muhimlilik
+          </Label>
+          <Input
+            id="definition"
+            name="definition"
+            placeholder="please fill a content..."
+            type="select"
+            onChange={(evt) => {
+              setImportant(evt.target.value);
+            }}
+          >
+            {importance.map((imp, i) => (
+              <option key={i} defaultValue={""} value={imp.id}>
+                {imp.name}
+              </option>
+            ))}
+          </Input>
+          </FormGroup>
+        </Modal>
+
         <Modal
           title="Arizani inkor qilish!"
           open={isModalOpen}
@@ -333,19 +386,6 @@ const View = ({ getSingleItem, item, user, ...props }) => {
               <h4>Ariza yuboruvchi:</h4>
             </Col>
             <Col md={6}> {get(item, "staff[0].name")}</Col>
-
-            {/* <Col md={6}>
-              <h4>Sertifikat:</h4>
-            </Col>
-            <Col md={6}>
-              {item.certificates === null ? "Mavjud emas" : item.certificates}
-            </Col>
-            <Col md={6}>
-              <h4>Litsenziya:</h4>
-            </Col>
-            <Col md={6}>
-              {item.licenses === null ? "Mavjud emas" : item.licenses}
-            </Col> */}
           </Row>
 
           <Label for="definition" className="mt-3">
@@ -412,9 +452,13 @@ const View = ({ getSingleItem, item, user, ...props }) => {
                   "Mavjud emas"
                 ) : (
                   <a href={get(item, "certificate.file", "")} download>
-                    Mavjud
+                    Mavjud:{" "}
                   </a>
                 )}
+                <i>
+                  {get(item, "certificate.from")} -{" "}
+                  {get(item, "certificate.to")}
+                </i>
               </Col>
               <Col md={12} className="mt-2">
                 <h5>Litsenziya</h5>
@@ -422,9 +466,12 @@ const View = ({ getSingleItem, item, user, ...props }) => {
                   "Mavjud emas"
                 ) : (
                   <a href={get(item, "license.file", "")} download>
-                    Mavjud
+                    Mavjud:{" "}
                   </a>
                 )}
+                <i>
+                  {get(item, "license.from")} - {get(item, "license.to")}
+                </i>
               </Col>
             </Row>
           </Col>
@@ -448,15 +495,19 @@ const View = ({ getSingleItem, item, user, ...props }) => {
 };
 
 const mapStateToProps = (state) => {
+  console.log(state);
   return {
     item: get(state, "PageReducer.data.get-one-item.result", {}),
+    importance: get(state, "PageReducer.data.muhim.result.data", []),
     isFetchedItem: get(state, "PageReducer.data.get-one-item.isFetched", false),
     total: get(state, "PageReducer.data.item-list.result.total", 0),
     user: get(state, "Auth.user", {}),
   };
 };
 const mapDispatchToProps = (dispatch) => {
+
   return {
+
     getSingleItem: ({ id, include = [], append = [] }) => {
       const storeName = "get-one-item";
       dispatch({
@@ -465,7 +516,7 @@ const mapDispatchToProps = (dispatch) => {
           url: `/api/application/${id}`,
           config: {
             params: {
-              // include: include.join(","),
+              include: include.join(","),
               // append: append.join(","),
             },
           },
@@ -473,6 +524,19 @@ const mapDispatchToProps = (dispatch) => {
         },
       });
     },
+
+    getImportance: () => {
+      const storeName = "muhim";
+      dispatch({
+        type: ApiActions.GET_ALL.REQUEST,
+        payload: {
+          url: "api/importance",
+          storeName,
+        },
+      });
+    },
+
+    
   };
 };
 

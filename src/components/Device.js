@@ -73,7 +73,7 @@ const Device = ({ sendDeviceID = () => {}, ...props }) => {
           </div> */}
         </div>
         <Modal
-          title="Xodim qo'shish"
+          title="Qurilma qo'shish"
           open={isModalOpen}
           onOk={handleOk}
           onCancel={handleCancel}

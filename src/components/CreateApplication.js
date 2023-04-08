@@ -120,12 +120,10 @@ const CreateApplication = () => {
         }
       })
       .catch((error) => {
-        if (error.response.status === 422) {
+        
           warnNotification();
-        } 
-        else {
+        
           console.log(error);
-        }
       });
   };
 

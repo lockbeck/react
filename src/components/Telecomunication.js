@@ -70,7 +70,7 @@ const Telecomunication = ({ sendTelId = () => {}, ...props }) => {
         </div>
 
         <Modal
-          title="Xodim qo'shish"
+          title="Tarmoq qo'shish"
           open={isModalOpen}
           onOk={handleOk}
           onCancel={handleCancel}

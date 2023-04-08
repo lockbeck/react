@@ -341,7 +341,7 @@ const EditPage = ({ getSingleItem, item, user, ...props }) => {
                           removeStaff(get(application, "staffs[0]", ""))
                         }
                       >
-                        x
+                        <DeleteOutlined />
                       </div>
                     </Col>
                   )}

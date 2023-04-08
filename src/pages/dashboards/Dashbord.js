@@ -129,7 +129,7 @@ const DefaultDashboard = ({
             <div className="page-title-box">
               {hasAccess(['admin', 'manager'], get(user, 'roles', [])) && <Row>
                 <Col lg={7}>
-                  <h4 className="page-title">Welcome, {user.name}</h4>
+                  <h4 className="page-title">{user.name}</h4>
                 </Col>
                 <Col lg={5} className="mt-lg-3 mt-md-0"></Col>
               </Row>}

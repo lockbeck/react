@@ -14,6 +14,7 @@ const RejectedApplication = React.lazy(() => import("./components/RejectedApplic
 const InProccess = React.lazy(() => import("./components/InProccess"));
 const View = React.lazy(() => import("./components/view/View"));
 const Users = React.lazy(() => import("./components/Users"));
+const Importance = React.lazy(() => import("./components/Importance"));
 const CreateApplication = React.lazy(() => import("./components/CreateApplication"));
 const EditPage = React.lazy(() => import("./components/EditPage"));
 // auth
@@ -24,6 +25,7 @@ const Logout = React.lazy(() => import("./pages/auth/Logout"));
 // );
 // const Register = React.lazy(() => import("./pages/account/Register"));
 // const ConfirmAccount = React.lazy(() => import("./pages/account/Confirm"));
+
 
 
 
@@ -116,6 +118,13 @@ const routes = [
     path: "/users",
     name: "Users",
     component: Users,
+    route: PrivateRoute,
+    roles: ["admin","manager", "user"],  
+  },
+  {
+    path: "/importance",
+    name: "Importance",
+    component: Importance,
     route: PrivateRoute,
     roles: ["admin","manager", "user"],  
   },

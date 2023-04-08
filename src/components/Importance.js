@@ -10,7 +10,7 @@ import { EyeOutlined, DeleteOutlined,ExclamationCircleOutlined } from "@ant-desi
 import moment from "moment";
 import { Col, Form, FormGroup, Input, Label, Row } from "reactstrap";
 
-const Users = ({
+const Importance = ({
   history,
   getItemsList,
   getRoles,
@@ -31,14 +31,11 @@ const Users = ({
     getItemsList({ ...pagination });
   }, [pagination]);
 
-  const path = "api/users";
+  const path = "api/importance";
 
   const [formData, setFormData] = useState({
     name: "",
-    email: "",
-    password: "",
-    password_confirmation: "",
-    role: null,
+    definition: ""
   });
 
   const update = (params = {}, id) => {
@@ -92,8 +89,6 @@ const Users = ({
     setIsModalOpen(false);
   };
 
-  console.log(roles);
-
 
   // modal confirmation
   const [modal, contextHolder] = Modal.useModal();
@@ -118,20 +113,10 @@ const Users = ({
       key: "name",
     },
     {
-      title: "Email",
-      dataIndex: "email",
-      key: "email",
+      title: "Definition",
+      dataIndex: "definition",
+      key: "definition",
     },
-    // {
-    //   title: "Subject",
-    //   dataIndex: "subject",
-    //   key: "subject",
-    // },
-    // {
-    //   title: "Phone",
-    //   dataIndex: "phone",
-    //   key: "phone",
-    // },
     {
       title: "Created Date",
       dataIndex: "created_at",
@@ -171,7 +156,7 @@ const Users = ({
       <div className="application-content">
         <Row>
           <Col md={11}>
-            <p className="title-name">Foydalanuvchilar</p>
+            <p className="title-name">Muhimlilik darajasi</p>
             <span className="title-badge-count">{total}</span>
           </Col>
           <Col md={1}>
@@ -203,11 +188,11 @@ const Users = ({
               <Row>
                 <Col sm={12}>
                   <FormGroup>
-                    <Label for="name">Ism</Label>
+                    <Label for="name">Nomi</Label>
                     <Input
                       id="name"
                       name="name"
-                      placeholder="arizachi nomini kiriting..."
+                      placeholder="muhimlilik..."
                       type="text"
                       onChange={(e) =>
                         setFormData({ ...formData, name: e.target.value })
@@ -218,68 +203,16 @@ const Users = ({
                 </Col>
                 <Col sm={12}>
                   <FormGroup>
-                    <Label for="email">Email</Label>
+                    <Label for="definition">Definition</Label>
                     <Input
-                      id="email"
-                      name="email"
-                      placeholder="email..."
-                      type="email"
+                      id="importance"
+                      name="importance"
+                      placeholder="definition..."
+                      type="text"
                       onChange={(e) =>
-                        setFormData({ ...formData, email: e.target.value })
+                        setFormData({ ...formData, definition: e.target.value })
                       }
                     />
-                  </FormGroup>
-                </Col>
-                <Col sm={12}>
-                  <FormGroup>
-                    <Label for="password">Parol</Label>
-                    <Input
-                      id="password"
-                      name="password"
-                      placeholder="password..."
-                      type="password"
-                      onChange={(e) =>
-                        setFormData({ ...formData, password: e.target.value })
-                      }
-                    />
-                  </FormGroup>
-                </Col>
-                <Col sm={12}>
-                  <FormGroup>
-                    <Label for="password_confirmation">
-                      Parolni tasdiqlang
-                    </Label>
-                    <Input
-                      id="password_confirmation"
-                      name="password_confirmation"
-                      placeholder="parolni tasdiqlang"
-                      type="password"
-                      onChange={(e) =>
-                        setFormData({
-                          ...formData,
-                          password_confirmation: e.target.value,
-                        })
-                      }
-                    />
-                  </FormGroup>
-                </Col>
-                <Col sm={12}>
-                  <FormGroup>
-                    <Label for="role">Role</Label>
-                    <Input
-                      id="role"
-                      name="role"
-                      type="select"
-                      onChange={(e) =>
-                        setFormData({ ...formData, role: e.target.value })
-                      }
-                    >
-                      {roles.map((rol, i) => (
-                        <option key={i} value={rol.id}>
-                          {rol.name}
-                        </option>
-                      ))}
-                    </Input>
                   </FormGroup>
                 </Col>
               </Row>
@@ -312,7 +245,7 @@ const mapDispatchToProps = (dispatch) => {
       dispatch({
         type: ApiActions.GET_ALL.REQUEST,
         payload: {
-          url: "/api/users",
+          url: "/api/importance",
           config: {
             params: {
               page: current,
@@ -338,4 +271,4 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(withRouter(Users));
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(Importance));

@@ -14,26 +14,28 @@ import {
   FileOutlined,
   FileExclamationOutlined,
   UsergroupAddOutlined,
-  FileDoneOutlined
+  FileDoneOutlined,
+  ExclamationCircleOutlined
 } from "@ant-design/icons";
 import { hasAccess } from "../helpers/authUtils";
 
-const SideNavContent = ({roles, ...props}) => {
-  const access = hasAccess(['admin', 'manager','user'], roles);
+const SideNavContent = ({ roles, ...props }) => {
+  const access = hasAccess(["admin", "manager", "user"], roles);
   return (
     <React.Fragment>
       <div id="sidebar-menu">
         <ul className="metismenu" id="side-menu">
           {/* <li className="menu-title">Navigation</li> */}
-          {hasAccess(['admin', 'manager'], roles) && 
-          <li>
-            <NavLink to="/dashboard"   aria-expanded="true">
-              <DashboardOutlined
-                style={{ fontSize: "25px", color: "#121211" }}
-              />
-              <span className="menu-name"> Dashboard </span>
-            </NavLink>
-          </li>}
+          {hasAccess(["admin", "manager"], roles) && (
+            <li>
+              <NavLink to="/dashboard" aria-expanded="true">
+                <DashboardOutlined
+                  style={{ fontSize: "25px", color: "#121211" }}
+                />
+                <span className="menu-name"> Dashboard </span>
+              </NavLink>
+            </li>
+          )}
 
           <li>
             <NavLink
@@ -51,23 +53,26 @@ const SideNavContent = ({roles, ...props}) => {
               className="waves-effect "
               aria-expanded="true"
             >
-              <FileDoneOutlined style={{ fontSize: "25px", color: "#121211" }} />
+              <FileDoneOutlined
+                style={{ fontSize: "25px", color: "#121211" }}
+              />
               <span className="menu-name">Qabul qilingan</span>
             </NavLink>
           </li>
-          {hasAccess(['manager','user'], roles)&&
-          <li>
-            <NavLink
-              to="/new_application"
-              className="waves-effect  nav-link"
-              aria-expanded="true"
-            >
-              <FileExclamationOutlined
-                style={{ fontSize: "25px", color: "#121211" }}
-              />
-              <span className="menu-name"> Yangi Arizalar </span>
-            </NavLink>
-          </li>}
+          {hasAccess(["manager", "user"], roles) && (
+            <li>
+              <NavLink
+                to="/new_application"
+                className="waves-effect  nav-link"
+                aria-expanded="true"
+              >
+                <FileExclamationOutlined
+                  style={{ fontSize: "25px", color: "#121211" }}
+                />
+                <span className="menu-name"> Yangi Arizalar </span>
+              </NavLink>
+            </li>
+          )}
 
           <li>
             <NavLink
@@ -91,29 +96,50 @@ const SideNavContent = ({roles, ...props}) => {
             </NavLink>
           </li>
 
-         {hasAccess(['user'], roles) && 
-         <li>
-            <NavLink
-              to="/create_application"
-              className="waves-effect"
-              aria-expanded="true"
-            >
-              <FileAddOutlined style={{ fontSize: "25px", color: "#121211" }} />
-              <span className="menu-name"> Ariza qo'shish</span>
-            </NavLink>
-          </li>}
+          {hasAccess(["user"], roles) && (
+            <li>
+              <NavLink
+                to="/create_application"
+                className="waves-effect"
+                aria-expanded="true"
+              >
+                <FileAddOutlined
+                  style={{ fontSize: "25px", color: "#121211" }}
+                />
+                <span className="menu-name"> Ariza qo'shish</span>
+              </NavLink>
+            </li>
+          )}
 
-          {hasAccess(['admin'], roles) && 
-         <li>
-            <NavLink
-              to="/users"
-              className="waves-effect"
-              aria-expanded="true"
-            >
-              <UsergroupAddOutlined style={{ fontSize: "25px", color: "#121211" }} />
-              <span className="menu-name">Foydalanuvchilar</span>
-            </NavLink>
-          </li>}
+          {hasAccess(["admin"], roles) && (
+            <li>
+              <NavLink
+                to="/users"
+                className="waves-effect"
+                aria-expanded="true"
+              >
+                <UsergroupAddOutlined
+                  style={{ fontSize: "25px", color: "#121211" }}
+                />
+                <span className="menu-name">Foydalanuvchilar</span>
+              </NavLink>
+            </li>
+          )}
+
+          {/* {hasAccess(["admin"], roles) && (
+            <li>
+              <NavLink
+                to="/importance"
+                className="waves-effect"
+                aria-expanded="true"
+              >
+                <ExclamationCircleOutlined
+                  style={{ fontSize: "25px", color: "#121211" }}
+                />
+                <span className="menu-name">Muhimlilik</span>
+              </NavLink>
+            </li>
+          )} */}
         </ul>
       </div>
       <div className="clearfix"></div>
@@ -122,7 +148,7 @@ const SideNavContent = ({roles, ...props}) => {
 };
 
 class Sidebar extends Component {
-  roles = get(this.props, "user.roles",[])
+  roles = get(this.props, "user.roles", []);
   constructor(props) {
     super(props);
     this.handleOtherClick = this.handleOtherClick.bind(this);
@@ -224,9 +250,8 @@ class Sidebar extends Component {
   };
 
   render() {
-    
     const isCondensed = this.props.isCondensed || false;
-  const roles = get(this.props, 'user.roles', []);
+    const roles = get(this.props, "user.roles", []);
     return (
       <React.Fragment>
         <div
@@ -235,7 +260,7 @@ class Sidebar extends Component {
         >
           {!isCondensed && (
             <PerfectScrollbar>
-              <SideNavContent  roles={this.roles}/>
+              <SideNavContent roles={this.roles} />
             </PerfectScrollbar>
           )}
           {isCondensed && <SideNavContent />}
@@ -251,7 +276,4 @@ const mapStateToProps = (state) => {
   };
 };
 
-
-export default connect(
-  mapStateToProps,
-)(withRouter(Sidebar));
+export default connect(mapStateToProps)(withRouter(Sidebar));

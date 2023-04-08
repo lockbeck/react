@@ -7,7 +7,7 @@ import ProfileDropdown from "./dropdowns/ProfileDropdown";
 import CalendarDropdown from "./dropdowns/CalendarDropdown";
 import logoSm from "../assets/images/logo-dark.png";
 import logo from "../assets/images/logo-dark.png";
-import profilePic from "../assets/images/userpic.png";
+import profilePic from "../assets/images/adminUser.png";
 import "../assets/scss/topbar/topbar.css";
 import GiftDropdown from "./dropdowns/GiftDropdown";
 import CallDropdown from "./dropdowns/CallDropdown";
