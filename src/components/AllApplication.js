@@ -9,6 +9,7 @@ import { Button, Modal, Space, Table, DatePicker } from "antd";
 import { EyeOutlined } from "@ant-design/icons";
 import moment from "moment";
 import { Badge, Row, Col } from "reactstrap";
+import {withTranslation} from "react-i18next";
 const { RangePicker } = DatePicker;
 const dateFormat = "DD/MM/YYYY";
 
@@ -20,6 +21,7 @@ const AllApplication = ({
   item,
   isFetched,
   total,
+  ...props
 }) => {
   const append = ["staff", "telecommunication", "device"];
   const include = ["certificate", "license"];
@@ -27,6 +29,8 @@ const AllApplication = ({
     current: 1,
     pageSize: 15,
   });
+
+  const {t, i18n} = props
 
   const [filter, setFilter] = useState({
     from: new Date(new Date().setMonth(new Date().getMonth() - 3)),
@@ -98,13 +102,13 @@ const AllApplication = ({
     phone: get(item, "staff", []).map((stuf) => get(stuf, "phone")),
     status:
       get(item, "status") === 0 ? (
-        <Badge color="danger">rejected</Badge>
+        <Badge color="danger">{t('rejected')}</Badge>
       ) : get(item, "status") === 1 ? (
-        <Badge color="warning">waiting</Badge>
+        <Badge color="warning">{t('waiting')}</Badge>
       ) : get(item, "status") === 2 ? (
-        <Badge color="primary">proccess</Badge>
+        <Badge color="primary">{('proccess')}</Badge>
       ) : (
-        <Badge color="success">success</Badge>
+        <Badge color="success">{t('success')}</Badge>
       ),
   }));
 
@@ -115,39 +119,39 @@ const AllApplication = ({
       key: "id",
     },
     {
-      title: "MAI nomi",
+      title: t('mai_name'),
       dataIndex: "name",
       key: "name",
     },
     {
-      title: "Boshqaruvchi",
+      title: t('mai_sub'),
       dataIndex: "staff",
       // render: (stuf) => get(stuf, "name", "-"),
       key: "staff",
     },
     {
-      title: "Status",
+      title: t('status'),
       dataIndex: "status",
       key: "status",
     },
     {
-      title: "O'zgartirilgan vaqt",
+      title: t('edited_time'),
       dataIndex: "update_at",
       key: "update_at",
     },
     {
-      title: "Kiritilgan vaqt",
+      title: t('created_time'),
       dataIndex: "created_at",
       key: "created_at",
     },
     {
-      title: "Aloqa",
+      title: t('contact'),
       dataIndex: "phone",
       // render: (item) => get(item, "phone", "-"),
       key: "phone",
     },
     {
-      title: "action",
+      title: "",
       dataIndex: "id",
       key: "action",
       render: (id) => {
@@ -161,18 +165,17 @@ const AllApplication = ({
       },
     },
   ];
-  console.log(filter);
   return (
     <React.Fragment>
       <div className="application-content">
         <Row className="mb-3">
           <Col md={8}>
-            <p className="title-name">Barcha arizalar</p>
+            <p className="title-name">{t('all_applications')}</p>
             <span className="title-badge-count">{total}</span>
           </Col>
           <Col md={4}>
             <Space direction="vertical" size={12}>
-              <RangePicker onChange={onRangeChange} format={dateFormat} />
+              <RangePicker onChange={onRangeChange} format={dateFormat}  placeholder={[t('from'), t('to')]}/>
             </Space>
           </Col>
         </Row>
@@ -258,7 +261,4 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(withRouter(AllApplication));
+export default withTranslation('translation')(connect(mapStateToProps, mapDispatchToProps)(withRouter(AllApplication)));

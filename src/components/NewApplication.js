@@ -140,9 +140,9 @@ const NewApplication = ({ history, getItemsList, getSingleItem, items, item, isF
       key: "staff",
     },
     {
-      title: "Status",
+      title: "Ariza holati",
       dataIndex: "status",
-      render: () => <Badge color="warning">waiting</Badge>,
+      render: () => <Badge color="warning">kutilmoqda</Badge>,
       key: "status",
     },
     {
@@ -158,13 +158,13 @@ const NewApplication = ({ history, getItemsList, getSingleItem, items, item, isF
       key: "created_at",
     },
     {
-      title: "Contact",
+      title: "Aloqa uchun",
       dataIndex: "phone",
       //render: (item) => get(item, "phone", "-"),
       key: "phone",
     },
     {
-      title: "action",
+      title: "",
       key: "action",
       dataIndex: "id",
       render: (id) => {
@@ -229,7 +229,7 @@ const NewApplication = ({ history, getItemsList, getSingleItem, items, item, isF
           </Col>
           <Col md={4}>
           <Space direction="vertical" size={12}>
-              <RangePicker onChange={onRangeChange} format={dateFormat} />
+              <RangePicker onChange={onRangeChange} format={dateFormat}  placeholder={["...dan", "...gacha"]}/>
             </Space>
           </Col>
         </Row>

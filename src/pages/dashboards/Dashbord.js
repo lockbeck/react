@@ -74,7 +74,7 @@ const DefaultDashboard = ({
 
     const certificate = get(item, "certificate", []);
     const allInMont = get(item, "allInMont", []);
-    
+
     const allInMontLabels = allInMont.map(
       ({ year, month }) => `${month} ${year}`
     );
@@ -120,25 +120,26 @@ const DefaultDashboard = ({
     ]);
   }, [item]);
 
- 
   return (
     <React.Fragment>
       <div className="">
         <Row>
           <Col>
             <div className="page-title-box">
-              {hasAccess(['admin', 'manager'], get(user, 'roles', [])) && <Row>
-                <Col lg={7}>
-                  <h4 className="page-title">Welcome, {user.name}</h4>
-                </Col>
-                <Col lg={5} className="mt-lg-3 mt-md-0"></Col>
-              </Row>}
+              {hasAccess(["admin", "manager"], get(user, "roles", [])) && (
+                <Row>
+                  <Col lg={7}>
+                    <h4 className="page-title">{user.name}</h4>
+                  </Col>
+                  <Col lg={5} className="mt-lg-3 mt-md-0"></Col>
+                </Row>
+              )}
             </div>
           </Col>
         </Row>
 
-        <Row>
-          <Col className="statistics">
+        <Row className="justify-content-between">
+          <Col className="statistics" lg={2}>
             <Card className="card-statistics">
               <CardBody className="card-body-tab">
                 <div className="icon-div1">
@@ -152,7 +153,7 @@ const DefaultDashboard = ({
               </CardBody>
             </Card>
           </Col>
-          <Col className="statistics">
+          <Col className="statistics" lg={2}>
             <Card className="card-statistics">
               <CardBody className="card-body-tab">
                 <div className="icon-div2">
@@ -167,7 +168,7 @@ const DefaultDashboard = ({
             </Card>
           </Col>
 
-          <Col className="statistics">
+          <Col className="statistics" lg={2}>
             <Card className="card-statistics">
               <CardBody className="card-body-tab">
                 <div className="icon-div3">
@@ -181,15 +182,16 @@ const DefaultDashboard = ({
               </CardBody>
             </Card>
           </Col>
-          <Col className="statistics">
+          <Col className="statistics" lg={2}>
             <Card className="card-statistics">
               <CardBody className="card-body-tab">
                 <div className="icon-div4">
                   <i className="fa fa-users fa-2x text-warning"></i>
                 </div>
 
-                
-                {hasAccess(['admin', 'manager'], get(user, 'roles', [])) && <h4>Ko'rilmagan</h4>}
+                {hasAccess(["admin", "manager"], get(user, "roles", [])) && (
+                  <h4>Ko'rilmagan</h4>
+                )}
                 <p>Ko'rilmagan arizalar</p>
                 <i className="fa fa-arrow-down text-dark mr-1"></i>
                 <span>{statusData[1]}</span>
@@ -197,7 +199,7 @@ const DefaultDashboard = ({
               </CardBody>
             </Card>
           </Col>
-          <Col className="statistics">
+          <Col className="statistics" lg={2}>
             <Card className="card-statistics">
               <CardBody className="card-body-tab">
                 <div className="icon-div5">
@@ -259,7 +261,7 @@ const DefaultDashboard = ({
                 <h2>{item.applications}</h2>
                 <h5>Kelib tushgan arizalar</h5>
                 <hr />
-                <PieChart data={statusData}/>
+                <PieChart data={statusData} />
               </CardBody>
             </Card>
           </Col>

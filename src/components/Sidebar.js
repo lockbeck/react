@@ -1,11 +1,12 @@
 import React, { Component } from "react";
-import { Link, NavLink, withRouter } from "react-router-dom";
+import { Link, NavLink, useLocation, withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { get } from "lodash";
 import "../assets/scss/sidebar/sidebar.css";
 import PerfectScrollbar from "react-perfect-scrollbar";
 import "react-perfect-scrollbar/dist/css/styles.css";
 import MetisMenu from "metismenujs/dist/metismenujs";
+import { useTranslation, withTranslation } from "react-i18next";
 import {
   DashboardOutlined,
   FileExcelOutlined,
@@ -14,106 +15,241 @@ import {
   FileOutlined,
   FileExclamationOutlined,
   UsergroupAddOutlined,
-  FileDoneOutlined
+  FileDoneOutlined,
 } from "@ant-design/icons";
 import { hasAccess } from "../helpers/authUtils";
 
-const SideNavContent = ({roles, ...props}) => {
-  const access = hasAccess(['admin', 'manager','user'], roles);
+const SideNavContent = ({ roles, ...props }) => {
+  const { t, i18n } = useTranslation();
+  const { pathname } = useLocation();
+  const access = hasAccess(["admin", "manager", "user"], roles);
   return (
     <React.Fragment>
       <div id="sidebar-menu">
         <ul className="metismenu" id="side-menu">
           {/* <li className="menu-title">Navigation</li> */}
-          {hasAccess(['admin', 'manager'], roles) && 
-          <li>
-            <NavLink to="/dashboard"   aria-expanded="true">
-              <DashboardOutlined
-                style={{ fontSize: "25px", color: "#121211" }}
-              />
-              <span className="menu-name"> Dashboard </span>
-            </NavLink>
-          </li>}
+          {hasAccess(["admin", "manager"], roles) && (
+            <li>
+              {pathname.search("/dashboard") === 0 ? (
+                <NavLink
+                  to="/dashboard"
+                  aria-expanded="true"
+                  className="bg-light"
+                >
+                  <DashboardOutlined
+                    style={{ fontSize: "25px", color: "#121211" }}
+                  />
+                  <span className="menu-name"> Asosiy oyna </span>
+                </NavLink>
+              ) : (
+                <NavLink to="/dashboard" aria-expanded="true">
+                  <DashboardOutlined
+                    style={{ fontSize: "25px", color: "#121211" }}
+                  />
+                  <span className="menu-name"> Asosiy oyna </span>
+                </NavLink>
+              )}
+            </li>
+          )}
 
           <li>
-            <NavLink
-              to="/all_application"
-              className="waves-effect "
-              aria-expanded="true"
-            >
-              <FileOutlined style={{ fontSize: "25px", color: "#121211" }} />
-              <span className="menu-name"> Barcha Arizalar</span>
-            </NavLink>
+            {pathname.search("/all_application") === 0 ? (
+              <NavLink
+                to="/all_application"
+                className="waves-effect bg-light"
+                aria-expanded="true"
+              >
+                <FileOutlined style={{ fontSize: "25px", color: "#121211" }} />
+                <span className="menu-name"> {t("all_applications")}</span>
+              </NavLink>
+            ) : (
+              <NavLink
+                to="/all_application"
+                className="waves-effect "
+                aria-expanded="true"
+              >
+                <FileOutlined style={{ fontSize: "25px", color: "#121211" }} />
+                <span className="menu-name"> {t("all_applications")}</span>
+              </NavLink>
+            )}
           </li>
           <li>
-            <NavLink
-              to="/success_application"
-              className="waves-effect "
-              aria-expanded="true"
-            >
-              <FileDoneOutlined style={{ fontSize: "25px", color: "#121211" }} />
-              <span className="menu-name">Qabul qilingan</span>
-            </NavLink>
+            {pathname.search("/success_application") === 0 ? (
+              <NavLink
+                to="/success_application"
+                className="waves-effect bg-light"
+                aria-expanded="true"
+              >
+                <FileDoneOutlined
+                  style={{ fontSize: "25px", color: "#121211" }}
+                />
+                <span className="menu-name">{t("accepted_applications")}</span>
+              </NavLink>
+            ) : (
+              <NavLink
+                to="/success_application"
+                className="waves-effect "
+                aria-expanded="true"
+              >
+                <FileDoneOutlined
+                  style={{ fontSize: "25px", color: "#121211" }}
+                />
+                <span className="menu-name">{t("accepted_applications")}</span>
+              </NavLink>
+            )}
           </li>
-          {hasAccess(['manager','user'], roles)&&
-          <li>
-            <NavLink
-              to="/new_application"
-              className="waves-effect  nav-link"
-              aria-expanded="true"
-            >
-              <FileExclamationOutlined
-                style={{ fontSize: "25px", color: "#121211" }}
-              />
-              <span className="menu-name"> Yangi Arizalar </span>
-            </NavLink>
-          </li>}
+          {hasAccess(["manager", "user"], roles) && (
+            <li>
+              {pathname.search("/new_application") === 0 ? (
+                <NavLink
+                  to="/new_application"
+                  className="waves-effect  nav-link"
+                  aria-expanded="true"
+                >
+                  <FileExclamationOutlined
+                    style={{ fontSize: "25px", color: "#121211" }}
+                  />
+                  <span className="menu-name"> {t("new_applications")} </span>
+                </NavLink>
+              ) : (
+                <NavLink
+                  to="/new_application"
+                  className="waves-effect  nav-link"
+                  aria-expanded="true"
+                >
+                  <FileExclamationOutlined
+                    style={{ fontSize: "25px", color: "#121211" }}
+                  />
+                  <span className="menu-name"> {t("new_applications")} </span>
+                </NavLink>
+              )}
+            </li>
+          )}
 
           <li>
-            <NavLink
-              to="/in_proccess"
-              className="waves-effect"
-              aria-expanded="true"
-            >
-              <FileSyncOutlined
-                style={{ fontSize: "25px", color: "#121211" }}
-              />
-              <span className="menu-name"> Jarayondagi </span>
-            </NavLink>
+            {pathname.search("/in_proccess") === 0 ? (
+              <NavLink
+                to="/in_proccess"
+                className="waves-effect bg-light"
+                aria-expanded="true"
+              >
+                <FileSyncOutlined
+                  style={{ fontSize: "25px", color: "#121211" }}
+                />
+                <span className="menu-name"> {t("inproccess")} </span>
+              </NavLink>
+            ) : (
+              <NavLink
+                to="/in_proccess"
+                className="waves-effect bg-link"
+                aria-expanded="true"
+              >
+                <FileSyncOutlined
+                  style={{ fontSize: "25px", color: "#121211" }}
+                />
+                <span className="menu-name"> {t("inproccess")} </span>
+              </NavLink>
+            )}
           </li>
 
           <li>
-            <NavLink to="/rejected_application" aria-expanded="true">
-              <FileExcelOutlined
-                style={{ fontSize: "25px", color: "#121211" }}
-              />
-              <span className="menu-name"> Inkor qilingan </span>
-            </NavLink>
+            {pathname.search("/rejected_application") === 0 ? (
+              <NavLink
+                to="/rejected_application"
+                aria-expanded="true"
+                className="bg-light"
+              >
+                <FileExcelOutlined
+                  style={{ fontSize: "25px", color: "#121211" }}
+                />
+                <span className="menu-name">
+                  {" "}
+                  {t("rejected_applications")}{" "}
+                </span>
+              </NavLink>
+            ) : (
+              <NavLink to="/rejected_application" aria-expanded="true">
+                <FileExcelOutlined
+                  style={{ fontSize: "25px", color: "#121211" }}
+                />
+                <span className="menu-name">
+                  {" "}
+                  {t("rejected_applications")}{" "}
+                </span>
+              </NavLink>
+            )}
           </li>
 
-         {hasAccess(['user'], roles) && 
-         <li>
-            <NavLink
-              to="/create_application"
-              className="waves-effect"
-              aria-expanded="true"
-            >
-              <FileAddOutlined style={{ fontSize: "25px", color: "#121211" }} />
-              <span className="menu-name"> Ariza qo'shish</span>
-            </NavLink>
-          </li>}
+          {hasAccess(["user"], roles) && (
+            <li>
+              {pathname.search("/create_application") === 0 ? (
+                <NavLink
+                  to="/create_application"
+                  className="waves-effect bg-light"
+                  aria-expanded="true"
+                >
+                  <FileAddOutlined
+                    style={{ fontSize: "25px", color: "#121211" }}
+                  />
+                  <span className="menu-name">{t("add_application")}</span>
+                </NavLink>
+              ) : (
+                <NavLink
+                  to="/create_application"
+                  className="waves-effect"
+                  aria-expanded="true"
+                >
+                  <FileAddOutlined
+                    style={{ fontSize: "25px", color: "#121211" }}
+                  />
+                  <span className="menu-name">{t("add_application")}</span>
+                </NavLink>
+              )}
+            </li>
+          )}
 
-          {hasAccess(['admin'], roles) && 
-         <li>
-            <NavLink
-              to="/users"
-              className="waves-effect"
-              aria-expanded="true"
-            >
-              <UsergroupAddOutlined style={{ fontSize: "25px", color: "#121211" }} />
-              <span className="menu-name">Foydalanuvchilar</span>
-            </NavLink>
-          </li>}
+          {hasAccess(["admin"], roles) && (
+            <li>
+              {pathname.search("/users") === 0 ? (
+                <NavLink
+                  to="/users"
+                  className="waves-effect bg-light"
+                  aria-expanded="true"
+                >
+                  <UsergroupAddOutlined
+                    style={{ fontSize: "25px", color: "#121211" }}
+                  />
+                  <span className="menu-name">Foydalanuvchilar</span>
+                </NavLink>
+              ) : (
+                <NavLink
+                  to="/users"
+                  className="waves-effect"
+                  aria-expanded="true"
+                >
+                  <UsergroupAddOutlined
+                    style={{ fontSize: "25px", color: "#121211" }}
+                  />
+                  <span className="menu-name">Foydalanuvchilar</span>
+                </NavLink>
+              )}
+            </li>
+          )}
+
+          {/* {hasAccess(["admin"], roles) && (
+            <li>
+              <NavLink
+                to="/importance"
+                className="waves-effect"
+                aria-expanded="true"
+              >
+                <ExclamationCircleOutlined
+                  style={{ fontSize: "25px", color: "#121211" }}
+                />
+                <span className="menu-name">Muhimlilik</span>
+              </NavLink>
+            </li>
+          )} */}
         </ul>
       </div>
       <div className="clearfix"></div>
@@ -122,7 +258,7 @@ const SideNavContent = ({roles, ...props}) => {
 };
 
 class Sidebar extends Component {
-  roles = get(this.props, "user.roles",[])
+  roles = get(this.props, "user.roles", []);
   constructor(props) {
     super(props);
     this.handleOtherClick = this.handleOtherClick.bind(this);
@@ -224,9 +360,9 @@ class Sidebar extends Component {
   };
 
   render() {
-    
     const isCondensed = this.props.isCondensed || false;
-  const roles = get(this.props, 'user.roles', []);
+    const roles = get(this.props, "user.roles", []);
+    const { t, i18n } = this.props;
     return (
       <React.Fragment>
         <div
@@ -235,7 +371,7 @@ class Sidebar extends Component {
         >
           {!isCondensed && (
             <PerfectScrollbar>
-              <SideNavContent  roles={this.roles}/>
+              <SideNavContent roles={this.roles} />
             </PerfectScrollbar>
           )}
           {isCondensed && <SideNavContent />}
@@ -251,7 +387,6 @@ const mapStateToProps = (state) => {
   };
 };
 
-
-export default connect(
-  mapStateToProps,
-)(withRouter(Sidebar));
+export default withTranslation("translation")(
+  connect(mapStateToProps)(withRouter(Sidebar))
+);

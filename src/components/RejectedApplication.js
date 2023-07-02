@@ -112,9 +112,9 @@ const RejectedApplication = ({
       key: "staff",
     },
     {
-      title: "Status",
+      title: "Ariza holati",
       dataIndex: "status",
-      render: () => <Badge color="danger">rejected</Badge>,
+      render: () => <Badge color="danger">inkor qilingan</Badge>,
       key: "status",
     },
     {
@@ -130,13 +130,13 @@ const RejectedApplication = ({
       key: "created_at",
     },
     {
-      title: "Contact",
+      title: "Aloqa uchun",
       dataIndex: "phone",
       //render: (item) => get(item, "phone", "-"),
       key: "phone",
     },
     {
-      title: "action",
+      title: "",
       dataIndex: "id",
       key: "action",
       render: (id) => {
@@ -165,7 +165,7 @@ const RejectedApplication = ({
           </Col>
           <Col md={4}>
             <Space direction="vertical" size={12}>
-              <RangePicker onChange={onRangeChange} format={dateFormat} />
+              <RangePicker onChange={onRangeChange} format={dateFormat} placeholder={["...dan", "...gacha"]}/>
             </Space>
           </Col>
         </Row>

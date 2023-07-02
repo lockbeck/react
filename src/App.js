@@ -1,5 +1,6 @@
 import React, { Component, Suspense } from 'react';
 import { BrowserRouter } from 'react-router-dom';
+import { withNamespaces } from "react-i18next";
 import { connect } from 'react-redux';
 import Loadable from 'react-loadable';
 

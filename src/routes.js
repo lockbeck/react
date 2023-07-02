@@ -14,8 +14,10 @@ const RejectedApplication = React.lazy(() => import("./components/RejectedApplic
 const InProccess = React.lazy(() => import("./components/InProccess"));
 const View = React.lazy(() => import("./components/view/View"));
 const Users = React.lazy(() => import("./components/Users"));
+const Importance = React.lazy(() => import("./components/Importance"));
 const CreateApplication = React.lazy(() => import("./components/CreateApplication"));
 const EditPage = React.lazy(() => import("./components/EditPage"));
+const ChangeAccount = React.lazy(() => import("./components/ChangeAccount"));
 // auth
 const Login = React.lazy(() => import("./pages/auth/Login"));
 const Logout = React.lazy(() => import("./pages/auth/Logout"));
@@ -24,6 +26,7 @@ const Logout = React.lazy(() => import("./pages/auth/Logout"));
 // );
 // const Register = React.lazy(() => import("./pages/account/Register"));
 // const ConfirmAccount = React.lazy(() => import("./pages/account/Confirm"));
+
 
 
 
@@ -120,6 +123,13 @@ const routes = [
     roles: ["admin","manager", "user"],  
   },
   {
+    path: "/importance",
+    name: "Importance",
+    component: Importance,
+    route: PrivateRoute,
+    roles: ["admin","manager", "user"],  
+  },
+  {
     path: "/create_application",
     name: "CreateApplication",
     component: CreateApplication,
@@ -130,6 +140,22 @@ const routes = [
     path: "/edit",
     name: "EditPage",
     component: EditPage,
+    route: PrivateRoute,
+    roles: ["admin","manager", "user"],  
+  },
+  
+  {
+    path: "/edit",
+    name: "EditPage",
+    component: EditPage,
+    route: PrivateRoute,
+    roles: ["admin","manager", "user"],  
+  },
+
+  {
+    path: "/change_account",
+    name: "ChangeAccount",
+    component: ChangeAccount,
     route: PrivateRoute,
     roles: ["admin","manager", "user"],  
   },

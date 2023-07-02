@@ -13,8 +13,9 @@ import Device from "./Device";
 import Telecomunication from "./Telecomunication";
 import TextEditor from "./TextEditor";
 import FileUpload from "./fileUpload/FileUpload";
+import {withTranslation} from "react-i18next";
 
-const CreateApplication = () => {
+const CreateApplication = ({...props}) => {
   useEffect(() => {}, []);
 
   const path = "api/application";
@@ -39,7 +40,9 @@ const CreateApplication = () => {
   });
 
   const [api, contextHolder] = notification.useNotification();
-  const[warn, warnText] = notification.useNotification();
+  const [warn, warnText] = notification.useNotification();
+
+  const {t, i18n} = props
 
   const openNotification = () => {
     api.open({
@@ -120,12 +123,9 @@ const CreateApplication = () => {
         }
       })
       .catch((error) => {
-        if (error.response.status === 422) {
-          warnNotification();
-        } 
-        else {
-          console.log(error);
-        }
+        warnNotification();
+
+        console.log(error);
       });
   };
 
@@ -155,9 +155,9 @@ const CreateApplication = () => {
           <Row>
             <Col md={4}>
               <FormGroup>
-                <Label for="name">Nomi</Label>
+                <Label for="name">MAI obyektining nomi</Label>
                 <Input
-                required={true}
+                  required={true}
                   id="name"
                   name="name"
                   placeholder="name..."
@@ -173,7 +173,9 @@ const CreateApplication = () => {
             </Col>
             <Col md={4}>
               <FormGroup>
-                <Label for="subject">Subyekt</Label>
+                <Label for="subject">
+                  MAI obyektiga egalik qiluvchi subyekt nomi:
+                </Label>
                 <Input
                   id="subject"
                   name="subject"
@@ -228,6 +230,22 @@ const CreateApplication = () => {
               )}
             </Col>
             <Col md={4} className="mt-2">
+              {/* <FormGroup>
+            <Label for="name">MAI sertifikati</Label>
+                <Input
+                required={true}
+                  id="certificate"
+                  name="certificate"
+                  placeholder="sertifikat linki..."
+                  type="text"
+                  onChange={($e) =>
+                    setApplication({
+                      ...application,
+                      certificate: get($e, "target.value", ""),
+                    })
+                  }
+                />
+                </FormGroup> */}
               <FormGroup>
                 <FileUpload
                   label={"MAI sertifikati"}
@@ -241,6 +259,22 @@ const CreateApplication = () => {
               </FormGroup>
             </Col>
             <Col md={4} className="mt-2">
+              {/* <FormGroup>
+            <Label for="name">MAI litsenziyasi</Label>
+                <Input
+                required={true}
+                  id="license"
+                  name="license"
+                  placeholder="license linki..."
+                  type="text"
+                  onChange={($e) =>
+                    setApplication({
+                      ...application,
+                      certificate: get($e, "target.value", ""),
+                    })
+                  }
+                />
+                </FormGroup> */}
               <FormGroup>
                 <FileUpload
                   label={"MAI litsenziyasi"}
@@ -282,38 +316,72 @@ const CreateApplication = () => {
                 <Telecomunication sendTelId={saveTelecomunication} />
               </FormGroup>
             </Col>
+            <Col lg={6}>
+              <FormGroup>
+                <Label for="subject_type">{t("mai_importance")}</Label>
+                <Input
+                  id="mai_importance"
+                  name="mai_importance"
+                  type="select"
+                  onChange={($e) =>
+                    setApplication({
+                      ...application,
+                      importance: get($e, "target.value", ""),
+                    })
+                  }
+                >
+                  <option></option>
+                  <option>yuqori</option>
+                  <option>o'rta</option>
+                  <option>past</option>
+                </Input>
+              </FormGroup>
+            </Col>
+            <Col lg={6}>
+            <FormGroup>
+                <FileUpload
+                  label={t("file")}
+                  save={(file) =>
+                    setApplication({
+                      ...application,
+                      license_id: get(file, "id", ""),
+                    })
+                  }
+                />
+              </FormGroup>
+            </Col>
           </Row>
           <Tabs
             defaultActiveKey="1"
             items={[
               {
                 key: "1",
-                label: `MAI obyektining maqsadi`,
+                label: `Obyektning ko'lami va maqsadi`,
                 children: <TextEditor saveText={savePurpose} />,
               },
               {
                 key: "2",
-                label: `Xatolik yoki ishdan chiqqan taqdirda`,
+                label: `Xatolik  yoki ishdan chiqqan taqdirda, yuzaga kelishi mumkin bo'lgan oqibatlari va zarar`,
                 children: <TextEditor saveText={saveBroken} />,
               },
               {
                 key: "3",
-                label: `Kiberxavfsizlikni ta’minlash`,
+                label: `Kiberxavfsizlikni ta’minlash bo'yicha qo'llaniladigan chora va vositalar`,
                 children: <TextEditor saveText={saveSecurity} />,
               },
               {
                 key: "4",
-                label: `Insident yuz berishi oqibatlari`,
+                label: `Kiberxavfsizlik insidentini yuz berishining ehtimoliy oqibatlari`,
                 children: <TextEditor saveText={saveIncident} />,
               },
               {
                 key: "5",
-                label: `Xavfsizlikni ta’minlash tashkiliy va texnik choralari`,
+                label: `Xavfsizlikni ta’minlashning tashkiliy va texnik choralari`,
                 children: <TextEditor saveText={saveOrganizational} />,
               },
               {
                 key: "6",
-                label: `Axborot xavfsizligiga tahdidlar`,
+                label: `Obyektga nisbatan axborot xavfsizligi tahdidlari va qoidabuzarlik toifalari haqida ma'lumotlar`,
                 children: <TextEditor saveText={saveThreads} />,
               },
             ]}
@@ -343,7 +411,4 @@ const mapDispatchToProps = (dispatch) => {
   return {};
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(withRouter(CreateApplication));
+export default withTranslation('translation')(connect(mapStateToProps, mapDispatchToProps)(withRouter(CreateApplication)));

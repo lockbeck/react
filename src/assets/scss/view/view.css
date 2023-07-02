@@ -23,3 +23,7 @@
     left: 30px;
     color: red;
 }
+.succes-reject-importance{
+    float: inline-end;
+    width: 50%;
+}
