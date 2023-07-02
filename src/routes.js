@@ -17,6 +17,7 @@ const Users = React.lazy(() => import("./components/Users"));
 const Importance = React.lazy(() => import("./components/Importance"));
 const CreateApplication = React.lazy(() => import("./components/CreateApplication"));
 const EditPage = React.lazy(() => import("./components/EditPage"));
+const ChangeAccount = React.lazy(() => import("./components/ChangeAccount"));
 // auth
 const Login = React.lazy(() => import("./pages/auth/Login"));
 const Logout = React.lazy(() => import("./pages/auth/Logout"));
@@ -139,6 +140,22 @@ const routes = [
     path: "/edit",
     name: "EditPage",
     component: EditPage,
+    route: PrivateRoute,
+    roles: ["admin","manager", "user"],  
+  },
+  
+  {
+    path: "/edit",
+    name: "EditPage",
+    component: EditPage,
+    route: PrivateRoute,
+    roles: ["admin","manager", "user"],  
+  },
+
+  {
+    path: "/change_account",
+    name: "ChangeAccount",
+    component: ChangeAccount,
     route: PrivateRoute,
     roles: ["admin","manager", "user"],  
   },

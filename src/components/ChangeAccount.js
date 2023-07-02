@@ -6,11 +6,11 @@ import { get } from "lodash";
 import ApiActions from "../redux/pages/actions";
 import PagesApi from "../pages/dashboards/PagesApi";
 import { Button, Modal, Space, Table } from "antd";
-import { EyeOutlined, DeleteOutlined,ExclamationCircleOutlined } from "@ant-design/icons";
+import { EyeOutlined, DeleteOutlined,ExclamationCircleOutlined, EditOutlined } from "@ant-design/icons";
 import moment from "moment";
 import { Col, Form, FormGroup, Input, Label, Row } from "reactstrap";
 
-const Users = ({
+const ChangeAccount = ({
   history,
   getItemsList,
   getRoles,
@@ -31,7 +31,7 @@ const Users = ({
     getItemsList({ ...pagination });
   }, [pagination]);
 
-  const path = "api/users";
+  const path = "api/profile";
 
   const [formData, setFormData] = useState({
     name: "",
@@ -97,19 +97,24 @@ const Users = ({
 
   // modal confirmation
   const [modal, contextHolder] = Modal.useModal();
- 
 
-  items = items.map((item, index) => ({
-    ...item,
-    index: index + 10 * (pagination.current - 1) + 1,
-    created_at: moment(get(item, "created_at")).format("DD-MM-yyyy"),
-    update_at: moment(get(item, "update_at")).format("DD-MM-yyyy"),
-  }));
+  console.log(items);
+ 
+  const dataProfile = [
+    {
+      id: get(items, "id", null),
+      name: get(items, "name" ,""),
+      email: get(items, "email", ""),
+      phone: get(items, "phone", null),
+      date: moment(get(items, "created_at", ""), "DD/MM/yyyy").toDate(),
+      role: get(items, "roles[0].name", "")
+    }
+  ]
 
   const columns = [
     {
       title: "№",
-      dataIndex: "index",
+      dataIndex: "id",
       key: "id",
     },
     {
@@ -127,15 +132,20 @@ const Users = ({
     //   dataIndex: "subject",
     //   key: "subject",
     // },
-    // {
-    //   title: "Phone",
-    //   dataIndex: "phone",
-    //   key: "phone",
-    // },
+    {
+      title: "Phone",
+      dataIndex: "phone",
+      key: "phone",
+    },
+    {
+      title: "Roli",
+      dataIndex: "role",
+      key: "role",
+    },
     {
       title: "Qo'shilgan vaqti",
-      dataIndex: "created_at",
-      key: "created_at",
+      dataIndex: "date",
+      key: "date",
     },
     {
       title: "",
@@ -160,6 +170,7 @@ const Users = ({
               }}
               icon={<DeleteOutlined style={{ color: "#f24b3f" }} />}
             ></Button>
+             <Button shape="circle" warning icon={<EditOutlined />} />
           </Space>
         );
       },
@@ -171,7 +182,7 @@ const Users = ({
       <div className="application-content">
         <Row>
           <Col md={11}>
-            <p className="title-name">Foydalanuvchilar</p>
+            <p className="title-name">Profil sozlamalari</p>
             <span className="title-badge-count">{total}</span>
           </Col>
           <Col md={1}>
@@ -183,7 +194,7 @@ const Users = ({
 
         <Table
           columns={columns}
-          dataSource={items}
+          dataSource={dataProfile}
           pagination={{ ...pagination, total }}
           loading={!isFetched}
           onChange={({ current }) => {
@@ -293,7 +304,7 @@ const mapDispatchToProps = (dispatch) => {
       dispatch({
         type: ApiActions.GET_ALL.REQUEST,
         payload: {
-          url: "/api/users",
+          url: "/api/profile",
           config: {
             params: {
               page: current,
@@ -319,4 +330,4 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(withRouter(Users));
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(ChangeAccount));

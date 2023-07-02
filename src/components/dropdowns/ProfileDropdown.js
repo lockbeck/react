@@ -49,9 +49,9 @@ class ProfileDropdown extends Component {
         </DropdownToggle>
         <DropdownMenu right className="topbar-dropdown-menu profile-dropdown">
           <div onClick={this.toggleDropdown}>
-            <div className="dropdown-header noti-title">
+            {/* <div className="dropdown-header noti-title">
               <h6 className="text-overflow m-0">Welcome !</h6>
-            </div>
+            </div> */}
             {this.props.menuItems.map((item, i) => {
               return (
                 <React.Fragment key={i + "-profile-menu"}>

@@ -9,6 +9,7 @@ import { Button, Modal, Space, Table, notification, DatePicker } from "antd";
 import {  EyeOutlined } from "@ant-design/icons";
 import moment from "moment";
 import { Badge, Row, Col } from "reactstrap";
+import {withTranslation} from "react-i18next";
 const { RangePicker } = DatePicker;
 const dateFormat = "DD/MM/YYYY";
 
@@ -19,6 +20,7 @@ const Success_Application = ({
   isFetched,
   total,
   user,
+  ...props
 }) => {
   const append = ["certificates"];
   const include = ["device", "user"];
@@ -27,6 +29,9 @@ const Success_Application = ({
     pageSize: 15,
   });
   
+
+  const {t, i18n} = props
+
 
   useEffect(() => {
     getItemsList({ ...pagination, include, append, status: 3, ...filter });
@@ -136,42 +141,42 @@ const Success_Application = ({
       key: "index",
     },
     {
-      title: "MAI nomi",
+      title: t('mai_name'),
       dataIndex: "name",
       key: "name",
     },
     {
-      title: "Boshqaruvchi",
+      title: t('mai_sub'),
       dataIndex: "staff",
       // render: (item) => get(item, "name", "-"),
       key: "staff",
     },
     {
-      title: "Status",
+      title: t('status'),
       dataIndex: "status",
-      render: () => <Badge color="success">success</Badge>,
+      render: () => <Badge color="success">{t('success')}</Badge>,
       key: "status",
     },
     {
-      title: "O'zgartirilgan vaqt",
+      title: t('edited_time'),
       dataIndex: "update_at",
       render: (date) => moment(date).format("DD-MM-yyyy"),
       key: "update_at",
     },
     {
-      title: "Kiritilgan vaqt",
+      title: t('created_time'),
       dataIndex: "created_at",
       render: (date) => moment(date).format("DD-MM-yyyy"),
       key: "created_at",
     },
     {
-      title: "Aloqa",
+      title: t('contact'),
       dataIndex: "phone",
       //render: (item) => get(item, "phone", "-"),
       key: "phone",
     },
     {
-      title: "action",
+      title: "",
       dataIndex: "id",
       key: "action",
       render: (id) => {
@@ -193,12 +198,12 @@ const Success_Application = ({
         {contextHolderReject}
         <Row className="mb-3">
           <Col md={8}>
-            <p className="title-name">Qabul qilingan arizalar</p>
+            <p className="title-name">{t('accepted_applications')}</p>
             <span className="title-badge-count">{total}</span>
           </Col>
           <Col md={4}>
           <Space direction="vertical" size={12}>
-              <RangePicker onChange={onRangeChange} format={dateFormat} />
+              <RangePicker onChange={onRangeChange} format={dateFormat} placeholder={[t('from'), t('to')]}/>
             </Space>
           </Col>
         </Row>
@@ -268,7 +273,4 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(withRouter(Success_Application));
+export default withTranslation('translation')(connect(mapStateToProps, mapDispatchToProps)(withRouter(Success_Application)));

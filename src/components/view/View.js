@@ -389,7 +389,7 @@ const View = ({
           </Row>
 
           <Label for="definition" className="mt-3">
-            Definition
+            Qo'shimcha ma'lumot:
           </Label>
           <Input
             id="definition"
@@ -405,13 +405,13 @@ const View = ({
         <Row className="application-data">
           <div className="application-status-bade">
             {get(item, "status") === 0 ? (
-              <Badge color="danger">rejected</Badge>
+              <Badge color="danger">inkor qilingan</Badge>
             ) : get(item, "status") === 1 ? (
-              <Badge color="warning">waiting</Badge>
+              <Badge color="warning">kutilmoqda</Badge>
             ) : get(item, "status") === 2 ? (
-              <Badge color="primary">proccess</Badge>
+              <Badge color="primary">jarayonda</Badge>
             ) : (
-              <Badge color="success">success</Badge>
+              <Badge color="success">qabul qilingan</Badge>
             )}
           </div>
           <Col md={3} className="mt-4">

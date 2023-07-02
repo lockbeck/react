@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, useState } from "react";
 import { connect } from "react-redux";
 import { withRouter, Link } from "react-router-dom";
 import { get } from "lodash";
@@ -9,9 +9,7 @@ import logoSm from "../assets/images/logo-dark.png";
 import logo from "../assets/images/logo-dark.png";
 import profilePic from "../assets/images/adminUser.png";
 import "../assets/scss/topbar/topbar.css";
-import GiftDropdown from "./dropdowns/GiftDropdown";
-import CallDropdown from "./dropdowns/CallDropdown";
-import CompasDropdown from "./dropdowns/CompasDropdown";
+import TranslateDropdown from "./dropdowns/TranslateDropdown";
 
 const Notifications = [
   {
@@ -73,36 +71,36 @@ const Notifications = [
 ];
 
 const ProfileMenus = [
-  {
-    label: "My Account",
-    icon: "fe-user",
-    redirectTo: "/",
-  },
+  // {
+  //   label: "My Account",
+  //   icon: "fe-user",
+  //   redirectTo: "/",
+  // },
   {
     label: "Settings",
     icon: "fe-settings",
-    redirectTo: "/",
+    redirectTo: "/change_account",
   },
+  // {
+  //   label: "Lock Screen",
+  //   icon: "fe-lock",
+  //   redirectTo: "/",
+  // },
   {
-    label: "Lock Screen",
-    icon: "fe-lock",
-    redirectTo: "/",
-  },
-  {
-    label: "Logout",
+    label: "Chiqish",
     icon: "fe-log-out",
     redirectTo: "/logout",
     hasDivider: true,
   },
 ];
 
-const Topbar = ({user}) => {
+const Topbar = ({ user, ...props}) => {
 
-    return (
-      <React.Fragment>
-        <div className="navbar-custom ">
-          <ul className="list-unstyled topnav-menu float-right mb-0">
-            <li className="search-content">
+  return (
+    <React.Fragment>
+      <div className="navbar-custom ">
+        <ul className="list-unstyled topnav-menu float-right mb-0">
+          {/* <li className="search-content">
               <form className="app-search">
                 <div className="app-search-box">
                   <div className="input-group" style={{width:"400px"}}>
@@ -119,17 +117,13 @@ const Topbar = ({user}) => {
                   </div>
                 </div>
               </form>
-            </li>
+            </li> */}
 
-            {/* <li>
+          {/* <li>
               <NotificationDropdown notifications={Notifications} />
-            </li>
+            </li> */}
 
-            <li>
-              <GiftDropdown />
-            </li>
-
-            <li>
+          {/* <li>
               <CompasDropdown />
             </li>
 
@@ -142,59 +136,60 @@ const Topbar = ({user}) => {
             </li> */}
 
             <li>
-              <ProfileDropdown
-                 profilePic={profilePic}
-                menuItems={ProfileMenus}
-                username={user.name}
-              />
+              <TranslateDropdown/>
             </li>
 
-            {/* <li className="dropdown notification-list">
+          <li>
+            <ProfileDropdown
+              profilePic={profilePic}
+              menuItems={ProfileMenus}
+              username={user.name}
+            />
+          </li>
+
+          {/* <li className="dropdown notification-list">
               <button className="btn btn-link nav-link right-bar-toggle waves-effect waves-light" onClick={this.props.rightSidebarToggle}>
                 <i className="fe-settings noti-icon"></i>
               </button>
             </li> */}
-          </ul>
+        </ul>
 
-          <div className="logo-box">
-            <Link to="/" className="logo text-center">
-              <span className="logo-lg">
-                <img src={logo} alt="" height="60" />
-              </span>
-              <span className="logo-sm">
-                <img src={logoSm} alt="" height="60" />
-              </span>
-            </Link>
-          </div>
-
-          <ul className="list-unstyled topnav-menu topnav-menu-left m-0">
-            <li>
-              <button
-                className="button-menu-mobile waves-effect waves-light"
-                // onClick={this.props.menuToggle}
-              >
-                <i className="fa fa-bars text-dark"></i>
-              </button>
-            </li>
-          </ul>
+        <div className="logo-box">
+          <Link to="/" className="logo text-center">
+            <span className="logo-lg">
+              <img src={logo} alt="" height="60" />
+            </span>
+            <span className="logo-sm">
+              <img src={logoSm} alt="" height="40" />
+            </span>
+          </Link>
         </div>
-      </React.Fragment>
-    );
-  }
 
-  const mapStateToProps = (state) => {
-    return {
-      items: get(state, "PageReducer.data.item-list.result.data", []),
-      item: get(state, "PageReducer.data.get-one-item.result", {}),
-      isFetched: get(state, "PageReducer.data.item-list.isFetched", false),
-      isFetchedItem: get(state, "PageReducer.data.get-one-item.isFetched", false),
-      total: get(state, "PageReducer.data.item-list.result.total", 0),
-      user: get(state, "Auth.user",{})
-    };
+        <ul className="list-unstyled topnav-menu topnav-menu-left m-0">
+          <li>
+            <button
+              className="button-menu-mobile waves-effect waves-light"
+              onClick={props.menuToggle}
+            >
+              <i className="fa fa-bars text-dark"></i>
+            </button>
+          </li>
+        </ul>
+      </div>
+    </React.Fragment>
+  );
+};
+
+const mapStateToProps = (state) => {
+  return {
+    items: get(state, "PageReducer.data.item-list.result.data", []),
+    item: get(state, "PageReducer.data.get-one-item.result", {}),
+    isFetched: get(state, "PageReducer.data.item-list.isFetched", false),
+    isFetchedItem: get(state, "PageReducer.data.get-one-item.isFetched", false),
+    total: get(state, "PageReducer.data.item-list.result.total", 0),
+    user: get(state, "Auth.user", {}),
   };
+};
 
+export default connect(mapStateToProps)(withRouter(Topbar));
 
-
-export default connect(
-  mapStateToProps,
-)(withRouter(Topbar));

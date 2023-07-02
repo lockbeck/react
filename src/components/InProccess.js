@@ -151,9 +151,9 @@ const InProccess = ({
       key: "staff",
     },
     {
-      title: "Status",
+      title: "Ariza holati",
       dataIndex: "status",
-      render: () => <Badge color="primary">proccess</Badge>,
+      render: () => <Badge color="primary">jarayonda</Badge>,
       key: "status",
     },
     {
@@ -169,13 +169,13 @@ const InProccess = ({
       key: "created_at",
     },
     {
-      title: "Aloqa",
+      title: "Aloqa uchun",
       dataIndex: "phone",
       //render: (item) => get(item, "phone", "-"),
       key: "phone",
     },
     {
-      title: "action",
+      title: "",
       dataIndex: "id",
       key: "action",
       render: (id) => {
@@ -229,7 +229,7 @@ const InProccess = ({
           </Col>
           <Col md={4}>
             <Space direction="vertical" size={12}>
-              <RangePicker onChange={onRangeChange} format={dateFormat} />
+              <RangePicker onChange={onRangeChange} format={dateFormat} placeholder={["...dan", "...gacha"]}/>
             </Space>
           </Col>
         </Row>

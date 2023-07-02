@@ -1,0 +1,20 @@
+{
+    "all_applications": "Barcha Arizalar",
+    "accepted_applications": "Qabul qilingan",
+    "new_applications": "Yangi arizalar",
+    "rejected_applications": "Inkor qilingan",
+    "inproccess": "Jarayondagi",
+    "add_application":"Ariza qo'shish",
+    "mai_name": "MAI nomi",
+    "mai_sub":"Boshqaruvchi",
+    "status": "Ariza holati",
+    "edited_time": "O'zgartirilgan vaqt",
+    "created_time": "Kiritilgan vaqt",
+    "contact": "Aloqa uchun",
+    "rejected": "inkor qilingan",
+    "waiting": "kutilmoqda",
+    "proccess": "jarayonda",
+    "success": "qabul qilingan",
+    "from": "...dan",
+    "to": "...gacha"
+}

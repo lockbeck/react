@@ -17,17 +17,21 @@ import {
 } from "reactstrap";
 import {DeleteOutlined} from "@ant-design/icons";
 import { Tabs, notification } from "antd";
-import {FileOutlined} from "@ant-design/icons";
 import Stuff from "./Stuff";
 import Device from "./Device";
 import Telecomunication from "./Telecomunication";
 import FileUpload from "./fileUpload/FileUpload";
 import ReactQuill from "react-quill";
+import {withTranslation} from "react-i18next";
 import "react-quill/dist/quill.snow.css";
 import "bootstrap/dist/css/bootstrap.css";
 import "bootstrap/js/dist/modal";
 import "bootstrap/js/dist/dropdown";
 import "bootstrap/js/dist/tooltip";
+
+
+
+
 const EditPage = ({ getSingleItem, item, user, ...props }) => {
   const id = props.location.state;
 
@@ -35,6 +39,8 @@ const EditPage = ({ getSingleItem, item, user, ...props }) => {
   const include = ["device", "user"];
 
   const path = "api/application";
+
+  const {t, i18n} = props
 
   const [application, setApplication] = useState({
     name: "",
@@ -193,22 +199,22 @@ const EditPage = ({ getSingleItem, item, user, ...props }) => {
       <div className="add-application-content">
         {contextHolder}
         <h3 className="title-name p-2 m-2 d-inline-block">
-          Arizani o'zgartirish
+          {t('edit_application')}
         </h3>
         <div className="application-status-bade d-inline-block float-right">
           {get(item, "status") === 0 ? (
-            <Badge color="danger">rejected</Badge>
+            <Badge color="danger">{t('rejected')}</Badge>
           ) : get(item, "status") === 1 ? (
-            <Badge color="warning">waiting</Badge>
+            <Badge color="warning">{t('waiting')}</Badge>
           ) : get(item, "status") === 2 ? (
-            <Badge color="primary">proccess</Badge>
+            <Badge color="primary">{t('proccess')}</Badge>
           ) : (
-            <Badge color="success">success</Badge>
+            <Badge color="success">{t('success')}</Badge>
           )}
         </div>
         {get(item, "status") === 0 ? (
           <div className="rejected-definition">
-            <h5 className="d-inline-block mr-3">Inkor qilish Sababi:</h5>
+            <h5 className="d-inline-block mr-3">{t('rejection_def')}:</h5>
             {item.reason}
           </div>
         ) : (
@@ -589,7 +595,4 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(withRouter(EditPage));
+export default withTranslation('translation')(connect(mapStateToProps, mapDispatchToProps)(withRouter(EditPage)));
