@@ -16,6 +16,16 @@ import {
   FileExclamationOutlined,
   UsergroupAddOutlined,
   FileDoneOutlined,
+  ExclamationCircleOutlined,
+  FolderOpenOutlined,
+  MenuUnfoldOutlined,
+  DownOutlined,
+  LaptopOutlined,
+  ReconciliationOutlined,
+  ClusterOutlined,
+  BankOutlined,
+  BranchesOutlined,
+  ApartmentOutlined
 } from "@ant-design/icons";
 import { hasAccess } from "../helpers/authUtils";
 
@@ -27,7 +37,6 @@ const SideNavContent = ({ roles, ...props }) => {
     <React.Fragment>
       <div id="sidebar-menu">
         <ul className="metismenu" id="side-menu">
-          {/* <li className="menu-title">Navigation</li> */}
           {hasAccess(["admin", "manager"], roles) && (
             <li>
               {pathname.search("/dashboard") === 0 ? (
@@ -39,146 +48,246 @@ const SideNavContent = ({ roles, ...props }) => {
                   <DashboardOutlined
                     style={{ fontSize: "25px", color: "#121211" }}
                   />
-                  <span className="menu-name"> Asosiy oyna </span>
+                  <span className="menu-name"> {t("dashboard")} </span>
                 </NavLink>
               ) : (
                 <NavLink to="/dashboard" aria-expanded="true">
                   <DashboardOutlined
                     style={{ fontSize: "25px", color: "#121211" }}
                   />
-                  <span className="menu-name"> Asosiy oyna </span>
+                  <span className="menu-name"> {t("dashboard")} </span>
                 </NavLink>
               )}
             </li>
           )}
 
           <li>
-            {pathname.search("/all_application") === 0 ? (
-              <NavLink
-                to="/all_application"
-                className="waves-effect bg-light"
-                aria-expanded="true"
-              >
-                <FileOutlined style={{ fontSize: "25px", color: "#121211" }} />
-                <span className="menu-name"> {t("all_applications")}</span>
-              </NavLink>
-            ) : (
-              <NavLink
-                to="/all_application"
-                className="waves-effect "
-                aria-expanded="true"
-              >
-                <FileOutlined style={{ fontSize: "25px", color: "#121211" }} />
-                <span className="menu-name"> {t("all_applications")}</span>
-              </NavLink>
-            )}
+            <Link
+              to="/"
+              className="waves-effect has-dropdown"
+              aria-expanded="true"
+            >
+              <FolderOpenOutlined
+                style={{ fontSize: "25px", color: "#121211" }}
+              />
+              <span className="menu-name"> {t("applications")}</span>
+              <DownOutlined
+                style={{
+                  fontSize: "10px",
+                  color: "#121211",
+                  marginLeft: "30px",
+                }}
+              />
+            </Link>
+            <ul className="nav-second-level" aria-expanded="false">
+              <li>
+                {pathname.search("/all_application") === 0 ? (
+                  <NavLink
+                    to="/all_application"
+                    className="waves-effect bg-light side-nav-link-ref"
+                    aria-expanded="true"
+                  >
+                    <FileOutlined
+                      style={{ fontSize: "15px", color: "#121211" }}
+                    />
+                    <span className="sub-menu-name">
+                      {" "}
+                      {t("all_applications")}
+                    </span>
+                  </NavLink>
+                ) : (
+                  <NavLink
+                    to="/all_application"
+                    className="waves-effect "
+                    aria-expanded="true"
+                  >
+                    <FileOutlined
+                      style={{ fontSize: "15px", color: "#121211" }}
+                    />
+                    <span className="sub-menu-name">
+                      {" "}
+                      {t("all_applications")}
+                    </span>
+                  </NavLink>
+                )}
+              </li>
+
+              {hasAccess(["manager", "user"], roles) && (
+                <li>
+                  {pathname.search("/new_application") === 0 ? (
+                    <NavLink
+                      to="/new_application"
+                      className="waves-effect  nav-link bg-light side-nav-link-ref"
+                      aria-expanded="true"
+                    >
+                      <FileExclamationOutlined
+                        style={{ fontSize: "15px", color: "#121211" }}
+                      />
+                      <span className="sub-menu-name">
+                        {" "}
+                        {t("new_applications")}{" "}
+                      </span>
+                    </NavLink>
+                  ) : (
+                    <NavLink
+                      to="/new_application"
+                      className="waves-effect  nav-link"
+                      aria-expanded="true"
+                    >
+                      <FileExclamationOutlined
+                        style={{ fontSize: "15px", color: "#121211" }}
+                      />
+                      <span className="sub-menu-name">
+                        {" "}
+                        {t("new_applications")}{" "}
+                      </span>
+                    </NavLink>
+                  )}
+                </li>
+              )}
+              <li>
+                {pathname.search("/in_proccess") === 0 ? (
+                  <NavLink
+                    to="/in_proccess"
+                    className="waves-effect bg-light side-nav-link-ref"
+                    aria-expanded="true"
+                  >
+                    <FileSyncOutlined
+                      style={{ fontSize: "15px", color: "#121211" }}
+                    />
+                    <span className="sub-menu-name"> {t("inproccess")} </span>
+                  </NavLink>
+                ) : (
+                  <NavLink
+                    to="/in_proccess"
+                    className="waves-effect bg-link"
+                    aria-expanded="true"
+                  >
+                    <FileSyncOutlined
+                      style={{ fontSize: "15px", color: "#121211" }}
+                    />
+                    <span className="sub-menu-name"> {t("inproccess")} </span>
+                  </NavLink>
+                )}
+              </li>
+              <li>
+                {pathname.search("/rejected_application") === 0 ? (
+                  <NavLink
+                    to="/rejected_application"
+                    aria-expanded="true"
+                    className="bg-light side-nav-link-ref"
+                  >
+                    <FileExcelOutlined
+                      style={{ fontSize: "15px", color: "#121211" }}
+                    />
+                    <span className="sub-menu-name">
+                      {" "}
+                      {t("rejected_applications")}{" "}
+                    </span>
+                  </NavLink>
+                ) : (
+                  <NavLink to="/rejected_application" aria-expanded="true">
+                    <FileExcelOutlined
+                      style={{ fontSize: "15px", color: "#121211" }}
+                    />
+                    <span className="sub-menu-name">
+                      {" "}
+                      {t("rejected_applications")}{" "}
+                    </span>
+                  </NavLink>
+                )}
+              </li>
+              {hasAccess(["user", "manager"], roles) && (
+                <li>
+                  {pathname.search("/manager_to_user") === 0 ? (
+                    <NavLink
+                      to="/manager_to_user"
+                      className="waves-effect bg-light side-nav-link-ref"
+                      aria-expanded="true"
+                    >
+                      <FileAddOutlined
+                        style={{ fontSize: "15px", color: "#121211" }}
+                      />
+                      <span className="sub-menu-name">
+                        {t("manager_to_user")}
+                      </span>
+                    </NavLink>
+                  ) : (
+                    <NavLink
+                      to="/manager_to_user"
+                      className="waves-effect"
+                      aria-expanded="true"
+                    >
+                      <FileAddOutlined
+                        style={{ fontSize: "15px", color: "#121211" }}
+                      />
+                      <span className="sub-menu-name">
+                        {t("manager_to_user")}
+                      </span>
+                    </NavLink>
+                  )}
+                </li>
+              )}
+
+              <li>
+                {pathname.search("/success_application") === 0 ? (
+                  <NavLink
+                    to="/success_application"
+                    className="waves-effect bg-light side-nav-link-ref"
+                    aria-expanded="true"
+                  >
+                    <FileDoneOutlined
+                      style={{ fontSize: "15px", color: "#121211" }}
+                    />
+                    <span className="sub-menu-name">
+                      {t("accepted_applications")}
+                    </span>
+                  </NavLink>
+                ) : (
+                  <NavLink
+                    to="/success_application"
+                    className="waves-effect "
+                    aria-expanded="true"
+                  >
+                    <FileDoneOutlined
+                      style={{ fontSize: "15px", color: "#121211" }}
+                    />
+                    <span className="sub-menu-name">
+                      {t("accepted_applications")}
+                    </span>
+                  </NavLink>
+                )}
+              </li>
+            </ul>
           </li>
-          <li>
-            {pathname.search("/success_application") === 0 ? (
-              <NavLink
-                to="/success_application"
-                className="waves-effect bg-light"
-                aria-expanded="true"
-              >
-                <FileDoneOutlined
-                  style={{ fontSize: "25px", color: "#121211" }}
-                />
-                <span className="menu-name">{t("accepted_applications")}</span>
-              </NavLink>
-            ) : (
-              <NavLink
-                to="/success_application"
-                className="waves-effect "
-                aria-expanded="true"
-              >
-                <FileDoneOutlined
-                  style={{ fontSize: "25px", color: "#121211" }}
-                />
-                <span className="menu-name">{t("accepted_applications")}</span>
-              </NavLink>
-            )}
-          </li>
-          {hasAccess(["manager", "user"], roles) && (
+
+          {hasAccess(["user"], roles) && (
             <li>
-              {pathname.search("/new_application") === 0 ? (
+              {pathname.search("/add_stuff") === 0 ? (
                 <NavLink
-                  to="/new_application"
-                  className="waves-effect  nav-link"
+                  to="/add_stuff"
+                  className="waves-effect bg-light"
                   aria-expanded="true"
                 >
-                  <FileExclamationOutlined
+                  <UsergroupAddOutlined
                     style={{ fontSize: "25px", color: "#121211" }}
                   />
-                  <span className="menu-name"> {t("new_applications")} </span>
+                  <span className="menu-name">{t("add_stuff")}</span>
                 </NavLink>
               ) : (
                 <NavLink
-                  to="/new_application"
-                  className="waves-effect  nav-link"
+                  to="/add_stuff"
+                  className="waves-effect"
                   aria-expanded="true"
                 >
-                  <FileExclamationOutlined
+                  <UsergroupAddOutlined
                     style={{ fontSize: "25px", color: "#121211" }}
                   />
-                  <span className="menu-name"> {t("new_applications")} </span>
+                  <span className="menu-name">{t("add_stuff")}</span>
                 </NavLink>
               )}
             </li>
           )}
-
-          <li>
-            {pathname.search("/in_proccess") === 0 ? (
-              <NavLink
-                to="/in_proccess"
-                className="waves-effect bg-light"
-                aria-expanded="true"
-              >
-                <FileSyncOutlined
-                  style={{ fontSize: "25px", color: "#121211" }}
-                />
-                <span className="menu-name"> {t("inproccess")} </span>
-              </NavLink>
-            ) : (
-              <NavLink
-                to="/in_proccess"
-                className="waves-effect bg-link"
-                aria-expanded="true"
-              >
-                <FileSyncOutlined
-                  style={{ fontSize: "25px", color: "#121211" }}
-                />
-                <span className="menu-name"> {t("inproccess")} </span>
-              </NavLink>
-            )}
-          </li>
-
-          <li>
-            {pathname.search("/rejected_application") === 0 ? (
-              <NavLink
-                to="/rejected_application"
-                aria-expanded="true"
-                className="bg-light"
-              >
-                <FileExcelOutlined
-                  style={{ fontSize: "25px", color: "#121211" }}
-                />
-                <span className="menu-name">
-                  {" "}
-                  {t("rejected_applications")}{" "}
-                </span>
-              </NavLink>
-            ) : (
-              <NavLink to="/rejected_application" aria-expanded="true">
-                <FileExcelOutlined
-                  style={{ fontSize: "25px", color: "#121211" }}
-                />
-                <span className="menu-name">
-                  {" "}
-                  {t("rejected_applications")}{" "}
-                </span>
-              </NavLink>
-            )}
-          </li>
 
           {hasAccess(["user"], roles) && (
             <li>
@@ -208,7 +317,7 @@ const SideNavContent = ({ roles, ...props }) => {
             </li>
           )}
 
-          {hasAccess(["admin"], roles) && (
+          {hasAccess(["admin", "manager"], roles) && (
             <li>
               {pathname.search("/users") === 0 ? (
                 <NavLink
@@ -219,7 +328,7 @@ const SideNavContent = ({ roles, ...props }) => {
                   <UsergroupAddOutlined
                     style={{ fontSize: "25px", color: "#121211" }}
                   />
-                  <span className="menu-name">Foydalanuvchilar</span>
+                  <span className="menu-name">{t("users")}</span>
                 </NavLink>
               ) : (
                 <NavLink
@@ -230,26 +339,230 @@ const SideNavContent = ({ roles, ...props }) => {
                   <UsergroupAddOutlined
                     style={{ fontSize: "25px", color: "#121211" }}
                   />
-                  <span className="menu-name">Foydalanuvchilar</span>
+                  <span className="menu-name">{t("users")}</span>
                 </NavLink>
               )}
             </li>
           )}
 
-          {/* {hasAccess(["admin"], roles) && (
+          {hasAccess(["admin", "manager"], roles) && (
             <li>
-              <NavLink
-                to="/importance"
-                className="waves-effect"
+              <Link
+                to="/"
+                className="waves-effect has-dropdown"
                 aria-expanded="true"
               >
-                <ExclamationCircleOutlined
+                <MenuUnfoldOutlined
                   style={{ fontSize: "25px", color: "#121211" }}
                 />
-                <span className="menu-name">Muhimlilik</span>
-              </NavLink>
+                <span className="menu-name"> {t("directory")}</span>
+                <DownOutlined
+                  style={{
+                    fontSize: "10px",
+                    color: "#121211",
+                    marginLeft: "30px",
+                  }}
+                />
+              </Link>
+              <ul className="nav-second-level" aria-expanded="false">
+                {/* device */}
+                <li>
+                  {pathname.search("/add_device") === 0 ? (
+                    <NavLink
+                      to="/add_device"
+                      className="waves-effect bg-light side-nav-link-ref"
+                      aria-expanded="true"
+                    >
+                      <LaptopOutlined
+                        style={{ fontSize: "15px", color: "#121211" }}
+                      />
+                      <span className="sub-menu-name"> {t("devices")}</span>
+                    </NavLink>
+                  ) : (
+                    <NavLink
+                      to="/add_device"
+                      className="waves-effect "
+                      aria-expanded="true"
+                    >
+                      <LaptopOutlined
+                        style={{ fontSize: "15px", color: "#121211" }}
+                      />
+                      <span className="sub-menu-name"> {t("devices")}</span>
+                    </NavLink>
+                  )}
+                </li>
+
+                {/* manafacturer */}
+                <li>
+                  {pathname.search("/add_manufacture") === 0 ? (
+                    <NavLink
+                      to="/add_manufacture"
+                      className="waves-effect bg-light side-nav-link-ref"
+                      aria-expanded="true"
+                    >
+                      <ReconciliationOutlined
+                        style={{ fontSize: "15px", color: "#121211" }}
+                      />
+                      <span className="sub-menu-name"> {t("manufacture")}</span>
+                    </NavLink>
+                  ) : (
+                    <NavLink
+                      to="/add_manufacture"
+                      className="waves-effect "
+                      aria-expanded="true"
+                    >
+                      <ReconciliationOutlined
+                        style={{ fontSize: "15px", color: "#121211" }}
+                      />
+                      <span className="sub-menu-name"> {t("manufacture")}</span>
+                    </NavLink>
+                  )}
+                </li>
+
+                {/* goal of mai */}
+                <li>
+                  {pathname.search("/add_goal") === 0 ? (
+                    <NavLink
+                      to="/add_goal"
+                      className="waves-effect bg-light side-nav-link-ref"
+                      aria-expanded="true"
+                    >
+                      <ClusterOutlined
+                        style={{ fontSize: "15px", color: "#121211" }}
+                      />
+                      <span className="sub-menu-name"> {t("goal_mai")}</span>
+                    </NavLink>
+                  ) : (
+                    <NavLink
+                      to="/add_goal"
+                      className="waves-effect "
+                      aria-expanded="true"
+                    >
+                      <ClusterOutlined
+                        style={{ fontSize: "15px", color: "#121211" }}
+                      />
+                      <span className="sub-menu-name"> {t("goal_mai")}</span>
+                    </NavLink>
+                  )}
+                </li>
+
+                {/* importance */}
+                <li>
+                  {pathname.search("/importance") === 0 ? (
+                    <NavLink
+                      to="/importance"
+                      className="waves-effect bg-light side-nav-link-ref"
+                      aria-expanded="true"
+                    >
+                      <ExclamationCircleOutlined
+                        style={{ fontSize: "15px", color: "#121211" }}
+                      />
+                      <span className="sub-menu-name"> {t("importance")}</span>
+                    </NavLink>
+                  ) : (
+                    <NavLink
+                      to="/importance"
+                      className="waves-effect "
+                      aria-expanded="true"
+                    >
+                      <ExclamationCircleOutlined
+                        style={{ fontSize: "15px", color: "#121211" }}
+                      />
+                      <span className="sub-menu-name"> {t("importance")}</span>
+                    </NavLink>
+                  )}
+                </li>
+
+
+                {/* subject */}
+
+                <li>
+                  <Link
+                    to="/"
+                    className="waves-effect has-dropdown"
+                    aria-expanded="true"
+                  >
+                    <BranchesOutlined
+                      style={{ fontSize: "15px", color: "#121211" }}
+                    />
+                    <span className="menu-name-base"> {t("subject_base")}</span>
+                    <DownOutlined
+                      style={{
+                        fontSize: "10px",
+                        color: "#121211",
+                        marginLeft: "30px",
+                      }}
+                    />
+                  </Link>
+                  <ul className="nav-second-level" aria-expanded="false">
+                    <li>
+                      {pathname.search("/add_subject") === 0 ? (
+                        <NavLink
+                          to="/add_subject"
+                          className="waves-effect bg-light side-nav-link-ref"
+                          aria-expanded="true"
+                        >
+                          <BankOutlined
+                            style={{ fontSize: "15px", color: "#121211" }}
+                          />
+                          <span className="sub-menu-name mt-1">
+                            {" "}
+                            {t("subject")}
+                          </span>
+                        </NavLink>
+                      ) : (
+                        <NavLink
+                          to="/add_subject"
+                          className="waves-effect "
+                          aria-expanded="true"
+                        >
+                          <BankOutlined
+                            style={{ fontSize: "15px", color: "#121211" }}
+                          />
+                          <span className="sub-menu-name mt-1">
+                            {" "}
+                            {t("subject")}
+                          </span>
+                        </NavLink>
+                      )}
+                    </li>
+
+                    <li>
+                      {pathname.search("/subject_type") === 0 ? (
+                        <NavLink
+                          to="/subject_type"
+                          className="waves-effect bg-light side-nav-link-ref"
+                          aria-expanded="true"
+                        >
+                          <ApartmentOutlined
+                            style={{ fontSize: "15px", color: "#121211" }}
+                          />
+                          <span className="sub-menu-name mt-1">
+                            {" "}
+                            {t("subject_type")}
+                          </span>
+                        </NavLink>
+                      ) : (
+                        <NavLink
+                          to="/subject_type"
+                          className="waves-effect "
+                          aria-expanded="true"
+                        >
+                          <ApartmentOutlined
+                            style={{ fontSize: "15px", color: "#121211" }}
+                          />
+                          <span className="sub-menu-name mt-1">
+                            {" "}
+                            {t("subject_type")}
+                          </span>
+                        </NavLink>
+                      )}
+                    </li>
+                  </ul>
+                </li>
+              </ul>
             </li>
-          )} */}
+          )}
         </ul>
       </div>
       <div className="clearfix"></div>

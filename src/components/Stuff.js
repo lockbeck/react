@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import { connect } from "react-redux";
-import { constant, get } from "lodash";
+import { get } from "lodash";
 import "../assets/scss/device/device.css";
 import { Input, Label } from "reactstrap";
 import { Modal } from "antd";
-import { PlusOutlined, CloseOutlined } from "@ant-design/icons";
 import PagesApi from "../pages/dashboards/PagesApi";
+import { withTranslation } from "react-i18next";
 
 const Stuff = ({ save = () => {}, ...props }) => {
   const path = "api/staff";
@@ -16,6 +16,8 @@ const Stuff = ({ save = () => {}, ...props }) => {
     statue: "",
     definition: "",
   });
+
+  const { t, i18n } = props;
 
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -57,35 +59,24 @@ const Stuff = ({ save = () => {}, ...props }) => {
   return (
     <React.Fragment>
       <div className="modal-data">
-        <Label for="name">Xodim</Label>
+        <Label for="name">{t("stuff")}</Label>
         <div className="device-name-area" onClick={showModal}>
           <div className="device-name">
             <p className="device-span">{emp.name}</p>
-            {/* <span
-              className="device-cancel"
-              // onClick={() => {
-              //   remove(emp.id);
-              // }}
-            >
-              <CloseOutlined style={{ fontSize: "10px", color: "#08c" }} />
-            </span> */}
           </div>
-          {/* <div className="device-add" onClick={showModal}>
-            <PlusOutlined />
-          </div> */}
         </div>
 
         <Modal
-          title="Xodim qo'shish"
+          title={t("add_stuff")}
           open={isModalOpen}
           onOk={handleOk}
           onCancel={handleCancel}
-          cancelText="Bekor qilish"
-          okText="Qo'shish"
+          cancelText={t("cancel")}
+          okText={t("add")}
           okType="primary"
         >
           <Label for="name" className="mt-3">
-            Ismi
+            {t("name")}
           </Label>
           <Input
             id="name"
@@ -96,7 +87,7 @@ const Stuff = ({ save = () => {}, ...props }) => {
             }
           />
           <Label for="phone" className="mt-3">
-            Telefon
+            {t("phone")}
           </Label>
           <Input
             id="phone"
@@ -108,7 +99,7 @@ const Stuff = ({ save = () => {}, ...props }) => {
             }
           />
           <Label for="name" className="mt-3">
-            Ustavi
+            {t("statute")}
           </Label>
           <Input
             id="name"
@@ -119,7 +110,7 @@ const Stuff = ({ save = () => {}, ...props }) => {
             }
           />
           <Label for="name" className="mt-3">
-            definition
+            {t("definition")}
           </Label>
           <Input
             id="name"
@@ -135,4 +126,6 @@ const Stuff = ({ save = () => {}, ...props }) => {
   );
 };
 
-export default connect()(Stuff);
+export default withTranslation("translation")(
+  connect()(Stuff)
+);

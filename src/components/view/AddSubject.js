@@ -1,51 +1,46 @@
 import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
-import "../assets/scss/allapplication/allapplication.css";
-import { withRouter, Link } from "react-router-dom";
+import "../../assets/scss/allapplication/allapplication.css";
+import { withRouter } from "react-router-dom";
 import { get } from "lodash";
-import ApiActions from "../redux/pages/actions";
-import PagesApi from "../pages/dashboards/PagesApi";
+import ApiActions from "../../redux/pages/actions";
+import PagesApi from "../../pages/dashboards/PagesApi";
 import { Button, Modal, Space, Table } from "antd";
-import { EyeOutlined, DeleteOutlined,ExclamationCircleOutlined } from "@ant-design/icons";
+import {DeleteOutlined,ExclamationCircleOutlined } from "@ant-design/icons";
 import moment from "moment";
 import { withTranslation } from "react-i18next";
 import { Col, Form, FormGroup, Input, Label, Row } from "reactstrap";
 
-const Users = ({
+const AddSubject = ({
   history,
   getItemsList,
-  getRoles,
-  getSubject,
-  subjects,
-  roles,
+  getSubjectType,
+  subjectTypes,
   items,
-  item,
   isFetched,
   total,
+  item,
   ...props
 }) => {
   const [pagination, setPagination] = useState({
     current: 1,
-    pageSize: 10,
+    pageSize: 15,
   });
 
-  const include = ["subject"];
+  const include = ["type"];
 
   useEffect(() => {
-    getRoles();
-    getSubject({include});
-    getItemsList({ ...pagination, include });
+    getItemsList({ ...pagination, include});
+    getSubjectType({...pagination});
   }, [pagination]);
 
-  const path = "api/users";
+  const path = "api/subject";
 
   const [formData, setFormData] = useState({
     name: "",
-    email: "",
-    password: "",
-    password_confirmation: "",
-    subject_id: null,
-    role: null,
+    address_legal:"",
+    address_fact:"",
+    subject_type_id: null
   });
 
   const { t, i18n } = props
@@ -63,8 +58,8 @@ const Users = ({
   const remove = (id) => {
     PagesApi.Delete(path, id)
       .then((res) => {
-        if (res.status === 204) {
-          getItemsList({ ...pagination, include });
+        if (res.status === 200) {
+          getItemsList({ ...pagination });
         }
       })
       .catch((error) => {
@@ -76,16 +71,7 @@ const Users = ({
     PagesApi.Create(path, params)
       .then((res) => {
         if (res.status === 201) {
-          setFormData({
-            ...formData,
-            name: "",
-            email: "",
-            password: "",
-            password_confirmation: "",
-            subject_id: null,
-            role: null,
-          });
-          getItemsList({ ...pagination });
+          getItemsList({ ...pagination, include });
         }
       })
       .catch((error) => {
@@ -110,8 +96,7 @@ const Users = ({
     setIsModalOpen(false);
   };
 
-  console.log(items);
-
+console.log(subjectTypes);
 
   // modal confirmation
   const [modal, contextHolder] = Modal.useModal();
@@ -119,10 +104,10 @@ const Users = ({
 
   items = items.map((item, index) => ({
     ...item,
-    index: index + 10 * (pagination.current - 1) + 1,
+    index: index + 15 * (pagination.current - 1) + 1,
     created_at: moment(get(item, "created_at")).format("DD-MM-yyyy"),
     update_at: moment(get(item, "update_at")).format("DD-MM-yyyy"),
-    subject: get(item, "subject.name", "")
+    subject_type: get(item, "type.name", "")
   }));
 
   const columns = [
@@ -132,25 +117,25 @@ const Users = ({
       key: "id",
     },
     {
-      title: t("user_name"),
+      title: t("name"),
       dataIndex: "name",
       key: "name",
     },
     {
-      title: t("email"),
-      dataIndex: "email",
-      key: "email",
-    },
-    {
-      title: "Subject",
-      dataIndex: "subject",
-      key: "subject",
-    },
-    {
-      title: t("add_time"),
-      dataIndex: "created_at",
-      key: "created_at",
-    },
+        title: t("adress_legal"),
+        dataIndex: "address_legal",
+        key: "address_legal",
+      },
+      {
+        title: t("adress_fact"),
+        dataIndex: "address_fact",
+        key: "address_fact",
+      },
+      {
+        title: t("subject_type"),
+        dataIndex: "subject_type",
+        key: "subject_type",
+      },
     {
       title: "",
       dataIndex: "id",
@@ -185,7 +170,7 @@ const Users = ({
       <div className="application-content">
         <Row>
           <Col md={11}>
-            <p className="title-name">{t("users")}</p>
+            <p className="title-name">{t("subject")}</p>
           </Col>
           <Col md={1}>
             <Button className="add-btn bg-success" onClick={showModal}>
@@ -206,7 +191,7 @@ const Users = ({
         />
 
         <Modal
-          title="Foydalanuvchi uchun  login va parol yaratish:"
+          title="Yangi qo'shish:"
           open={isModalOpen}
           onOk={handleOk}
           onCancel={handleCancel}
@@ -216,7 +201,7 @@ const Users = ({
               <Row>
                 <Col sm={12}>
                   <FormGroup>
-                    <Label for="name">{t("user_name")}:</Label>
+                    <Label for="name">{t("name")}:</Label>
                     <Input
                       id="name"
                       name="name"
@@ -231,81 +216,52 @@ const Users = ({
                 </Col>
                 <Col sm={12}>
                   <FormGroup>
-                    <Label for="email">{t("email")}:</Label>
+                    <Label for="name">{t("adress_legal")}:</Label>
                     <Input
-                      id="email"
-                      name="email"
-                      placeholder="email..."
-                      type="email"
+                      id="adress"
+                      name="adress"
+                      placeholder={t("adress")}
+                      type="text"
                       onChange={(e) =>
-                        setFormData({ ...formData, email: e.target.value })
+                        setFormData({ ...formData, address_legal: e.target.value })
                       }
+                      required
                     />
                   </FormGroup>
                 </Col>
                 <Col sm={12}>
                   <FormGroup>
-                    <Label for="password">{t("parol")}:</Label>
+                    <Label for="name">{t("adress_fact")}:</Label>
                     <Input
-                      id="password"
-                      name="password"
-                      placeholder="parol..."
-                      type="password"
+                      id="adress"
+                      name="adress"
+                      placeholder={t("adress")}
+                      type="text"
                       onChange={(e) =>
-                        setFormData({ ...formData, password: e.target.value })
+                        setFormData({ ...formData, address_fact: e.target.value })
                       }
+                      required
                     />
                   </FormGroup>
                 </Col>
                 <Col sm={12}>
                   <FormGroup>
-                    <Label for="password_confirmation">{t("parol_confirmation")}:</Label>
+                    <Label for="name">{t("subject_type")}:</Label>
                     <Input
-                      id="password_confirmation"
-                      name="password_confirmation"
-                      placeholder="parol..."
-                      type="password"
-                      onChange={(e) =>
-                        setFormData({ ...formData, password_confirmation: e.target.value })
-                      }
-                    />
-                  </FormGroup>
-                </Col>
-                <Col sm={12}>
-                  <FormGroup>
-                    <Label for="role">{t("user_role")}:</Label>
-                    <Input
-                      id="role"
-                      name="role"
+                      id="adress"
+                      name="adress"
+                      placeholder={t("subject_type")}
                       type="select"
                       onChange={(e) =>
-                        setFormData({ ...formData, role: e.target.value })
+                        setFormData({ ...formData, subject_type_id: e.target.value })
                       }
+                      required
                     >
-                      {roles.map((rol, i) => (
-                        <option key={i} value={rol.id}>
-                          {rol.name}
-                        </option>
-                      ))}
-                    </Input>
-                  </FormGroup>
-                </Col>
-                <Col sm={12}>
-                  <FormGroup>
-                    <Label for="subject">{t("subject_base")}:</Label>
-                    <Input
-                      id="subject"
-                      name="subject"
-                      type="select"
-                      onChange={(e) =>
-                        setFormData({ ...formData, subject_id: e.target.value })
-                      }
-                    >
-                      {subjects.map((sub, i) => (
-                        <option key={i} value={sub.id}>
-                          {sub.name}
-                        </option>
-                      ))}
+                      {subjectTypes.map((sub, i) => (
+                    <option key={i} value={sub.id}>
+                      {sub.name}
+                    </option>
+                  ))}
                     </Input>
                   </FormGroup>
                 </Col>
@@ -322,8 +278,7 @@ const mapStateToProps = (state) => {
   console.log(state);
   return {
     items: get(state, "PageReducer.data.item-list.result.data", []),
-    subjects: get(state, "PageReducer.data.subject-list.result.data", []),
-    roles: get(state, "PageReducer.data.roles.result", []),
+    subjectTypes: get(state, "PageReducer.data.subject-type-list.result.data", []),
     item: get(state, "PageReducer.data.get-one-item.result", {}),
     isFetched: get(state, "PageReducer.data.item-list.isFetched", false),
     isFetchedItem: get(state, "PageReducer.data.get-one-item.isFetched", false),
@@ -340,7 +295,7 @@ const mapDispatchToProps = (dispatch) => {
       dispatch({
         type: ApiActions.GET_ALL.REQUEST,
         payload: {
-          url: "/api/users",
+          url: "/api/subject",
           config: {
             params: {
               page: current,
@@ -352,23 +307,12 @@ const mapDispatchToProps = (dispatch) => {
       });
     },
 
-    getRoles: () => {
-      const storeName = "roles";
+    getSubjectType: ({ current = 1, pageSize = 10, }) => {
+      const storeName = "subject-type-list";
       dispatch({
         type: ApiActions.GET_ALL.REQUEST,
         payload: {
-          url: "/api/roles",
-          storeName,
-        },
-      });
-    },
-
-    getSubject: ({ current = 1, pageSize = 10, }) => {
-      const storeName = "subject-list";
-      dispatch({
-        type: ApiActions.GET_ALL.REQUEST,
-        payload: {
-          url: "/api/subject",
+          url: "/api/subject-type",
           config: {
             params: {
               page: current,
@@ -378,10 +322,9 @@ const mapDispatchToProps = (dispatch) => {
         },
       });
     },
-
   };
 };
 
 export default withTranslation("translation")(
-  connect(mapStateToProps, mapDispatchToProps)(withRouter(Users))
+  connect(mapStateToProps, mapDispatchToProps)(withRouter(AddSubject))
 );

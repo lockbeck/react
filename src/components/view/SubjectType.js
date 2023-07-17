@@ -11,7 +11,7 @@ import moment from "moment";
 import { withTranslation } from "react-i18next";
 import { Col, Form, FormGroup, Input, Label, Row } from "reactstrap";
 
-const AddDevice = ({
+const SubjectType = ({
   history,
   getItemsList,
   items,
@@ -22,19 +22,18 @@ const AddDevice = ({
 }) => {
   const [pagination, setPagination] = useState({
     current: 1,
-    pageSize: 10,
+    pageSize: 30,
   });
 
 
   useEffect(() => {
-    getItemsList({ ...pagination, item: "device" });
+    getItemsList({ ...pagination,});
   }, [pagination]);
 
-  const path = "api/item";
+  const path = "api/subject-type";
 
   const [formData, setFormData] = useState({
     name: "",
-    type: "",
   });
 
   const { t, i18n } = props
@@ -53,7 +52,7 @@ const AddDevice = ({
     PagesApi.Delete(path, id)
       .then((res) => {
         if (res.status === 200) {
-          getItemsList({ ...pagination, item: "device" });
+          getItemsList({ ...pagination });
         }
       })
       .catch((error) => {
@@ -65,7 +64,7 @@ const AddDevice = ({
     PagesApi.Create(path, params)
       .then((res) => {
         if (res.status === 201) {
-          getItemsList({ ...pagination, item: "device" });
+          getItemsList({ ...pagination });
         }
       })
       .catch((error) => {
@@ -98,7 +97,7 @@ const AddDevice = ({
 
   items = items.map((item, index) => ({
     ...item,
-    index: index + 10 * (pagination.current - 1) + 1,
+    index: index + 30 * (pagination.current - 1) + 1,
     created_at: moment(get(item, "created_at")).format("DD-MM-yyyy"),
     update_at: moment(get(item, "update_at")).format("DD-MM-yyyy"),
   }));
@@ -113,11 +112,6 @@ const AddDevice = ({
       title: t("name"),
       dataIndex: "name",
       key: "name",
-    },
-    {
-      title: t("add_time"),
-      dataIndex: "created_at",
-      key: "created_at",
     },
     {
       title: "",
@@ -153,8 +147,7 @@ const AddDevice = ({
       <div className="application-content">
         <Row>
           <Col md={11}>
-            <p className="title-name">{t("devices")}</p>
-            {/* <span className="title-badge-count">{total}</span> */}
+            <p className="title-name">{t("subject_type")}</p>
           </Col>
           <Col md={1}>
             <Button className="add-btn bg-success" onClick={showModal}>
@@ -175,7 +168,7 @@ const AddDevice = ({
         />
 
         <Modal
-          title="Qurilma qo'shish:"
+          title="Yangi qo'shish:"
           open={isModalOpen}
           onOk={handleOk}
           onCancel={handleCancel}
@@ -185,7 +178,7 @@ const AddDevice = ({
               <Row>
                 <Col sm={12}>
                   <FormGroup>
-                    <Label for="name">{t("name")}:</Label>
+                    <Label for="name">{t("subject_type")}:</Label>
                     <Input
                       id="name"
                       name="name"
@@ -195,20 +188,6 @@ const AddDevice = ({
                         setFormData({ ...formData, name: e.target.value })
                       }
                       required
-                    />
-                  </FormGroup>
-                </Col>
-                <Col sm={12}>
-                  <FormGroup>
-                    <Label for="type">{t("type")}:</Label>
-                    <Input
-                      id="type"
-                      name="type"
-                      placeholder="type..."
-                      type="text"
-                      onChange={(e) =>
-                        setFormData({ ...formData, type: e.target.value })
-                      }
                     />
                   </FormGroup>
                 </Col>
@@ -224,7 +203,7 @@ const AddDevice = ({
 const mapStateToProps = (state) => {
   console.log(state);
   return {
-    items: get(state, "PageReducer.data.device-list.result", []),
+    items: get(state, "PageReducer.data.item-list.result.data", []),
     item: get(state, "PageReducer.data.get-one-item.result", {}),
     isFetched: get(state, "PageReducer.data.item-list.isFetched", false),
     isFetchedItem: get(state, "PageReducer.data.get-one-item.isFetched", false),
@@ -236,16 +215,15 @@ const mapDispatchToProps = (dispatch) => {
 
   return {
 
-    getItemsList: ({ current = 1, pageSize = 10, item }) => {
-      const storeName = "device-list";
+    getItemsList: ({ current = 1, pageSize = 15, }) => {
+      const storeName = "item-list";
       dispatch({
         type: ApiActions.GET_ALL.REQUEST,
         payload: {
-          url: "/api/item",
+          url: "/api/subject-type",
           config: {
             params: {
               page: current,
-              "filter[type]": item,
             },
           },
           storeName,
@@ -257,5 +235,5 @@ const mapDispatchToProps = (dispatch) => {
 };
 
 export default withTranslation("translation")(
-  connect(mapStateToProps, mapDispatchToProps)(withRouter(AddDevice))
+  connect(mapStateToProps, mapDispatchToProps)(withRouter(SubjectType))
 );

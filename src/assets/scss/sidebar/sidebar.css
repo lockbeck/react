@@ -9,6 +9,27 @@
   text-align: left;
   color: #000000;
 }
+.menu-name-base{
+  margin-left: 6px;
+  font-family: Inter;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 21px;
+  letter-spacing: 0em;
+  text-align: left;
+  color: #000000;
+}
+.sub-menu-name {
+  margin-left: 6px;
+  font-family: Inter;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 21px;
+  letter-spacing: 0em;
+  text-align: left;
+  color: #000000;
+  vertical-align: sub;
+}
 .waves-effect:active{
   color: red;
 }

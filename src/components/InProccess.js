@@ -15,6 +15,7 @@ import {
 import moment from "moment";
 import { Badge, Row, Col } from "reactstrap";
 import { hasAccess } from "../helpers/authUtils";
+import { withTranslation } from "react-i18next";
 const { RangePicker } = DatePicker;
 const dateFormat = "DD/MM/YYYY";
 
@@ -25,6 +26,7 @@ const InProccess = ({
   isFetched,
   total,
   user,
+  ...props
 }) => {
   const append = ["certificates"];
   const include = ["device", "user"];
@@ -37,35 +39,14 @@ const InProccess = ({
     getItemsList({ ...pagination, include, append, status: 2 });
   }, [pagination]);
 
-  const [api, contextHolder] = notification.useNotification();
+  const { t, i18n } = props;
 
-  const [apiReject, contextHolderReject] = notification.useNotification();
-
-  const openNotification = () => {
-    api.open({
-      message: `Sizning  arizangiz qabul qilindi`,
-      duration: 2,
-      style: {
-        backgroundColor: "#6bed7a",
-      },
-    });
-  };
-
-  const openNotificationReject = () => {
-    apiReject.open({
-      message: `Sizning  arizangiz inkor qilindi`,
-      duration: 2,
-      style: {
-        backgroundColor: "#f59590",
-        color: "black",
-      },
-    });
-  };
 
   const [filter, setFilter] = useState({
     from: new Date(new Date().setMonth(new Date().getMonth() - 3)),
     to: new Date(),
   });
+
 
   const onRangeChange = (dates, dateStrings) => {
     if (dates) {
@@ -77,36 +58,6 @@ const InProccess = ({
     } else {
       console.log("Clear");
     }
-  };
-
-  const success = (id) => {
-    PagesApi.Put(id, "success")
-      .then((res) => {
-        getItemsList({ ...pagination, include, append, status: 2 });
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
-
-  const update = (params = {}, id) => {
-    PagesApi.Put(id, "edit", params)
-      .then((res) => {
-        console.log(res);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
-
-  const reject = (id) => {
-    PagesApi.Put(id, "reject")
-      .then((res) => {
-        getItemsList({ ...pagination, include, append, status: 2 });
-      })
-      .catch((error) => {
-        console.log(error);
-      });
   };
 
   ////  modal
@@ -140,36 +91,36 @@ const InProccess = ({
       key: "index",
     },
     {
-      title: "MAI nomi",
+      title: t("mai_name"),
       dataIndex: "name",
       key: "name",
     },
     {
-      title: "Boshqaruvchi",
+      title: t("mai_sub"),
       dataIndex: "staff",
       // render: (item) => get(item, "name", "-"),
       key: "staff",
     },
     {
-      title: "Ariza holati",
+      title: t("status"),
       dataIndex: "status",
       render: () => <Badge color="primary">jarayonda</Badge>,
       key: "status",
     },
     {
-      title: "O'zgartirilgan vaqt",
+      title: t("edited_time"),
       dataIndex: "update_at",
       render: (date) => moment(date).format("DD-MM-yyyy"),
       key: "update_at",
     },
     {
-      title: "Kiritilgan vaqt",
+      title: t("created_time"),
       dataIndex: "created_at",
       render: (date) => moment(date).format("DD-MM-yyyy"),
       key: "created_at",
     },
     {
-      title: "Aloqa uchun",
+      title: t("contact"),
       dataIndex: "phone",
       //render: (item) => get(item, "phone", "-"),
       key: "phone",
@@ -181,36 +132,10 @@ const InProccess = ({
       render: (id) => {
         return (
           <Space size="middle">
-            {/* {hasAccess(["admin"], get(user, "roles", [])) && (
-              <Button
-                onClick={() => {
-                  success(id);
-                  openNotification();
-                }}
-                shape="circle"
-                warning
-                icon={<CheckOutlined style={{ color: "#00b300" }} />}
-              />
-            )}
-            <Button
-              onClick={() => {
-                reject(id);
-                openNotificationReject();
-              }}
-              shape="circle"
-              warning
-              icon={<CloseOutlined style={{ color: "#e63900" }} />}
-            /> */}
 
             <Link to={{ pathname: "/view", state: id }}>
               <Button shape="circle" warning icon={<EyeOutlined />} />
             </Link>
-            {/* <Button
-              onClick={showModal}
-              shape="circle"
-              warning
-              icon={<EditOutlined />}
-            /> */}
           </Space>
         );
       },
@@ -220,16 +145,14 @@ const InProccess = ({
   return (
     <React.Fragment>
       <div className="application-content">
-        {contextHolder}
-        {contextHolderReject}
         <Row className="mb-3">
           <Col md={8}>
-            <p className="title-name">Jarayondagi arizalar</p>
+            <p className="title-name">{t("inproccess_application")}</p>
             <span className="title-badge-count">{total}</span>
           </Col>
           <Col md={4}>
-            <Space direction="vertical" size={12}>
-              <RangePicker onChange={onRangeChange} format={dateFormat} placeholder={["...dan", "...gacha"]}/>
+            <Space direction="vertical" size={12} className="float-right">
+              <RangePicker onChange={onRangeChange} format={dateFormat} placeholder={["...dan", "...gacha"]} defaultValue={[moment(get(filter, "from", ""), "DD/MM/yyyy"), moment(get(filter, "to",""), "DD/MM/yyyy")]}/>
             </Space>
           </Col>
         </Row>
@@ -297,7 +220,6 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(withRouter(InProccess));
+export default withTranslation("translation")(
+  connect(mapStateToProps, mapDispatchToProps)(withRouter(InProccess))
+);

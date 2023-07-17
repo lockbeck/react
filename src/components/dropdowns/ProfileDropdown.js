@@ -5,6 +5,8 @@ import {
   DropdownMenu,
   DropdownToggle,
   DropdownItem,
+  Row,
+  Col,
 } from "reactstrap";
 import "../../assets/scss/topbar/topbar.css";
 
@@ -42,10 +44,16 @@ class ProfileDropdown extends Component {
           onClick={this.toggleDropdown}
           aria-expanded={this.state.dropdownOpen}
         >
-          <img src={profilePic} className="rounded-circle" alt="user" width="30" height="30"/>
-          <span className="pro-user-name ml-1">
+          <Row className="user-container">
+            <Col lg={3} className="user-image-col">
+            <img src={profilePic} alt="user" className="user-profile-picture"/>
+            </Col>
+            <Col lg={5}>
+            <h6 className="logged-user">
             {this.props.username} <i className="mdi mdi-chevron-down"></i>{" "}
-          </span>
+          </h6>
+            </Col>
+          </Row>
         </DropdownToggle>
         <DropdownMenu right className="topbar-dropdown-menu profile-dropdown">
           <div onClick={this.toggleDropdown}>

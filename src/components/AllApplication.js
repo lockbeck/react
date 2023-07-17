@@ -9,7 +9,7 @@ import { Button, Modal, Space, Table, DatePicker } from "antd";
 import { EyeOutlined } from "@ant-design/icons";
 import moment from "moment";
 import { Badge, Row, Col } from "reactstrap";
-import {withTranslation} from "react-i18next";
+import { withTranslation } from "react-i18next";
 const { RangePicker } = DatePicker;
 const dateFormat = "DD/MM/YYYY";
 
@@ -23,14 +23,20 @@ const AllApplication = ({
   total,
   ...props
 }) => {
-  const append = ["staff", "telecommunication", "device"];
-  const include = ["certificate", "license"];
+  const append = [
+    "staff",
+    "telecommunication",
+    "device",
+    "certificate",
+    "license",
+  ];
+  const include = ["", ""];
   const [pagination, setPagination] = useState({
     current: 1,
     pageSize: 15,
   });
 
-  const {t, i18n} = props
+  const { t, i18n } = props;
 
   const [filter, setFilter] = useState({
     from: new Date(new Date().setMonth(new Date().getMonth() - 3)),
@@ -43,7 +49,6 @@ const AllApplication = ({
 
   const path = "api/application";
 
-
   const onRangeChange = (dates, dateStrings) => {
     if (dates) {
       setFilter({
@@ -54,26 +59,6 @@ const AllApplication = ({
     } else {
       console.log("Clear");
     }
-  };
-
-  const update = (params = {}, id) => {
-    PagesApi.Update(path, id, params)
-      .then((res) => {
-        console.log(res);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
-
-  const remove = (id) => {
-    PagesApi.Delete(path, id)
-      .then((res) => {
-        console.log(res);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
   };
 
   ////  modal
@@ -101,51 +86,55 @@ const AllApplication = ({
     staff: get(item, "staff", []).map((stuf) => get(stuf, "name")),
     phone: get(item, "staff", []).map((stuf) => get(stuf, "phone")),
     status:
-      get(item, "status") === 0 ? (
-        <Badge color="danger">{t('rejected')}</Badge>
-      ) : get(item, "status") === 1 ? (
-        <Badge color="warning">{t('waiting')}</Badge>
+      get(item, "status") === 1 ? (
+        <Badge color="danger">{t("rejected")}</Badge>
+      ) : get(item, "status") === 0 ? (
+        <Badge color="warning">{t("waiting")}</Badge>
       ) : get(item, "status") === 2 ? (
-        <Badge color="primary">{('proccess')}</Badge>
+        <Badge color="primary">{t("manager_to_admin")}</Badge>
+      ) : get(item, "status") === 3 ? (
+        <Badge color="info">{t("manager_to_user")}</Badge>
+      ) : get(item, "status") === 4 ? (
+        <Badge color="secondary">{t("admin_to_manager")}</Badge>
       ) : (
-        <Badge color="success">{t('success')}</Badge>
+        <Badge color="success">{t("success")}</Badge>
       ),
   }));
 
   const columns = [
     {
-      title: "T/r",
+      title: t("order_number"),
       dataIndex: "index",
       key: "id",
     },
     {
-      title: t('mai_name'),
+      title: t("mai_name"),
       dataIndex: "name",
       key: "name",
     },
     {
-      title: t('mai_sub'),
+      title: t("mai_sub"),
       dataIndex: "staff",
       // render: (stuf) => get(stuf, "name", "-"),
       key: "staff",
     },
     {
-      title: t('status'),
+      title: t("status"),
       dataIndex: "status",
       key: "status",
     },
     {
-      title: t('edited_time'),
+      title: t("edited_time"),
       dataIndex: "update_at",
       key: "update_at",
     },
     {
-      title: t('created_time'),
+      title: t("created_time"),
       dataIndex: "created_at",
       key: "created_at",
     },
     {
-      title: t('contact'),
+      title: t("contact"),
       dataIndex: "phone",
       // render: (item) => get(item, "phone", "-"),
       key: "phone",
@@ -168,14 +157,19 @@ const AllApplication = ({
   return (
     <React.Fragment>
       <div className="application-content">
-        <Row className="mb-3">
+        <Row className="mb-3 d-flex justify-content-between">
           <Col md={8}>
-            <p className="title-name">{t('all_applications')}</p>
+            <p className="title-name">{t("all_applications")}</p>
             <span className="title-badge-count">{total}</span>
           </Col>
           <Col md={4}>
-            <Space direction="vertical" size={12}>
-              <RangePicker onChange={onRangeChange} format={dateFormat}  placeholder={[t('from'), t('to')]}/>
+            <Space direction="vertical" size={12} className="float-right">
+              <RangePicker
+                onChange={onRangeChange}
+                format={dateFormat}
+                placeholder={[t("from"), t("to")]}
+                defaultValue={[moment(get(filter, "from", ""), "DD/MM/yyyy"), moment(get(filter, "to",""), "DD/MM/yyyy")]}
+              />
             </Space>
           </Col>
         </Row>
@@ -220,8 +214,8 @@ const mapDispatchToProps = (dispatch) => {
       pageSize = 15,
       include = [],
       append = [],
-      from= "",
-      to= ""
+      from = "",
+      to = "",
     }) => {
       const storeName = "item-list";
       dispatch({
@@ -233,8 +227,8 @@ const mapDispatchToProps = (dispatch) => {
               page: current,
               include: include.join(","),
               append: append.join(","),
-              from:moment(from).format("yyyy-MM-DD"),
-              to:moment(to).format("yyyy-MM-DD")
+              from: moment(from).format("yyyy-MM-DD"),
+              to: moment(to).format("yyyy-MM-DD"),
             },
           },
           storeName,
@@ -261,4 +255,6 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-export default withTranslation('translation')(connect(mapStateToProps, mapDispatchToProps)(withRouter(AllApplication)));
+export default withTranslation("translation")(
+  connect(mapStateToProps, mapDispatchToProps)(withRouter(AllApplication))
+);

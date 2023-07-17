@@ -9,6 +9,7 @@ import { Button, Modal, Space, Table } from "antd";
 import { EyeOutlined, DeleteOutlined,ExclamationCircleOutlined } from "@ant-design/icons";
 import moment from "moment";
 import { Col, Form, FormGroup, Input, Label, Row } from "reactstrap";
+import { withTranslation } from "react-i18next";
 
 const Importance = ({
   history,
@@ -19,6 +20,7 @@ const Importance = ({
   item,
   isFetched,
   total,
+  ...props
 }) => {
   const [pagination, setPagination] = useState({
     current: 1,
@@ -47,6 +49,8 @@ const Importance = ({
         console.log(error);
       });
   };
+
+  const { t, i18n } = props
 
   const remove = (id) => {
     PagesApi.Delete(path, id)
@@ -108,22 +112,22 @@ const Importance = ({
       key: "id",
     },
     {
-      title: "Name",
+      title: t("name"),
       dataIndex: "name",
       key: "name",
     },
     {
-      title: "Definition",
+      title: t("definition"),
       dataIndex: "definition",
       key: "definition",
     },
     {
-      title: "Created Date",
+      title: t("created_time"),
       dataIndex: "created_at",
       key: "created_at",
     },
     {
-      title: "action",
+      title: "",
       dataIndex: "id",
       key: "action",
       render: (id) => {
@@ -156,12 +160,11 @@ const Importance = ({
       <div className="application-content">
         <Row>
           <Col md={11}>
-            <p className="title-name">Muhimlilik darajasi</p>
-            <span className="title-badge-count">{total}</span>
+            <p className="title-name">{t("importance_degre")}</p>
           </Col>
           <Col md={1}>
             <Button className="add-btn bg-success" onClick={showModal}>
-              Yangi
+              {t("new")}
             </Button>
           </Col>
         </Row>
@@ -178,7 +181,7 @@ const Importance = ({
         />
 
         <Modal
-          title="Edit Page"
+          title="Muhimlilik"
           open={isModalOpen}
           onOk={handleOk}
           onCancel={handleCancel}
@@ -203,7 +206,7 @@ const Importance = ({
                 </Col>
                 <Col sm={12}>
                   <FormGroup>
-                    <Label for="definition">Definition</Label>
+                    <Label for="definition">Ta'rif</Label>
                     <Input
                       id="importance"
                       name="importance"
@@ -271,4 +274,6 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(withRouter(Importance));
+export default withTranslation("translation")(
+  connect(mapStateToProps, mapDispatchToProps)(withRouter(Importance))
+);
