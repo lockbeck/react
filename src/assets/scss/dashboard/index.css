@@ -1,5 +1,9 @@
-.statistics {
-  width: 230px;
+.handle-row{
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: space-between;
 }
 .statistics .card-statistics {
   position: relative;

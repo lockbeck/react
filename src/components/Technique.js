@@ -5,7 +5,7 @@ import { Input, Label } from "reactstrap";
 import { Modal } from "antd";
 import PagesApi from "../pages/dashboards/PagesApi";
 import ApiActions from "../redux/pages/actions";
-import FileUpload from './fileUpload/FileUpload';
+import FileUpload from "./fileUpload/FileUpload";
 import { withTranslation } from "react-i18next";
 import { get } from "lodash";
 
@@ -16,26 +16,22 @@ const Device = ({ sendDeviceID = () => {}, getType, getManufacture, manufacturer
     getManufacture({ itm: "manufacture"})
   }, []);
 
+  const path = "api/technique";
   const { t, i18n } = props;
-
-  const path = "api/device";
-
-  const[device, setDevice] = useState([]);
+  const [device, setDevice] = useState([]);
 
   const [data, setData] = useState({
     name: "",
-    model:"",
+    model: "",
     manufacturer: "",
     documents: [],
   });
 
-  const saveDevice = (params)=>{
-    setData({...data, documents: params.map(({id}) => id)})
+  const saveDevice = (params) => {
+    setData({ ...data, documents: params.map(({id}) => id) });
   };
 
   const [isModalOpen, setIsModalOpen] = useState(false);
-
-
 
   const showModal = () => {
     setIsModalOpen(true);
@@ -54,9 +50,8 @@ const Device = ({ sendDeviceID = () => {}, getType, getManufacture, manufacturer
     PagesApi.Create(path, params)
       .then((res) => {
         if (res.status === 201) {
-          console.log(res);
-          sendDeviceID([...device, res.data])
-          setDevice([...device, res.data])
+          sendDeviceID([...device, res.data]);
+          setDevice([...device, res.data]);
         }
       })
       .catch((error) => {
@@ -64,18 +59,17 @@ const Device = ({ sendDeviceID = () => {}, getType, getManufacture, manufacturer
       });
   };
 
-console.log(deviceType);
   return (
     <React.Fragment>
       <div className="modal-data">
-        <Label for="device">{t("hardware")}</Label>
+        <Label for="device">{t("software")}</Label>
         <div className="device-name-area" onClick={showModal}>
           <div className="device-name">
-            <div className="device-span">{device.map((item, i)=>(<span key={i}>{item.name}{", "}</span>))}</div>
+          <div className="device-span">{device.map((item, i)=>(<span key={i}>{item.name}{", "}</span>))}</div>
           </div>
         </div>
         <Modal
-          title={t("add_hardware")}
+          title={t("add_software")}
           open={isModalOpen}
           onOk={handleOk}
           onCancel={handleCancel}
@@ -84,7 +78,7 @@ console.log(deviceType);
           okType="primary"
         >
           <Label for="name" className="mt-1">
-            {t("hardware_name")}
+            {t("software_name")}
           </Label>
           <Input
             id="name"
@@ -93,7 +87,7 @@ console.log(deviceType);
             onChange={(e) => setData({ ...data, name: e.target.value })}
           />
           <Label for="type" className="mt-3">
-            {t("hardware_type")}
+           {t("software_type")}
           </Label>
           <Input
             id="type"
@@ -102,30 +96,29 @@ console.log(deviceType);
             type="select"
             onChange={(e) => setData({ ...data, model: e.target.value })}
           >
-             {deviceType.map((item, i) => (
-                    <option key={i} value={item.name}>
+            {deviceType.map((item, i) => (
+                    <option key={i} value={item.id}>
                       {item.name}
                     </option>
                   ))}
           </Input>
           <Label for="manafucture" className="mt-3">
-            {t("manafucture")}
+           {t("manafucture")}
           </Label>
           <Input
             id="manafucture"
             name="manafucture"
-            className="mb-3"
             required
             type="select"
             onChange={(e) => setData({ ...data, manufacturer: e.target.value })}
           >
-            {manufacturers.map((item, i) => (
-                    <option key={i} value={item.name}>
+           {manufacturers.map((item, i) => (
+                    <option key={i} value={item.id}>
                       {item.name}
                     </option>
                   ))}
           </Input>
-           <FileUpload label={t("hardware_certificate")} save={saveDevice}/>
+          <FileUpload label={t("software_certificate")} save={saveDevice} />
         </Modal>
       </div>
     </React.Fragment>

@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import "../assets/scss/allapplication/allapplication.css";
-import { withRouter, Link } from "react-router-dom";
+import { withRouter } from "react-router-dom";
 import { get } from "lodash";
 import ApiActions from "../redux/pages/actions";
 import PagesApi from "../pages/dashboards/PagesApi";
 import { Button, Modal, Space, Table } from "antd";
-import { EyeOutlined, DeleteOutlined,ExclamationCircleOutlined, EditOutlined } from "@ant-design/icons";
+import {DeleteOutlined,ExclamationCircleOutlined, EditOutlined, KeyOutlined } from "@ant-design/icons";
 import moment from "moment";
+import {withTranslation} from "react-i18next"
 import { Col, Form, FormGroup, Input, Label, Row } from "reactstrap";
 
 const ChangeAccount = ({
@@ -19,12 +20,14 @@ const ChangeAccount = ({
   item,
   isFetched,
   total,
+  ...props
 }) => {
   const [pagination, setPagination] = useState({
     current: 1,
     pageSize: 10,
   });
 
+  const {t, i18n} = props
 
   useEffect(() => {
     getRoles();
@@ -32,6 +35,7 @@ const ChangeAccount = ({
   }, [pagination]);
 
   const path = "api/profile";
+  const path_p = "api/profile/change-password";
 
   const [formData, setFormData] = useState({
     name: "",
@@ -41,8 +45,28 @@ const ChangeAccount = ({
     role: null,
   });
 
-  const update = (params = {}, id) => {
-    PagesApi.Update(path, id, params)
+  const [editData, setEditData] = useState({
+    name: "",
+    email: ""
+  })
+
+  const [password, setPassword] = useState({
+    oldPassword: "",
+    newPassword: ""
+  })
+
+  const update = (params = {}) => {
+    PagesApi.Update_p(path, params)
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  const update_p = (params = {}) => {
+    PagesApi.Update_p(path_p, params)
       .then((res) => {
         console.log(res);
       })
@@ -78,20 +102,44 @@ const ChangeAccount = ({
   ////  modal
 
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isModalOpen2, setIsModalOpen2] = useState(false);
+  const [isModalOpen3, setIsModalOpen3] = useState(false);
 
   const showModal = () => {
     setIsModalOpen(true);
   };
 
+  const showModal2 = () => {
+    setIsModalOpen2(true);
+  };
+  const showModal3 = () => {
+    setIsModalOpen3(true);
+  };
   const handleOk = () => {
     create(formData);
+    setIsModalOpen(false);
+  };
+
+  const handleOk2 = () => {
+    update(editData);
+    setIsModalOpen(false);
+  };
+
+  const handleOk3 = () => {
+    update_p(password);
     setIsModalOpen(false);
   };
 
   const handleCancel = () => {
     setIsModalOpen(false);
   };
+  const handleCancel2 = () => {
+    setIsModalOpen2(false);
+  };
 
+  const handleCancel3 = () => {
+    setIsModalOpen3(false);
+  };
   console.log(roles);
 
 
@@ -118,34 +166,19 @@ const ChangeAccount = ({
       key: "id",
     },
     {
-      title: "Foydalanuvchi nomi",
+      title: t("user_name"),
       dataIndex: "name",
       key: "name",
     },
     {
-      title: "Pochta",
+      title: t("email"),
       dataIndex: "email",
       key: "email",
     },
-    // {
-    //   title: "Subject",
-    //   dataIndex: "subject",
-    //   key: "subject",
-    // },
     {
-      title: "Phone",
-      dataIndex: "phone",
-      key: "phone",
-    },
-    {
-      title: "Roli",
+      title: t("role"),
       dataIndex: "role",
       key: "role",
-    },
-    {
-      title: "Qo'shilgan vaqti",
-      dataIndex: "date",
-      key: "date",
     },
     {
       title: "",
@@ -158,11 +191,11 @@ const ChangeAccount = ({
               shape="circle"
               onClick={() => {
                 Modal.confirm({
-                  title: `O'chirishni xohlaysizmi`,
+                  title: t("want_delete"),
                   icon: <ExclamationCircleOutlined />,
                   //content: 'Bla bla ...',
                   okText: 'OK',
-                  cancelText: 'Cancel',
+                  cancelText: t("cancel"),
                   onOk: () => {
                     remove(id);
                   },
@@ -170,7 +203,8 @@ const ChangeAccount = ({
               }}
               icon={<DeleteOutlined style={{ color: "#f24b3f" }} />}
             ></Button>
-             <Button shape="circle" warning icon={<EditOutlined />} />
+             <Button shape="circle" warning icon={<EditOutlined />} onClick={showModal2} />
+             <Button shape="circle" warning icon={<KeyOutlined />} onClick={showModal3} />
           </Space>
         );
       },
@@ -182,12 +216,11 @@ const ChangeAccount = ({
       <div className="application-content">
         <Row>
           <Col md={11}>
-            <p className="title-name">Profil sozlamalari</p>
-            <span className="title-badge-count">{total}</span>
+            <p className="title-name">{t("profile_setting")}</p>
           </Col>
           <Col md={1}>
             <Button className="add-btn bg-success" onClick={showModal}>
-              Yangi
+              {t("new")}
             </Button>
           </Col>
         </Row>
@@ -202,7 +235,7 @@ const ChangeAccount = ({
           }}
           scroll={{ x: "auto" }}
         />
-
+                {/* Modal for add new */}
         <Modal
           title="Foydalanuvchi uchun  login va parol yaratish:"
           open={isModalOpen}
@@ -214,11 +247,11 @@ const ChangeAccount = ({
               <Row>
                 <Col sm={12}>
                   <FormGroup>
-                    <Label for="name">Foydalanuvchi Ismi:</Label>
+                    <Label for="name">{t("user_name")}</Label>
                     <Input
                       id="name"
                       name="name"
-                      placeholder="arizachi nomini kiriting..."
+                      placeholder={t("write_name")}
                       type="text"
                       onChange={(e) =>
                         setFormData({ ...formData, name: e.target.value })
@@ -229,7 +262,7 @@ const ChangeAccount = ({
                 </Col>
                 <Col sm={12}>
                   <FormGroup>
-                    <Label for="email">Pochta:</Label>
+                    <Label for="email">{t("email")}:</Label>
                     <Input
                       id="email"
                       name="email"
@@ -243,7 +276,7 @@ const ChangeAccount = ({
                 </Col>
                 <Col sm={12}>
                   <FormGroup>
-                    <Label for="password">Parol:</Label>
+                    <Label for="password">{t("parol")}:</Label>
                     <Input
                       id="password"
                       name="password"
@@ -257,7 +290,7 @@ const ChangeAccount = ({
                 </Col>
                 <Col sm={12}>
                   <FormGroup>
-                    <Label for="role">Foydalanuvchi roli:</Label>
+                    <Label for="role">{t("user_role")}:</Label>
                     <Input
                       id="role"
                       name="role"
@@ -278,6 +311,76 @@ const ChangeAccount = ({
             </Form>
           </div>
         </Modal>
+
+        {/* Modal for Edit */}
+        <Modal
+        title={t("profile_setting")}
+        open={isModalOpen2}
+        onOk={handleOk2}
+        onCancel={handleCancel2}
+      >
+        <Row className="p-2">
+          <Col lg={12} className="pb-2">
+            <Label>{t("name")}</Label>
+            <Input
+              type="text"
+              id="name"
+              name="name"
+              placeholder={t("write_name")}
+              defaultValue={get(items, "name", "")}
+              onChange={(e) =>
+                setEditData({ ...editData, name: e.target.value })
+              }
+            />
+          </Col>
+          <Col lg={12} className="pb-2">
+            <Label>{t("email")}:</Label>
+            <Input
+              type="text"
+              id="email"
+              name="email"
+              defaultValue={get(items,"email","")}
+              onChange={(e) =>
+                setEditData({ ...editData, email: e.target.value })
+              }
+            />
+          </Col>
+        </Row>
+      </Modal>
+
+      {/* Modal for Change password */}
+
+      <Modal
+        title={t("change_password")}
+        open={isModalOpen3}
+        onOk={handleOk3}
+        onCancel={handleCancel3}
+      >
+        <Row className="p-2">
+          <Col lg={12} className="pb-2">
+            <Label>{t("old_password")}</Label>
+            <Input
+              type="password"
+              id="password"
+              name="password"
+              onChange={(e) =>
+                setPassword({ ...password, oldPassword: e.target.value })
+              }
+            />
+          </Col>
+          <Col lg={12} className="pb-2">
+            <Label>{t("new_password")}:</Label>
+            <Input
+              type="password"
+              id="password"
+              name="password"
+              onChange={(e) =>
+                setPassword({ ...password, newPassword: e.target.value })
+              }
+            />
+          </Col>
+        </Row>
+      </Modal>
       </div>
     </React.Fragment>
   );
@@ -286,12 +389,12 @@ const ChangeAccount = ({
 const mapStateToProps = (state) => {
   console.log(state);
   return {
-    items: get(state, "PageReducer.data.item-list.result.data", []),
+    items: get(state, "PageReducer.data.profile-list.result.data", []),
     roles: get(state, "PageReducer.data.roles.result", []),
     item: get(state, "PageReducer.data.get-one-item.result", {}),
-    isFetched: get(state, "PageReducer.data.item-list.isFetched", false),
+    isFetched: get(state, "PageReducer.data.profile-list.isFetched", false),
     isFetchedItem: get(state, "PageReducer.data.get-one-item.isFetched", false),
-    total: get(state, "PageReducer.data.item-list.result.total", 0),
+    total: get(state, "PageReducer.data.profile-list.result.total", 0),
   };
 };
 
@@ -300,7 +403,7 @@ const mapDispatchToProps = (dispatch) => {
   return {
 
     getItemsList: ({ current = 1, pageSize = 10 }) => {
-      const storeName = "item-list";
+      const storeName = "profile-list";
       dispatch({
         type: ApiActions.GET_ALL.REQUEST,
         payload: {
@@ -330,4 +433,4 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(withRouter(ChangeAccount));
+export default withTranslation('translation')(connect(mapStateToProps, mapDispatchToProps)(withRouter(ChangeAccount)));

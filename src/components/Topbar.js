@@ -77,7 +77,7 @@ const ProfileMenus = [
   //   redirectTo: "/",
   // },
   {
-    label: "Settings",
+    label: "Profil",
     icon: "fe-settings",
     redirectTo: "/change_account",
   },

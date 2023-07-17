@@ -27,3 +27,6 @@
     float: inline-end;
     width: 50%;
 }
+.comment-added{
+    color: red;
+}

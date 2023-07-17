@@ -18,6 +18,7 @@ import PieChart from "../../chart/PieChart";
 // import TopMAI from "../../chart/TopMAI";
 import { DatePicker, Space } from "antd";
 import dayjs from "dayjs";
+import { withTranslation } from "react-i18next";
 import { hasAccess } from "../../helpers/authUtils";
 const dateFormat = "DD/MM/YYYY";
 
@@ -30,6 +31,7 @@ const DefaultDashboard = ({
   isFetched,
   total,
   user,
+  ...props
 }) => {
   //bar-chart-data
   const [labels, setLabels] = useState([]);
@@ -42,8 +44,7 @@ const DefaultDashboard = ({
     endDate: new Date(),
   });
 
-  // const [startDate, setStartDate] = useState();
-  // const [endDate, setEndDate] = useState();
+  const { t, i18n } = props;
 
   const onRangeChange = (dates, dateStrings) => {
     if (dates) {
@@ -129,7 +130,7 @@ const DefaultDashboard = ({
               {hasAccess(["admin", "manager"], get(user, "roles", [])) && (
                 <Row>
                   <Col lg={7}>
-                    <h4 className="page-title">{user.name}</h4>
+                    {/* <h4 className="page-title">{user.name}</h4> */}
                   </Col>
                   <Col lg={5} className="mt-lg-3 mt-md-0"></Col>
                 </Row>
@@ -138,29 +139,29 @@ const DefaultDashboard = ({
           </Col>
         </Row>
 
-        <Row className="justify-content-between">
-          <Col className="statistics" lg={2}>
+        <Row className="handl-row">
+          <Col className="statistics">
             <Card className="card-statistics">
               <CardBody className="card-body-tab">
                 <div className="icon-div1">
                   <i className="fa fa-users fa-2x text-info"></i>
                 </div>
-                <h4>Arizalar</h4>
-                <p>Barcha arizalar</p>
+                <h4>{t("applications")}</h4>
+                <p>{t("all_applications")}</p>
                 <i className="fa fa-arrow-up text-dark mr-1"></i>
                 <span>{item.applications}</span>
                 <img src={line} alt="" />
               </CardBody>
             </Card>
           </Col>
-          <Col className="statistics" lg={2}>
+          <Col className="statistics">
             <Card className="card-statistics">
               <CardBody className="card-body-tab">
                 <div className="icon-div2">
                   <i className="fa fa-users fa-2x text-primary"></i>
                 </div>
-                <h4>Jarayondagi</h4>
-                <p>Ko'rilayotgan arizalar</p>
+                <h4>{t("inproccess")}</h4>
+                <p>{t("viewing_applications")}</p>
                 <i className="fa fa-arrow-up text-dark mr-1"></i>
                 <span>{statusData[2]}</span>
                 <img src={line2} alt="" />
@@ -168,21 +169,21 @@ const DefaultDashboard = ({
             </Card>
           </Col>
 
-          <Col className="statistics" lg={2}>
+          <Col className="statistics">
             <Card className="card-statistics">
               <CardBody className="card-body-tab">
                 <div className="icon-div3">
                   <i className="fa fa-user-plus fa-2x text-success"></i>
                 </div>
-                <h4>Qabul qilingan</h4>
-                <p>Qabul qilingan arizalar</p>
+                <h4>{t("accepted_applications")}</h4>
+                <p>{t("accepted_applications")}</p>
                 <i className="fa fa-arrow-up text-dark mr-1"></i>
-                <span>{statusData[3]}</span>
+                <span>{statusData[5]}</span>
                 <img src={line3} alt="" />
               </CardBody>
             </Card>
           </Col>
-          <Col className="statistics" lg={2}>
+          <Col className="statistics">
             <Card className="card-statistics">
               <CardBody className="card-body-tab">
                 <div className="icon-div4">
@@ -190,36 +191,38 @@ const DefaultDashboard = ({
                 </div>
 
                 {hasAccess(["admin", "manager"], get(user, "roles", [])) && (
-                  <h4>Ko'rilmagan</h4>
+                  <h4>{t("unview")}</h4>
                 )}
-                <p>Ko'rilmagan arizalar</p>
+                <p>{t("unview_applications")}</p>
                 <i className="fa fa-arrow-down text-dark mr-1"></i>
                 <span>{statusData[1]}</span>
                 <img src={line4} alt="" />
               </CardBody>
             </Card>
           </Col>
-          <Col className="statistics" lg={2}>
+          <Col className="statistics">
             <Card className="card-statistics">
               <CardBody className="card-body-tab">
                 <div className="icon-div5">
                   <i className="fa fa-user-times fa-2x text-danger"></i>
                 </div>
-                <h4>Inkor qilingan</h4>
-                <p>Inkor qilingan arizalar</p>
+                <h4>{t("rejected_applications")}</h4>
+                <p>{t("rejected_app")}</p>
                 <i className="fa fa-arrow-up text-dark mr-1"></i>
                 <span>{statusData[0]}</span>
                 <img src={line5} alt="" />
               </CardBody>
             </Card>
           </Col>
+          </Row>
 
+          <Row>
           <Col lg={8}>
             <Card className="chart-area">
               <div className="p-3">
                 <Row className="d-flex justify-content-between">
                   <Col lg={6}>
-                    <h4 className="text-muted">Barcha arizalar</h4>
+                    <h4 className="text-muted">{t("all_applications")}</h4>
                   </Col>
                   <Col lg={2}>
                     {/* <Input id="timeSelect" type="select" className="p-1">
@@ -259,7 +262,7 @@ const DefaultDashboard = ({
             <Card className="chart-area">
               <CardBody>
                 <h2>{item.applications}</h2>
-                <h5>Kelib tushgan arizalar</h5>
+                <h5>{t("received_applications")}</h5>
                 <hr />
                 <PieChart data={statusData} />
               </CardBody>
@@ -332,7 +335,6 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(withRouter(DefaultDashboard));
+export default withTranslation("translation")(
+  connect(mapStateToProps, mapDispatchToProps)(withRouter(DefaultDashboard))
+);

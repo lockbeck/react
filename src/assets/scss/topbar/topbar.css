@@ -25,9 +25,9 @@
 }
 #profilpic {
   background: #e1e9f3;
-  width: 200px;
-  height: 55px;
-  margin-top: 5px;
+  width: 140px;
+  height: 42px;
+  margin-top: 12px;
   border-radius: 25px;
 }
 .nav-user img {
@@ -38,4 +38,18 @@
 }
 .pro-user-name {
   color: black !important;
+}
+.logged-user{
+  margin-top: 55%;
+}
+.user-profile-picture{
+  width: 25px !important;
+  height: 25px !important;
+  margin-bottom: 12px;
+}
+.user-container{
+height: 40px !important;
+}
+.user-image-col{
+  height: 40px;
 }

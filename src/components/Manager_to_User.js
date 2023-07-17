@@ -5,48 +5,39 @@ import { withRouter, Link } from "react-router-dom";
 import { get } from "lodash";
 import ApiActions from "../redux/pages/actions";
 import PagesApi from "../pages/dashboards/PagesApi";
-import { Button, Modal, Space, Table, notification, DatePicker } from "antd";
-import {  EyeOutlined } from "@ant-design/icons";
+import { Button, Modal, Space, Table, DatePicker } from "antd";
+import { EditOutlined, EyeOutlined } from "@ant-design/icons";
 import moment from "moment";
 import { Badge, Row, Col } from "reactstrap";
-import {withTranslation} from "react-i18next";
+import { hasAccess } from "../helpers/authUtils";
 const { RangePicker } = DatePicker;
 const dateFormat = "DD/MM/YYYY";
 
-const Success_Application = ({
+const Manager_to_User = ({
   history,
   getItemsList,
   items,
   isFetched,
   total,
   user,
-  ...props
 }) => {
-  const append = ["certificates"];
-  const include = ["device", "user"];
+  const append = [ "staff", "telecommunication", "device", "certificate", "license",];
+  const include = [];
   const [pagination, setPagination] = useState({
     current: 1,
     pageSize: 15,
   });
-  
-
-  const {t, i18n} = props
-
 
   useEffect(() => {
-    getItemsList({ ...pagination, include, append, status: 5, ...filter });
+    getItemsList({ ...pagination, include, append, status: 3, ...filter });
   }, [pagination, filter]);
 
-  const [api, contextHolder] = notification.useNotification();
-
-  const [apiReject, contextHolderReject] = notification.useNotification();
+  const path = "api/application";
 
   const [filter, setFilter] = useState({
     from: new Date(new Date().setMonth(new Date().getMonth() - 3)),
     to: new Date(),
   });
-
-
   const onRangeChange = (dates, dateStrings) => {
     if (dates) {
       setFilter({
@@ -59,6 +50,41 @@ const Success_Application = ({
     }
   };
 
+  const update = (params = {}, id) => {
+    PagesApi.Update(path, id, params)
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  const remove = (id) => {
+    PagesApi.Delete(path, id)
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  ////  modal
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const showModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleOk = () => {
+    setIsModalOpen(false);
+  };
+
+  const handleCancel = () => {
+    setIsModalOpen(false);
+  };
 
   items = items.map((item, index) => ({
     ...item,
@@ -74,36 +100,36 @@ const Success_Application = ({
       key: "index",
     },
     {
-      title: t('mai_name'),
+      title: "MAI nomi",
       dataIndex: "name",
       key: "name",
     },
     {
-      title: t('mai_sub'),
+      title: "Boshqaruvchi",
       dataIndex: "staff",
       // render: (item) => get(item, "name", "-"),
       key: "staff",
     },
     {
-      title: t('status'),
+      title: "Ariza holati",
       dataIndex: "status",
-      render: () => <Badge color="success">{t('success')}</Badge>,
+      render: () => <Badge color="info">manager_to_user</Badge>,
       key: "status",
     },
     {
-      title: t('edited_time'),
+      title: "O'zgartirilgan vaqt",
       dataIndex: "update_at",
       render: (date) => moment(date).format("DD-MM-yyyy"),
       key: "update_at",
     },
     {
-      title: t('created_time'),
+      title: "Kiritilgan vaqt",
       dataIndex: "created_at",
       render: (date) => moment(date).format("DD-MM-yyyy"),
       key: "created_at",
     },
     {
-      title: t('contact'),
+      title: "Aloqa uchun",
       dataIndex: "phone",
       //render: (item) => get(item, "phone", "-"),
       key: "phone",
@@ -118,6 +144,10 @@ const Success_Application = ({
             <Link to={{ pathname: "/view", state: id }}>
               <Button shape="circle" warning icon={<EyeOutlined />} />
             </Link>
+            {hasAccess(["user"], get(user, "roles", [])) && 
+            <Link to={{ pathname: "/edit", state: id }}>
+              <Button shape="circle" warning icon={<EditOutlined />} />
+            </Link>}
           </Space>
         );
       },
@@ -127,16 +157,14 @@ const Success_Application = ({
   return (
     <React.Fragment>
       <div className="application-content">
-        {contextHolder}
-        {contextHolderReject}
-        <Row className="mb-3">
+        <Row>
           <Col md={8}>
-            <p className="title-name">{t('accepted_applications')}</p>
+            <p className="title-name">Manager_to_User</p>
             <span className="title-badge-count">{total}</span>
           </Col>
           <Col md={4}>
-          <Space direction="vertical" size={12} className="float-right">
-              <RangePicker onChange={onRangeChange} format={dateFormat} placeholder={[t('from'), t('to')]} defaultValue={[moment(get(filter, "from", ""), "DD/MM/yyyy"), moment(get(filter, "to",""), "DD/MM/yyyy")]}/>
+            <Space direction="vertical" size={12} className="float-right">
+              <RangePicker onChange={onRangeChange} format={dateFormat} placeholder={["...dan", "...gacha"]} defaultValue={[moment(get(filter, "from", ""), "DD/MM/yyyy"), moment(get(filter, "to",""), "DD/MM/yyyy")]}/>
             </Space>
           </Col>
         </Row>
@@ -151,6 +179,15 @@ const Success_Application = ({
           }}
           scroll={{ x: "auto" }}
         />
+
+        <Modal
+          title="Edit Page"
+          open={isModalOpen}
+          onOk={handleOk}
+          onCancel={handleCancel}
+        >
+          <h1>Modal</h1>
+        </Modal>
       </div>
     </React.Fragment>
   );
@@ -185,6 +222,8 @@ const mapDispatchToProps = (dispatch) => {
           config: {
             params: {
               page: current,
+              include: include.join(','),
+              append: append.join(','),
               "filter[status]": status,
               from:moment(from).format("yyyy-MM-DD"),
               to:moment(to).format("yyyy-MM-DD")
@@ -197,4 +236,7 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-export default withTranslation('translation')(connect(mapStateToProps, mapDispatchToProps)(withRouter(Success_Application)));
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(withRouter(Manager_to_User));

@@ -11,10 +11,11 @@ import moment from "moment";
 import { withTranslation } from "react-i18next";
 import { Col, Form, FormGroup, Input, Label, Row } from "reactstrap";
 
-const AddDevice = ({
+const AddManufacture = ({
   history,
   getItemsList,
-  items,
+  manufactures,
+  manufacture,
   isFetched,
   total,
   item,
@@ -27,7 +28,7 @@ const AddDevice = ({
 
 
   useEffect(() => {
-    getItemsList({ ...pagination, item: "device" });
+    getItemsList({ ...pagination, item: "manufacture" });
   }, [pagination]);
 
   const path = "api/item";
@@ -52,8 +53,8 @@ const AddDevice = ({
   const remove = (id) => {
     PagesApi.Delete(path, id)
       .then((res) => {
-        if (res.status === 200) {
-          getItemsList({ ...pagination, item: "device" });
+        if (res.status === 204) {
+          getItemsList({ ...pagination, item: "manufacture" });
         }
       })
       .catch((error) => {
@@ -65,7 +66,7 @@ const AddDevice = ({
     PagesApi.Create(path, params)
       .then((res) => {
         if (res.status === 201) {
-          getItemsList({ ...pagination, item: "device" });
+          getItemsList({ ...pagination, item: "manufacture" });
         }
       })
       .catch((error) => {
@@ -96,7 +97,7 @@ const AddDevice = ({
   const [modal, contextHolder] = Modal.useModal();
  
 
-  items = items.map((item, index) => ({
+  manufactures = manufactures.map((item, index) => ({
     ...item,
     index: index + 10 * (pagination.current - 1) + 1,
     created_at: moment(get(item, "created_at")).format("DD-MM-yyyy"),
@@ -153,8 +154,7 @@ const AddDevice = ({
       <div className="application-content">
         <Row>
           <Col md={11}>
-            <p className="title-name">{t("devices")}</p>
-            {/* <span className="title-badge-count">{total}</span> */}
+            <p className="title-name">{t("manafucture")}</p>
           </Col>
           <Col md={1}>
             <Button className="add-btn bg-success" onClick={showModal}>
@@ -165,7 +165,7 @@ const AddDevice = ({
 
         <Table
           columns={columns}
-          dataSource={items}
+          dataSource={manufactures}
           pagination={{ ...pagination, total }}
           loading={!isFetched}
           onChange={({ current }) => {
@@ -175,7 +175,7 @@ const AddDevice = ({
         />
 
         <Modal
-          title="Qurilma qo'shish:"
+          title="Ishlab chiqaruvchi qo'shish:"
           open={isModalOpen}
           onOk={handleOk}
           onCancel={handleCancel}
@@ -224,8 +224,8 @@ const AddDevice = ({
 const mapStateToProps = (state) => {
   console.log(state);
   return {
-    items: get(state, "PageReducer.data.device-list.result", []),
-    item: get(state, "PageReducer.data.get-one-item.result", {}),
+    manufactures: get(state, "PageReducer.data.manufacture-list.result", []),
+    manufacture: get(state, "PageReducer.data.get-one-item.result", {}),
     isFetched: get(state, "PageReducer.data.item-list.isFetched", false),
     isFetchedItem: get(state, "PageReducer.data.get-one-item.isFetched", false),
     total: get(state, "PageReducer.data.item-list.result.total", 0),
@@ -237,7 +237,7 @@ const mapDispatchToProps = (dispatch) => {
   return {
 
     getItemsList: ({ current = 1, pageSize = 10, item }) => {
-      const storeName = "device-list";
+      const storeName = "manufacture-list";
       dispatch({
         type: ApiActions.GET_ALL.REQUEST,
         payload: {
@@ -257,5 +257,5 @@ const mapDispatchToProps = (dispatch) => {
 };
 
 export default withTranslation("translation")(
-  connect(mapStateToProps, mapDispatchToProps)(withRouter(AddDevice))
+  connect(mapStateToProps, mapDispatchToProps)(withRouter(AddManufacture))
 );

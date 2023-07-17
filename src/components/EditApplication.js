@@ -5,18 +5,10 @@ import { withRouter } from "react-router-dom";
 import { get, isEmpty } from "lodash";
 import ApiActions from "../redux/pages/actions";
 import PagesApi from "../pages/dashboards/PagesApi";
-import {
-  Col,
-  Form,
-  FormGroup,
-  Input,
-  Label,
-  Row,
-  Button,
-  Badge,
-} from "reactstrap";
+import { Col, Form, FormGroup, Input, Label, Row, Button, Badge,} from "reactstrap";
 import { DeleteOutlined } from "@ant-design/icons";
 import { Tabs, notification } from "antd";
+import Stuff from "./Stuff";
 import Device from "./Device";
 import Telecomunication from "./Telecomunication";
 import FileUpload from "./fileUpload/FileUpload";
@@ -27,20 +19,8 @@ import "bootstrap/dist/css/bootstrap.css";
 import "bootstrap/js/dist/modal";
 import "bootstrap/js/dist/dropdown";
 import "bootstrap/js/dist/tooltip";
-import Technique from "./Technique";
 
-const EditPage = ({
-  getSingleItem,
-  getImportance,
-  getPurpose,
-  getStuff,
-  stuffs,
-  purposes,
-  importanceK,
-  item,
-  user,
-  ...props
-}) => {
+const EditApplication = ({ getSingleItem, item, user, ...props }) => {
   const id = props.location.state;
 
   const append = [
@@ -50,9 +30,9 @@ const EditPage = ({
     "technique",
     "license",
     "certificate",
-    "Document",
+    "document",
   ];
-  const include = ["user", "importance", "subject", "purpose"];
+  const include = ["user", "importance", "subject", "comment"];
 
   const path = "api/application";
 
@@ -61,10 +41,12 @@ const EditPage = ({
   const [application, setApplication] = useState({
     name: "",
     staffs: [],
-    purpose_id: "",
-    error_or_broken: "",
+    scope_and_purpose: "",
+    error_or_broken: item.error_or_broken,
     devices: [],
     techniques: [],
+    licenses: [],
+    certificates: [],
     telecommunications: [],
     provide_cyber_security: "",
     threats_to_information_security: "",
@@ -72,14 +54,11 @@ const EditPage = ({
     organizational_and_technical_measures_to_ensure_security: "",
     importance_id: null,
     documents: [],
-    subject_id: get(user, "subject.id", ""),
+    subject_id: null,
   });
 
   useEffect(() => {
     getSingleItem({ id, include, append });
-    getImportance();
-    getStuff();
-    getPurpose();
   }, [id]);
 
   useEffect(() => {
@@ -102,6 +81,12 @@ const EditPage = ({
     console.log(application);
   }, [application]);
 
+  const onChangeScope = (key) => {
+    setApplication((applic) => ({
+      ...applic,
+      scope_and_purpose: key,
+    }));
+  };
   const onChangeErr = (key) => {
     setApplication((applic) => ({
       ...applic,
@@ -134,13 +119,6 @@ const EditPage = ({
     }));
   };
 
-  const saveTelecomunication = (params) => {
-    setApplication({
-      ...application,
-      telecommunications: [get(params, "id", "")],
-    });
-  };
-
   const submitData = () => {
     update(application, item.id);
   };
@@ -150,6 +128,18 @@ const EditPage = ({
       .then((res) => {
         if (res.status === 200) {
           openNotification();
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  const removeStaff = (id) => {
+    PagesApi.Delete("api/staff", id)
+      .then((res) => {
+        if (res.status === 200) {
+          setApplication({ ...application, staffs: [], staff: [] });
         }
       })
       .catch((error) => {
@@ -169,23 +159,11 @@ const EditPage = ({
       });
   };
 
-  const removeTechnique = (id) => {
-    PagesApi.Delete("api/device", id)
-      .then((res) => {
-        if (res.status === 200) {
-          setApplication({ ...application, techniques: [], technique: [] });
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
-
   const removeFile = (id) => {
     PagesApi.Delete("api/file", id)
       .then((res) => {
         if (res.status === 200) {
-          setApplication({ ...application, documents: [], document: [] });
+          setApplication({ ...application, certificates: [], certificate: [] });
         }
       })
       .catch((error) => {
@@ -210,7 +188,6 @@ const EditPage = ({
   };
 
   console.log(item);
-  console.log(application);
 
   return (
     <React.Fragment>
@@ -247,7 +224,7 @@ const EditPage = ({
           <Row>
             <Col md={6}>
               <FormGroup>
-                <Label for="name">{t("mai_name")}</Label>
+                <Label for="name">Nomi</Label>
                 <Input
                   id="name"
                   name="name"
@@ -265,109 +242,40 @@ const EditPage = ({
             </Col>
             <Col md={6}>
               <FormGroup>
-                <Label for="subject">{t("mai_subject")}</Label>
+                <Label for="subject">Subyekt</Label>
                 <Input
-                  required={true}
                   id="subject"
                   name="subject"
+                  placeholder="subyekt nomi..."
                   type="text"
-                  disabled
                   defaultValue={get(application, "subject.name", "")}
+                  onChange={($e) =>
+                    setApplication({
+                      ...application,
+                      subject: get($e, "target.value", ""),
+                    })
+                  }
                 />
               </FormGroup>
             </Col>
             <Col md={6} className="mt-2">
               <FormGroup>
-                <Label for="stuff">{t("stuff")}</Label>
-                <Input
-                  required={true}
-                  id="stuff"
-                  name="stuff"
-                  type="select"
-                  onChange={($e) =>
-                    setApplication({
-                      ...application,
-                      staffs: [get($e, "target.value", "")],
-                    })
-                  }
-                >
-                  <option value={get(application, "staffs[0]", "")}>
-                    {get(application, "staff[0].name", "")}
-                  </option>
-                  {stuffs.map((stuff, i) => (
-                    <option key={i} value={stuff.id}>
-                      {stuff.name}
-                    </option>
-                  ))}
-                </Input>
-              </FormGroup>
-            </Col>
-            <Col md={6} className="mt-2">
-              <FormGroup>
-                <Label for="purpose">{t("scope_and_purpose")}</Label>
-                <Input
-                  required={true}
-                  id="purpose"
-                  name="purpose"
-                  type="select"
-                  onChange={($e) =>
-                    setApplication({
-                      ...application,
-                      purpose_id: get($e, "target.value", ""),
-                    })
-                  }
-                >
-                  <option value={get(application, "purpose_id", "")}>
-                    {get(application, "purpose.name", "")}
-                  </option>
-                  {purposes.map((goal, i) => (
-                    <option key={i} value={goal.id}>
-                      {goal.name}
-                    </option>
-                  ))}
-                </Input>
-              </FormGroup>
-            </Col>
-
-            <Col lg={6}>
-              <FormGroup>
-                <Label for="mai_importance">{t("mai_importance")}</Label>
-                <Input
-                  id="mai_importance"
-                  name="mai_importance"
-                  type="select"
-                  defaultValue={get(application, "importance.name", "")}
-                  onChange={($e) =>
-                    setApplication({
-                      ...application,
-                      importance_id: get($e, "target.value", ""),
-                    })
-                  }
-                >
-                  <option value={get(application, "importance_id", "")}>
-                    {get(application, "importance.name", "")}
-                  </option>
-                  {importanceK.map((item, i) => (
-                    <option key={i} value={item.id}>
-                      {item.name}
-                    </option>
-                  ))}
-                </Input>
-              </FormGroup>
-            </Col>
-            <Col md={6}>
-              <FormGroup>
                 <Row>
-                  {!isEmpty(get(application, "document", [])) && (
+                  {!isEmpty(get(application, "certificate", [])) && (
                     <Col md={12}>
-                      <Label className="d-block">{t("importance_file")}</Label>
+                      <Label className="d-block">MAI sertifikati:</Label>
                       <div className="excist-data pl-2 pt-1">
-                        {get(application, "document[0].title", "")}
+                        {get(application, "certificate", []).map(
+                          (itm, i) => (
+                            <span key={i}>{itm.title}</span>
+                          )
+                          // get(itm, "name", "")
+                        )}
                       </div>
                       <div
                         className="delete-button pt-1 pr-1"
                         onClick={() =>
-                          removeFile(get(application, "documents[0]", ""))
+                          removeFile(get(application, "certificates[0]", ""))
                         }
                       >
                         <DeleteOutlined />
@@ -375,36 +283,119 @@ const EditPage = ({
                     </Col>
                   )}
 
-                  {isEmpty(get(application, "document", [])) && (
+                  {isEmpty(get(application, "certificate", [])) && (
                     <Col md={12}>
-                      <FormGroup>
-                        <FileUpload
-                          label={t("importance_file")}
-                          save={(params) =>
-                            setApplication({
-                              ...application,
-                              licenses: params.map(({ id }) => id),
-                            })
-                          }
-                        />
-                      </FormGroup>
+                      <FileUpload
+                        label={"MAI sertifikati"}
+                        save={(params) =>
+                          setApplication({
+                            ...application,
+                            certificates: params.map(({ id }) => id),
+                          })
+                        }
+                      />
                     </Col>
                   )}
                 </Row>
               </FormGroup>
             </Col>
-
-            {/* device */}
             <Col md={6} className="mt-2">
+              <FormGroup>
+                <Row>
+                  {!isEmpty(get(application, "license", [])) && (
+                    <Col md={12}>
+                      <Label className="d-block">MAI litsenziyasi:</Label>
+                      <div className="excist-data pl-2 pt-1">
+                        {get(application, "license", []).map(
+                          (itm, i) => (
+                            <span key={i}>{itm.title}</span>
+                          )
+                          // get(itm, "name", "")
+                        )}
+                      </div>
+                      <div
+                        className="delete-button pt-1 pr-1"
+                        onClick={() =>
+                          removeFile(get(application, "licenses[0]", ""))
+                        }
+                      >
+                        <DeleteOutlined />
+                      </div>
+                    </Col>
+                  )}
+
+                  {isEmpty(get(application, "license", [])) && (
+                    <Col md={12}>
+                      <FileUpload
+                        label={"MAI litsenziyasi"}
+                        save={(params) =>
+                          setApplication({
+                            ...application,
+                            licenses: params.map(({ id }) => id),
+                          })
+                        }
+                      />
+                    </Col>
+                  )}
+                </Row>
+              </FormGroup>
+            </Col>
+            <Col md={4} className="mt-2">
+              <FormGroup>
+                <Row>
+                  {!isEmpty(get(application, "staff", [])) && (
+                    <Col md={12}>
+                      <Label className="d-block">Xodim:</Label>
+                      <div className="excist-data pl-2 pt-1">
+                        {get(application, "staff", []).map((itm) =>
+                          get(itm, "name", "")
+                        )}
+                      </div>
+                      <div
+                        className="delete-button pt-1 pr-1"
+                        onClick={() =>
+                          removeStaff(get(application, "staffs[0]", ""))
+                        }
+                      >
+                        <DeleteOutlined />
+                      </div>
+                    </Col>
+                  )}
+
+                  {isEmpty(get(application, "staff", [])) && (
+                    <Col md={12}>
+                      <Stuff
+                        save={(params) =>
+                          setApplication({
+                            ...application,
+                            staffs: [get(params, "id", "")],
+                            staff: [
+                              {
+                                name: get(params, "name", ""),
+                                id: get(params, "id", ""),
+                              },
+                            ],
+                          })
+                        }
+                      />
+                    </Col>
+                  )}
+                </Row>
+              </FormGroup>
+            </Col>
+            <Col md={4} className="mt-2">
               <FormGroup>
                 <Row>
                   {!isEmpty(get(application, "device", [])) && (
                     <Col md={12}>
-                      <Label className="d-block">{t("hardware")}:</Label>
+                      <Label className="d-block">Device:</Label>
                       <div className="excist-data pl-2 pt-1">
-                        {get(application, "device", []).map((itm, i) => (
-                          <span key={i}>{itm.name}</span>
-                        ))}
+                        {get(application, "device", []).map(
+                          (itm, i) => (
+                            <span key={i}>{itm.name}</span>
+                          )
+                          // get(itm, "name", "")
+                        )}
                       </div>
                       <div
                         className="delete-button pt-1 pr-1"
@@ -419,71 +410,35 @@ const EditPage = ({
 
                   {isEmpty(get(application, "device", [])) && (
                     <Col md={12}>
-                      <FormGroup>
-                        <Device
-                          sendDeviceID={(params = []) =>
-                            setApplication({
-                              ...application,
-                              devices: params.map(({ id }) => id),
-                            })
-                          }
-                        />
-                      </FormGroup>
-                    </Col>
-                  )}
-                </Row>
-              </FormGroup>
-            </Col>
-
-            {/*technique */}
-            <Col md={6} className="mt-2">
-              <FormGroup>
-                <Row>
-                  {!isEmpty(get(application, "technique", [])) && (
-                    <Col md={12}>
-                      <Label className="d-block">{t("software")}</Label>
-                      <div className="excist-data pl-2 pt-1">
-                        {get(application, "technique", []).map((itm, i) => (
-                          <span key={i}>{itm.name}</span>
-                        ))}
-                      </div>
-                      <div
-                        className="delete-button pt-1 pr-1"
-                        onClick={() =>
-                          removeTechnique(get(application, "techniques[0]", ""))
+                      <Device
+                        sendDeviceID={(params) =>
+                          setApplication({
+                            ...application,
+                            devices: [get(params, "id", "")],
+                            device: [
+                              {
+                                name: get(params, "name", ""),
+                                id: get(params, "id", ""),
+                              },
+                            ],
+                          })
                         }
-                      >
-                        <DeleteOutlined />
-                      </div>
-                    </Col>
-                  )}
-
-                  {isEmpty(get(application, "technique", [])) && (
-                    <Col md={12}>
-                      <FormGroup>
-                        <Technique
-                          sendDeviceID={(params = []) =>
-                            setApplication({
-                              ...application,
-                              techniques: params.map(({ id }) => id),
-                            })
-                          }
-                        />
-                      </FormGroup>
+                      />
                     </Col>
                   )}
                 </Row>
               </FormGroup>
             </Col>
-
-            <Col md={6}>
+            <Col md={4} className="mt-2">
               <FormGroup>
                 <Row>
                   {!isEmpty(get(application, "telecommunication", [])) && (
                     <Col md={12}>
-                      <Label className="d-block">{t("used_network")}</Label>
+                      <Label className="d-block">Telecomunication:</Label>
                       <div className="excist-data pl-2 pt-1">
-                        {get(application, "telecommunication[0].name")}
+                        {get(application, "telecommunication", []).map((itm) =>
+                          get(itm, "provider", "")
+                        )}
                       </div>
                       <div
                         className="delete-button pt-1 pr-1"
@@ -500,9 +455,20 @@ const EditPage = ({
 
                   {isEmpty(get(application, "telecommunication", [])) && (
                     <Col md={12}>
-                      <FormGroup>
-                        <Telecomunication sendTelId={saveTelecomunication} />
-                      </FormGroup>
+                      <Telecomunication
+                        sendTelId={(params) =>
+                          setApplication({
+                            ...application,
+                            telecommunications: [get(params, "id", "")],
+                            telecommunication: [
+                              {
+                                name: get(params, "provider", ""),
+                                id: get(params, "id", ""),
+                              },
+                            ],
+                          })
+                        }
+                      />
                     </Col>
                   )}
                 </Row>
@@ -514,7 +480,20 @@ const EditPage = ({
             items={[
               {
                 key: "1",
-                label: t("error_or_broken"),
+                label: `MAI obyektining maqsadi`,
+                children: (
+                  <ReactQuill
+                    theme="snow"
+                    className="text-editor"
+                    value={get(application, "scope_and_purpose")}
+                    onChange={onChangeScope}
+                    disable
+                  />
+                ),
+              },
+              {
+                key: "2",
+                label: `Xatolik yoki ishdan chiqqan taqdirda`,
                 children: (
                   <ReactQuill
                     theme="snow"
@@ -525,8 +504,8 @@ const EditPage = ({
                 ),
               },
               {
-                key: "2",
-                label: t("provide_cyber_security"),
+                key: "3",
+                label: `Kiberxavfsizlikni ta’minlash`,
                 children: (
                   <ReactQuill
                     theme="snow"
@@ -537,8 +516,8 @@ const EditPage = ({
                 ),
               },
               {
-                key: "3",
-                label: t("consequences_of_an_incident"),
+                key: "4",
+                label: `Insident yuz berishi oqibatlari`,
                 children: (
                   <ReactQuill
                     theme="snow"
@@ -549,10 +528,8 @@ const EditPage = ({
                 ),
               },
               {
-                key: "4",
-                label: t(
-                  "organizational_and_technical_measures_to_ensure_security"
-                ),
+                key: "5",
+                label: `Xavfsizlikni ta’minlash tashkiliy va texnik choralari`,
                 children: (
                   <ReactQuill
                     theme="snow"
@@ -567,8 +544,8 @@ const EditPage = ({
                 ),
               },
               {
-                key: "5",
-                label: t("threats_to_information_security"),
+                key: "6",
+                label: `Axborot xavfsizligiga tahdidlar`,
                 children: (
                   <ReactQuill
                     theme="snow"
@@ -594,10 +571,6 @@ const EditPage = ({
           <Button className="mt-5" color="primary" onClick={submitData}>
             O'zgartirish
           </Button>
-        ) : get(item, "status") === 3 ? (
-          <Button className="mt-5" color="primary" onClick={submitData}>
-            Qayta yuborish
-          </Button>
         ) : (
           <div></div>
         )}
@@ -607,13 +580,9 @@ const EditPage = ({
 };
 
 const mapStateToProps = (state) => {
-  console.log(state);
   return {
     items: get(state, "PageReducer.data.item-list.result.data", []),
     item: get(state, "PageReducer.data.get-one-item.result", {}),
-    importanceK: get(state, "PageReducer.data.muhim.result.data", []),
-    purposes: get(state, "PageReducer.data.purpose-list.result.data", []),
-    stuffs: get(state, "PageReducer.data.stuff-list.result.data", []),
     isFetched: get(state, "PageReducer.data.item-list.isFetched", false),
     isFetchedItem: get(state, "PageReducer.data.get-one-item.isFetched", false),
     total: get(state, "PageReducer.data.item-list.result.total", 0),
@@ -621,17 +590,6 @@ const mapStateToProps = (state) => {
 };
 const mapDispatchToProps = (dispatch) => {
   return {
-    getImportance: () => {
-      const storeName = "muhim";
-      dispatch({
-        type: ApiActions.GET_ALL.REQUEST,
-        payload: {
-          url: "/api/importance",
-          storeName,
-        },
-      });
-    },
-
     getSingleItem: ({ id, include = [], append = [] }) => {
       const storeName = "get-one-item";
       dispatch({
@@ -648,31 +606,9 @@ const mapDispatchToProps = (dispatch) => {
         },
       });
     },
-
-    getStuff: () => {
-      const storeName = "stuff-list";
-      dispatch({
-        type: ApiActions.GET_ALL.REQUEST,
-        payload: {
-          url: "api/staff",
-          storeName,
-        },
-      });
-    },
-
-    getPurpose: () => {
-      const storeName = "purpose-list";
-      dispatch({
-        type: ApiActions.GET_ALL.REQUEST,
-        payload: {
-          url: "api/purpose",
-          storeName,
-        },
-      });
-    },
   };
 };
 
 export default withTranslation("translation")(
-  connect(mapStateToProps, mapDispatchToProps)(withRouter(EditPage))
+  connect(mapStateToProps, mapDispatchToProps)(withRouter(EditApplication))
 );

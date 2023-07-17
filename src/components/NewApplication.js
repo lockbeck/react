@@ -16,15 +16,15 @@ const dateFormat = "DD/MM/YYYY";
 const NewApplication = ({ history, getItemsList, getSingleItem, items, item, isFetched, total,user }) => {
 
 
-  const append = ["certificates"];
-  const include = ["device", "user"];
+  const append = ["staff","telecommunication","device","technique","license","certificate", "document"];
+  const include = ["user", "importance","subject"];
   const [pagination, setPagination] = useState({
     current: 1,
     pageSize: 15,
   });
 
   useEffect(() => {
-    getItemsList({ ...pagination, include, append, status: 1, ...filter });
+    getItemsList({ ...pagination, include, append, status: 0, ...filter });
   }, [pagination,filter]);
 
   const [api, contextHolder] = notification.useNotification();
@@ -45,6 +45,7 @@ const NewApplication = ({ history, getItemsList, getSingleItem, items, item, isF
     to: new Date(),
   });
 
+
   const onRangeChange = (dates, dateStrings) => {
     if (dates) {
       setFilter({
@@ -60,7 +61,7 @@ const NewApplication = ({ history, getItemsList, getSingleItem, items, item, isF
   const success = (id) => {
     PagesApi.Put(id, "success")
       .then((res) => {
-        getItemsList({ ...pagination, include, append, status: 1 });
+        getItemsList({ ...pagination, include, append, status: 0 });
       })
       .catch((error) => {
         console.log(error);
@@ -70,7 +71,7 @@ const NewApplication = ({ history, getItemsList, getSingleItem, items, item, isF
   const reject = (id) => {
     PagesApi.Put(id, "reject")
       .then((res) => {
-        getItemsList({ ...pagination, include, append, status: 1 });
+        getItemsList({ ...pagination, include, append, status: 0 });
       })
       .catch((error) => {
         console.log(error);
@@ -181,16 +182,6 @@ const NewApplication = ({ history, getItemsList, getSingleItem, items, item, isF
               icon={<CheckOutlined style={{ color: "#00b300" }} />}
             />
             }
-           { hasAccess(['manager'], get(user, 'roles', []))&&
-            <Button
-              onClick={() => {
-                rester(id);
-                openNotification();
-              }}
-              shape="circle"
-              warning
-              icon={<IssuesCloseOutlined style={{ color: "#4257f5" }} />}
-            />}
             {hasAccess(['admin'], get(user, 'roles', []))&&
             <Button
               onClick={() => {
@@ -228,8 +219,8 @@ const NewApplication = ({ history, getItemsList, getSingleItem, items, item, isF
             <span className="title-badge-count">{total}</span>
           </Col>
           <Col md={4}>
-          <Space direction="vertical" size={12}>
-              <RangePicker onChange={onRangeChange} format={dateFormat}  placeholder={["...dan", "...gacha"]}/>
+          <Space direction="vertical" size={12} className="float-right">
+              <RangePicker onChange={onRangeChange} format={dateFormat}  placeholder={["...dan", "...gacha"]} defaultValue={[moment(get(filter, "from", ""), "DD/MM/yyyy"), moment(get(filter, "to",""), "DD/MM/yyyy")]}/>
             </Space>
           </Col>
         </Row>
@@ -287,7 +278,7 @@ const mapDispatchToProps = (dispatch) => {
           config: {
             params: {
               page: current,
-              // include: include.join(","),
+              include: include.join(","),
               append: append.join(","),
               "filter[status]": status,
               from:moment(from).format("yyyy-MM-DD"),

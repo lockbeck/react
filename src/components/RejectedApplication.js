@@ -10,6 +10,7 @@ import { EditOutlined, EyeOutlined } from "@ant-design/icons";
 import moment from "moment";
 import { Badge, Row, Col } from "reactstrap";
 import { hasAccess } from "../helpers/authUtils";
+import { withTranslation } from "react-i18next";
 const { RangePicker } = DatePicker;
 const dateFormat = "DD/MM/YYYY";
 
@@ -20,6 +21,7 @@ const RejectedApplication = ({
   isFetched,
   total,
   user,
+  ...props
 }) => {
   const append = ["certificates"];
   const include = ["device", "user"];
@@ -29,7 +31,7 @@ const RejectedApplication = ({
   });
 
   useEffect(() => {
-    getItemsList({ ...pagination, include, append, status: 0, ...filter });
+    getItemsList({ ...pagination, include, append, status: 1, ...filter });
   }, [pagination, filter]);
 
   const path = "api/application";
@@ -51,25 +53,8 @@ const RejectedApplication = ({
     }
   };
 
-  const update = (params = {}, id) => {
-    PagesApi.Update(path, id, params)
-      .then((res) => {
-        console.log(res);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
+  const { t, i18n } = props;
 
-  const remove = (id) => {
-    PagesApi.Delete(path, id)
-      .then((res) => {
-        console.log(res);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
 
   ////  modal
 
@@ -101,36 +86,36 @@ const RejectedApplication = ({
       key: "index",
     },
     {
-      title: "MAI nomi",
+      title: t("mai_name"),
       dataIndex: "name",
       key: "name",
     },
     {
-      title: "Boshqaruvchi",
+      title: t("mai_sub"),
       dataIndex: "staff",
       // render: (item) => get(item, "name", "-"),
       key: "staff",
     },
     {
-      title: "Ariza holati",
+      title: t("status"),
       dataIndex: "status",
       render: () => <Badge color="danger">inkor qilingan</Badge>,
       key: "status",
     },
     {
-      title: "O'zgartirilgan vaqt",
+      title: t("edited_time"),
       dataIndex: "update_at",
       render: (date) => moment(date).format("DD-MM-yyyy"),
       key: "update_at",
     },
     {
-      title: "Kiritilgan vaqt",
+      title: t("created_time"),
       dataIndex: "created_at",
       render: (date) => moment(date).format("DD-MM-yyyy"),
       key: "created_at",
     },
     {
-      title: "Aloqa uchun",
+      title: t("contact"),
       dataIndex: "phone",
       //render: (item) => get(item, "phone", "-"),
       key: "phone",
@@ -160,12 +145,12 @@ const RejectedApplication = ({
       <div className="application-content">
         <Row>
           <Col md={8}>
-            <p className="title-name">Inkor qilingan arizalar</p>
+            <p className="title-name">{t("rejected_app")}</p>
             <span className="title-badge-count">{total}</span>
           </Col>
           <Col md={4}>
-            <Space direction="vertical" size={12}>
-              <RangePicker onChange={onRangeChange} format={dateFormat} placeholder={["...dan", "...gacha"]}/>
+            <Space direction="vertical" size={12} className="float-right">
+              <RangePicker onChange={onRangeChange} format={dateFormat} placeholder={["...dan", "...gacha"]} defaultValue={[moment(get(filter, "from", ""), "DD/MM/yyyy"), moment(get(filter, "to",""), "DD/MM/yyyy")]}/>
             </Space>
           </Col>
         </Row>
@@ -237,7 +222,6 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(withRouter(RejectedApplication));
+export default withTranslation("translation")(
+  connect(mapStateToProps, mapDispatchToProps)(withRouter(RejectedApplication))
+);

@@ -5,44 +5,45 @@ import { withRouter } from "react-router-dom";
 import { get } from "lodash";
 import ApiActions from "../redux/pages/actions";
 import PagesApi from "../pages/dashboards/PagesApi";
-import moment from "moment";
 import { Col, Form, FormGroup, Input, Label, Row, Button } from "reactstrap";
 import { Tabs, notification } from "antd";
-import Stuff from "./Stuff";
 import Device from "./Device";
 import Telecomunication from "./Telecomunication";
 import TextEditor from "./TextEditor";
 import FileUpload from "./fileUpload/FileUpload";
-import {withTranslation} from "react-i18next";
+import { withTranslation } from "react-i18next";
+import Technique from "./Technique";
 
-const CreateApplication = ({...props}) => {
-  useEffect(() => {}, []);
+const CreateApplication = ({ getImportance, getPurpose, getSubject, getStuff, stuffs, purposes, importance, user, ...props }) => {
+  useEffect(() => {
+    getImportance();
+    getPurpose();
+    getStuff();
+  }, []);
 
   const path = "api/application";
 
   const [application, setApplication] = useState({
     name: "",
-    subject: "",
-    subject_type: "",
-    subject_definition: "",
-    subject_document: null,
     staffs: [],
-    scope_and_purpose: "",
+    purpose_id: "",
     error_or_broken: "",
     devices: [],
-    license_id: null,
-    certificate_id: null,
+    techniques: [],
     telecommunications: [],
     provide_cyber_security: "",
     threats_to_information_security: "",
     consequences_of_an_incident: "",
     organizational_and_technical_measures_to_ensure_security: "",
+    importance_id: null,
+    documents: [],
+    subject_id: get(user, "subject.id", ""),
   });
 
   const [api, contextHolder] = notification.useNotification();
   const [warn, warnText] = notification.useNotification();
 
-  const {t, i18n} = props
+  const { t, i18n } = props;
 
   const openNotification = () => {
     api.open({
@@ -79,9 +80,6 @@ const CreateApplication = ({...props}) => {
     });
   };
 
-  const savePurpose = (params) => {
-    setApplication((applic) => ({ ...applic, scope_and_purpose: params }));
-  };
   const saveBroken = (params) => {
     setApplication((applic) => ({ ...applic, error_or_broken: params }));
   };
@@ -129,38 +127,23 @@ const CreateApplication = ({...props}) => {
       });
   };
 
-  ///modal
-  const [isModalOpen, setIsModalOpen] = useState(false);
-
-  const showModal = () => {
-    setIsModalOpen(true);
-  };
-
-  const handleOk = () => {
-    setIsModalOpen(false);
-  };
-
-  const handleCancel = () => {
-    setIsModalOpen(false);
-  };
-
   return (
     <React.Fragment>
       <div className="add-application-content">
         {contextHolder}
         {warnText}
-        <h3 className="title-name p-2">Yangi ariza qo'shish</h3>
+        <h3 className="title-name p-2">{t("add_new_application")}</h3>
 
         <Form className="p-2">
           <Row>
-            <Col md={4}>
+            <Col md={6}>
               <FormGroup>
-                <Label for="name">MAI obyektining nomi</Label>
+                <Label for="name">{t("mai_name")}</Label>
                 <Input
                   required={true}
                   id="name"
                   name="name"
-                  placeholder="name..."
+                  placeholder={t("write_name")}
                   type="text"
                   onChange={($e) =>
                     setApplication({
@@ -171,154 +154,70 @@ const CreateApplication = ({...props}) => {
                 />
               </FormGroup>
             </Col>
-            <Col md={4}>
-              <FormGroup>
-                <Label for="subject">
-                  MAI obyektiga egalik qiluvchi subyekt nomi:
-                </Label>
+            <Col md={6}>
+            <FormGroup>
+                <Label for="subject">{t("mai_subject")}</Label>
                 <Input
+                  required={true}
                   id="subject"
                   name="subject"
-                  placeholder="subyekt nomi..."
                   type="text"
-                  onChange={($e) =>
-                    setApplication({
-                      ...application,
-                      subject: get($e, "target.value", ""),
-                    })
-                  }
+                  disabled
+                  defaultValue = {get(user, "subject.name","")}
                 />
               </FormGroup>
             </Col>
-            <Col md={4}>
+
+            <Col md={6} className="mt-2">
               <FormGroup>
-                <Label for="subject_type">Subyekt turi</Label>
-                <Input
-                  id="subject_type"
-                  name="subject_type"
+              <Label for="stuff">{t("stuff")}</Label>
+              <Input
+                  required={true}
+                  id="stuff"
+                  name="stuff"
                   type="select"
                   onChange={($e) =>
                     setApplication({
                       ...application,
-                      subject_type: get($e, "target.value", ""),
+                      staffs: [get($e, "target.value", "")],
                     })
                   }
                 >
-                  <option></option>
-                  <option>mulkchilik</option>
-                  <option>ijara shartnoma</option>
-                  <option>boshqa</option>
+                  {stuffs.map((stuff, i) => (
+                    <option key={i} value={stuff.id}>
+                      {stuff.name}
+                    </option>
+                  ))}
                 </Input>
               </FormGroup>
             </Col>
-            <Col md={4} className="mt-2">
-              {application.subject_type === "ijara shartnoma" ? (
-                <FormGroup>
-                  <FileUpload
-                    label={"Ijara shartnoma"}
-                    save={(file) =>
-                      setApplication({
-                        ...application,
-                        subject_document: get(file, "id", ""),
-                        subject_definition: get(file, "definition", ""),
-                      })
-                    }
-                  />
-                </FormGroup>
-              ) : (
-                <div></div>
-              )}
-            </Col>
-            <Col md={4} className="mt-2">
-              {/* <FormGroup>
-            <Label for="name">MAI sertifikati</Label>
-                <Input
-                required={true}
-                  id="certificate"
-                  name="certificate"
-                  placeholder="sertifikat linki..."
-                  type="text"
+
+            <Col md={6} className="mt-2">
+              <FormGroup>
+              <Label for="purpose">{t("scope_and_purpose")}</Label>
+              <Input
+                  required={true}
+                  id="purpose"
+                  name="purpose"
+                  type="select"
                   onChange={($e) =>
                     setApplication({
                       ...application,
-                      certificate: get($e, "target.value", ""),
+                      purpose_id: get($e, "target.value", ""),
                     })
                   }
-                />
-                </FormGroup> */}
-              <FormGroup>
-                <FileUpload
-                  label={"MAI sertifikati"}
-                  save={(file) =>
-                    setApplication({
-                      ...application,
-                      certificate_id: get(file, "id", ""),
-                    })
-                  }
-                />
-              </FormGroup>
-            </Col>
-            <Col md={4} className="mt-2">
-              {/* <FormGroup>
-            <Label for="name">MAI litsenziyasi</Label>
-                <Input
-                required={true}
-                  id="license"
-                  name="license"
-                  placeholder="license linki..."
-                  type="text"
-                  onChange={($e) =>
-                    setApplication({
-                      ...application,
-                      certificate: get($e, "target.value", ""),
-                    })
-                  }
-                />
-                </FormGroup> */}
-              <FormGroup>
-                <FileUpload
-                  label={"MAI litsenziyasi"}
-                  save={(file) =>
-                    setApplication({
-                      ...application,
-                      license_id: get(file, "id", ""),
-                    })
-                  }
-                />
-              </FormGroup>
-            </Col>
-            <Col md={4} className="mt-2">
-              <FormGroup>
-                <Stuff
-                  save={(params) =>
-                    setApplication({
-                      ...application,
-                      staffs: [get(params, "id", "")],
-                    })
-                  }
-                />
-              </FormGroup>
-            </Col>
-            <Col md={4} className="mt-2">
-              <FormGroup>
-                <Device
-                  sendDeviceID={(params) =>
-                    setApplication({
-                      ...application,
-                      devices: [get(params, "id", "")],
-                    })
-                  }
-                />
-              </FormGroup>
-            </Col>
-            <Col md={4} className="mt-2">
-              <FormGroup>
-                <Telecomunication sendTelId={saveTelecomunication} />
+                >
+                 {purposes.map((goal, i) => (
+                    <option key={i} value={goal.id}>
+                      {goal.name}
+                    </option>
+                  ))}
+                </Input>
               </FormGroup>
             </Col>
             <Col lg={6}>
               <FormGroup>
-                <Label for="subject_type">{t("mai_importance")}</Label>
+                <Label for="mai_importance">{t("mai_importance")}</Label>
                 <Input
                   id="mai_importance"
                   name="mai_importance"
@@ -326,28 +225,58 @@ const CreateApplication = ({...props}) => {
                   onChange={($e) =>
                     setApplication({
                       ...application,
-                      importance: get($e, "target.value", ""),
+                      importance_id: get($e, "target.value", ""),
                     })
                   }
                 >
-                  <option></option>
-                  <option>yuqori</option>
-                  <option>o'rta</option>
-                  <option>past</option>
+                  {importance.map((item, i) => (
+                    <option key={i} value={item.id}>
+                      {item.name}
+                    </option>
+                  ))}
                 </Input>
               </FormGroup>
             </Col>
             <Col lg={6}>
-            <FormGroup>
+              <FormGroup>
                 <FileUpload
-                  label={t("file")}
-                  save={(file) =>
+                  label={t("importance_file")}
+                  save={(params) =>
                     setApplication({
                       ...application,
-                      license_id: get(file, "id", ""),
+                      documents: params.map(({id}) => id),
                     })
                   }
                 />
+              </FormGroup>
+            </Col>
+            <Col md={6} className="mt-2">
+              <FormGroup>
+                <Device
+                  sendDeviceID={(params = []) =>
+                    setApplication({
+                      ...application,
+                      devices: params.map(({id}) => id),
+                    })
+                  }
+                />
+              </FormGroup>
+            </Col>
+            <Col md={6} className="mt-2">
+              <FormGroup>
+                <Technique
+                  sendDeviceID={(params=[]) =>
+                    setApplication({
+                      ...application,
+                      techniques: params.map(({id}) => id),
+                    })
+                  }
+                />
+              </FormGroup>
+            </Col>
+            <Col md={6} className="mt-2">
+              <FormGroup>
+                <Telecomunication sendTelId={saveTelecomunication} />
               </FormGroup>
             </Col>
           </Row>
@@ -356,32 +285,27 @@ const CreateApplication = ({...props}) => {
             items={[
               {
                 key: "1",
-                label: `Obyektning ko'lami va maqsadi`,
-                children: <TextEditor saveText={savePurpose} />,
-              },
-              {
-                key: "2",
-                label: `Xatolik  yoki ishdan chiqqan taqdirda, yuzaga kelishi mumkin bo'lgan oqibatlari va zarar`,
+                label: t("error_or_broken"),
                 children: <TextEditor saveText={saveBroken} />,
               },
               {
-                key: "3",
-                label: `Kiberxavfsizlikni ta’minlash bo'yicha qo'llaniladigan chora va vositalar`,
+                key: "2",
+                label: t("provide_cyber_security"),
                 children: <TextEditor saveText={saveSecurity} />,
               },
               {
-                key: "4",
-                label: `Kiberxavfsizlik insidentini yuz berishining ehtimoliy oqibatlari`,
+                key: "3",
+                label: t("consequences_of_an_incident"),
                 children: <TextEditor saveText={saveIncident} />,
               },
               {
-                key: "5",
-                label: `Xavfsizlikni ta’minlashning tashkiliy va texnik choralari`,
+                key: "4",
+                label: t("organizational_and_technical_measures_to_ensure_security"),
                 children: <TextEditor saveText={saveOrganizational} />,
               },
               {
-                key: "6",
-                label: `Obyektga nisbatan axborot xavfsizligi tahdidlari va qoidabuzarlik toifalari haqida ma'lumotlar`,
+                key: "5",
+                label: t("threats_to_information_security"),
                 children: <TextEditor saveText={saveThreads} />,
               },
             ]}
@@ -391,7 +315,7 @@ const CreateApplication = ({...props}) => {
         </Form>
 
         <Button className="mt-3" color="primary" onClick={submitData}>
-          Arizani qo'shish
+          {t("send_application")}
         </Button>
       </div>
     </React.Fragment>
@@ -400,15 +324,53 @@ const CreateApplication = ({...props}) => {
 
 const mapStateToProps = (state) => {
   return {
-    items: get(state, "PageReducer.data.item-list.result.data", []),
-    item: get(state, "PageReducer.data.get-one-item.result", {}),
+    importance: get(state, "PageReducer.data.muhim.result.data", []),
+    purposes: get(state, "PageReducer.data.purpose-list.result.data", []),
+    stuffs: get(state, "PageReducer.data.stuff-list.result.data", []),
     isFetched: get(state, "PageReducer.data.item-list.isFetched", false),
     isFetchedItem: get(state, "PageReducer.data.get-one-item.isFetched", false),
     total: get(state, "PageReducer.data.item-list.result.total", 0),
+    user: get(state, "Auth.user", {}),
   };
 };
 const mapDispatchToProps = (dispatch) => {
-  return {};
+  return {
+    getImportance: () => {
+      const storeName = "muhim";
+      dispatch({
+        type: ApiActions.GET_ALL.REQUEST,
+        payload: {
+          url: "api/importance",
+          storeName,
+        },
+      });
+    },
+
+    getPurpose: () => {
+      const storeName = "purpose-list";
+      dispatch({
+        type: ApiActions.GET_ALL.REQUEST,
+        payload: {
+          url: "api/purpose",
+          storeName,
+        },
+      });
+    },
+
+    getStuff: () => {
+      const storeName = "stuff-list";
+      dispatch({
+        type: ApiActions.GET_ALL.REQUEST,
+        payload: {
+          url: "api/staff",
+          storeName,
+        },
+      });
+    },
+
+  };
 };
 
-export default withTranslation('translation')(connect(mapStateToProps, mapDispatchToProps)(withRouter(CreateApplication)));
+export default withTranslation("translation")(
+  connect(mapStateToProps, mapDispatchToProps)(withRouter(CreateApplication))
+);

@@ -5,14 +5,19 @@ import { get } from "lodash";
 import moment from "moment";
 import { Modal } from "antd";
 import { DatePicker, Space } from "antd";
+import "../../assets/scss/device/device.css";
 import PagesApi from "../../pages/dashboards/PagesApi";
+import { withTranslation } from "react-i18next";
 const { RangePicker } = DatePicker;
 const dateFormat = "DD/MM/YYYY";
 
 const FileUpload = ({ label, save = () => {}, ...props }) => {
 
+  const { t, i18n } = props;
 
   const path = "api/file";
+
+  const[file, setFile] = useState([]);
 
   const [filter, setFilter] = useState({
     from: new Date(new Date().setMonth(new Date().getMonth() - 3)),
@@ -70,7 +75,8 @@ const FileUpload = ({ label, save = () => {}, ...props }) => {
       .then((res) => {
         if (res.status === 201) {
           console.log(res.data);
-          save(res.data);
+          save([...file, res.data]);
+          setFile([...file, res.data])
         }
       })
       .catch((error) => {
@@ -82,25 +88,23 @@ const FileUpload = ({ label, save = () => {}, ...props }) => {
     <React.Fragment>
       <div className="modal-data">
         <Label for="certificates">{label}</Label>
-        <Input
-          id="certificates"
-          name="certificates"
-          type="button"
-          defaultValue="Faylni Yuklang"
-          onClick={showModal}
-        />
+        <div className="device-name-area" onClick={showModal}>
+          <div className="device-name">
+            <div className="device-span">{file.map((item, i)=>(<span key={i}>{item.title}{" "}</span>))}</div>
+          </div>
+        </div>
 
         <Modal
-          title="Faylni yuklang"
+          title={t("upload_file")}
           open={isModalOpen}
           onOk={handleOk}
           onCancel={handleCancel}
-          cancelText="Bekor qilish"
-          okText="Saqlash"
+          cancelText={t("cancel")}
+          okText={t("save")}
           okType="primary"
         >
           <Label for="name" className="mt-3">
-            Fayl:
+            {t("file")}:
           </Label>
           <Input
             id="file"
@@ -114,16 +118,17 @@ const FileUpload = ({ label, save = () => {}, ...props }) => {
           />
 
           <Label for="date" className="mt-3 d-block">
-            Amal qilish muddati:
+            {t("validity_period")}:
           </Label>
           <Space direction="vertical" size={12}>
             <RangePicker
               onChange={onRangeChange}
               format={dateFormat}
+              placeholder={[t("from"), t("to")]}
             />
           </Space>
           <Label for="name" className="mt-3 d-block">
-            Tarif:
+            {t("definition")}:
           </Label>
           <Input
             id="definition"
@@ -140,4 +145,6 @@ const FileUpload = ({ label, save = () => {}, ...props }) => {
   );
 };
 
-export default connect()(FileUpload);
+export default withTranslation("translation")(
+  connect()(FileUpload)
+);

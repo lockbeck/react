@@ -12,6 +12,7 @@ export default function PageReducer(state = {}, action) {
                 return {
                     ...state,
                     data: {
+                        ...get(state, 'data', {}),
                         [storeName]: {
                             ...get(state, `data.${storeName}`, {}),
                             isFetched: false,
@@ -27,7 +28,7 @@ export default function PageReducer(state = {}, action) {
                 return {
                     ...state,
                     data: {
-                        ...state.data,
+                        ...get(state, 'data', {}),
                         [storeName]: { result, isFetched: true },
                     },
                 };
@@ -42,6 +43,7 @@ export default function PageReducer(state = {}, action) {
                     return {
                         ...state,
                         data: {
+                            ...get(state, 'data', {}),
                             [storeName]: {
                                 ...get(state, `data.${storeName}`, {}),
                                 isFetched: false,
@@ -57,6 +59,7 @@ export default function PageReducer(state = {}, action) {
                     return {
                         ...state,
                         data: {
+                            ...get(state, 'data', {}),
                             [storeName]: { result, isFetched: true },
                         },
                     };
@@ -69,6 +72,7 @@ export default function PageReducer(state = {}, action) {
                 return {
                     ...state,
                     data: {
+                        ...get(state, 'data', {}),
                         [storeName]: {
                             isFetched: true,
                             hasErrors: true,

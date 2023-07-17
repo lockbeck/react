@@ -1,4 +1,5 @@
 {
+    "dashboard": "Dashboard",
     "all_applications": "All Applications",
     "accepted_applications": "Accepted",
     "new_applications": "New Applications",
@@ -20,5 +21,6 @@
     "file": "File",
     "mai_importance": "MAI Importance",
     "edit_application" : "Edit Application",
-    "rejection_def": "Rejection reason"
+    "rejection_def": "Rejection reason",
+    "applications": "Applications"
 }
