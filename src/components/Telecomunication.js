@@ -25,7 +25,7 @@ const Telecomunication = ({ sendTelId = () => {}, ...props }) => {
   });
 
   const saveTelecomunication = (params) => {
-    setData({ ...data, contract: get(params[0], "id", "")});
+    setData({ ...data, contract: get(params[0], "id", "") });
   };
 
   const saveNetworkTopology = (params) => {
@@ -99,62 +99,71 @@ const Telecomunication = ({ sendTelId = () => {}, ...props }) => {
             </Col>
             <Col className="mt-4 mb-3" lg={6}>
               <Label for="count" className="mr-5">
-                    {t("isConnectNetwork")}:
-                  </Label>
-                  <Input
-                    id="name"
-                    name="name"
-                    type="checkbox"
-                    onChange={(e) =>
-                      setData({ ...data, connect_net: e.target.checked })
-                    }
-                  />
+                {t("isConnectNetwork")}:
+              </Label>
+              <Input
+                id="name"
+                name="name"
+                type="checkbox"
+                onChange={(e) =>
+                  setData({ ...data, connect_net: e.target.checked })
+                }
+              />
             </Col>
             <Col className="mt-4 mb-3" lg={6}>
               <Label for="count" className="mr-5">
-                  {t("isConnectOnetNet")}:
+                {t("isConnectOnetNet")}:
+              </Label>
+              <Input
+                id="name"
+                name="name"
+                type="checkbox"
+                onChange={(e) =>
+                  setData({ ...data, connect_nat: e.target.checked })
+                }
+              />
+            </Col>
+            {data.connect_net === true ? (
+              <Col className="mt-2" lg={12}>
+                <Label for="count" className="mt-1">
+                  {t("count_network")}
                 </Label>
                 <Input
                   id="name"
                   name="name"
-                  type="checkbox"
+                  type="number"
                   onChange={(e) =>
-                     setData({ ...data, connect_nat: e.target.checked })
+                    setData({ ...data, points_connect_net: e.target.value })
                   }
                 />
-            </Col>
-            <Col className="mt-2" lg={12}>
-              <Label for="count" className="mt-1">
-                {t("count_network")}
-              </Label>
-              <Input
-                id="name"
-                name="name"
-                type="number"
-                onChange={(e) =>
-                  setData({ ...data, points_connect_net: e.target.value })
-                }
-              />
-            </Col>
-            <Col className="mt-2" lg={12}>
-              <Label for="name" className="mt-1">
-                {t("count_provider")}
-              </Label>
-              <Input
-                id="name"
-                name="name"
-                type="number"
-                onChange={(e) =>
-                  setData({ ...data, provider_count: e.target.value })
-                }
-              />
-            </Col>
-            <Col className="mt-2" lg={12}>
-              <FileUpload
-                label={t("contract")}
-                save={saveTelecomunication}
-              />
-            </Col>
+              </Col>
+            ) : (
+              <div></div>
+            )}
+            {data.connect_net === true ? (
+              <Col className="mt-2" lg={12}>
+                <Label for="name" className="mt-1">
+                  {t("count_provider")}
+                </Label>
+                <Input
+                  id="name"
+                  name="name"
+                  type="number"
+                  onChange={(e) =>
+                    setData({ ...data, provider_count: e.target.value })
+                  }
+                />
+              </Col>
+            ) : (
+              <div></div>
+            )}
+            {data.connect_net === true ? (
+              <Col className="mt-2" lg={12}>
+                <FileUpload label={t("contract")} save={saveTelecomunication} />
+              </Col>
+            ) : (
+              <div></div>
+            )}
           </Row>
         </Modal>
       </div>

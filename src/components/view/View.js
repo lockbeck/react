@@ -33,7 +33,13 @@ const View = ({
     "certificate",
     "Document",
   ];
-  const include = ["user", "importance", "subject"];
+  const include = [
+    "user",
+    "importance",
+    "subject",
+    "reject.comment",
+    "purpose",
+  ];
   const { t, i18n } = props;
 
   const [reason, setReason] = useState("");
@@ -146,14 +152,17 @@ const View = ({
     {
       key: "1",
       label:
-        get(item, "comment", []).find((itm) => itm.column_id === 6) ===
-          undefined || get(user, "roles[0].name") === "admin" ? (
+        get(item, "reject[0].comment", []).find(
+          (itm) => itm.column_id === 6
+        ) === undefined || get(user, "roles[0].name") === "admin" ? (
           <b>{t("hardware")}</b>
         ) : (
           <Tooltip
             placement="topLeft"
             title={get(
-              get(item, "comment", []).find((item) => item.column_id === 6),
+              get(item, "reject[0].comment", []).find(
+                (item) => item.column_id === 6
+              ),
               "description",
               ""
             )}
@@ -216,8 +225,13 @@ const View = ({
           </Col>
           <Col md={4} className="mt-2">
             {hasAccess(["manager", "admin"], get(user, "roles", [])) &&
-              (get(item, "status") === 4 ||
+              (get(item, "status") === 4 &&
               get(user, "roles[0].name") === "manager" ? (
+                <Checkbox onChange={handleCheckboxChange6}>
+                  Izoh qo'shish
+                </Checkbox>
+              ) : get(item, "status") === 2 &&
+                get(user, "roles[0].name") === "admin" ? (
                 <Checkbox onChange={handleCheckboxChange6}>
                   Izoh qo'shish
                 </Checkbox>
@@ -243,14 +257,17 @@ const View = ({
     {
       key: "2",
       label:
-        get(item, "comment", []).find((itm) => itm.column_id === 8) ===
-          undefined || get(user, "roles[0].name") === "admin" ? (
+        get(item, "reject[0].comment", []).find(
+          (itm) => itm.column_id === 8
+        ) === undefined || get(user, "roles[0].name") === "admin" ? (
           <b>{t("software")}</b>
         ) : (
           <Tooltip
             placement="topLeft"
             title={get(
-              get(item, "comment", []).find((item) => item.column_id === 8),
+              get(item, "reject[0].comment", []).find(
+                (item) => item.column_id === 8
+              ),
               "description",
               ""
             )}
@@ -314,7 +331,7 @@ const View = ({
                         {t("view_file")}
                       </a>
                     )}
-                    {isEmpty(get(item, "technique[0].document", [])) &&(
+                    {isEmpty(get(item, "technique[0].document", [])) && (
                       <i>{t("file_doesnt_exict")}</i>
                     )}
                   </Col>
@@ -323,11 +340,20 @@ const View = ({
             </Row>
           </Col>
           <Col md={2}>
-            {hasAccess(["manager", "admin"], get(user, "roles", [])) && (
-              <Checkbox onChange={handleCheckboxChange8}>
-                Izoh qo'shish:
-              </Checkbox>
-            )}
+            {hasAccess(["manager", "admin"], get(user, "roles", [])) &&
+              (get(item, "status") === 4 &&
+              get(user, "roles[0].name") === "manager" ? (
+                <Checkbox onChange={handleCheckboxChange8}>
+                  Izoh qo'shish
+                </Checkbox>
+              ) : get(item, "status") === 2 &&
+                get(user, "roles[0].name") === "admin" ? (
+                <Checkbox onChange={handleCheckboxChange8}>
+                  Izoh qo'shish
+                </Checkbox>
+              ) : (
+                <div></div>
+              ))}
             {showTextarea8 && (
               <Input
                 type="textarea"
@@ -346,19 +372,22 @@ const View = ({
     {
       key: "3",
       label:
-        get(item, "comment", []).find((itm) => itm.column_id === 7) ===
-          undefined || get(user, "roles[0].name") === "admin" ? (
-          <b>Telekommunikatsiya tarmog’i</b>
+        get(item, "reject[0].comment", []).find(
+          (itm) => itm.column_id === 7
+        ) === undefined || get(user, "roles[0].name") === "admin" ? (
+          <b>{t("used_network")}</b>
         ) : (
           <Tooltip
             placement="topLeft"
             title={get(
-              get(item, "comment", []).find((item) => item.column_id === 7),
+              get(item, "reject[0].comment", []).find(
+                (item) => item.column_id === 7
+              ),
               "description",
               ""
             )}
           >
-            <b className="comment-added">Telekommunikatsiya tarmog’i</b>
+            <b className="comment-added">{t("used_network")}</b>
           </Tooltip>
         ),
       children: (
@@ -369,7 +398,7 @@ const View = ({
                 <h5>Provider:</h5>
               </Col>
               <Col md={12}>
-                {get(item, "telecommunication[0].provider", "mavjud emas")}
+                {get(item, "telecommunication[0].name", "mavjud emas")}
               </Col>
             </Row>
           </Col>
@@ -402,8 +431,13 @@ const View = ({
           </Col>
           <Col md={3}>
             {hasAccess(["manager", "admin"], get(user, "roles", [])) &&
-              (get(item, "status") === 4 ||
+              (get(item, "status") === 4 &&
               get(user, "roles[0].name") === "manager" ? (
+                <Checkbox onChange={handleCheckboxChange7}>
+                  Izoh qo'shish
+                </Checkbox>
+              ) : get(item, "status") === 2 &&
+                get(user, "roles[0].name") === "admin" ? (
                 <Checkbox onChange={handleCheckboxChange7}>
                   Izoh qo'shish
                 </Checkbox>
@@ -428,14 +462,17 @@ const View = ({
     {
       key: "4",
       label:
-        get(item, "comment", []).find((itm) => itm.column_id === 9) ===
-          undefined || get(user, "roles[0].name") === "admin" ? (
+        get(item, "reject[0].comment", []).find(
+          (itm) => itm.column_id === 9
+        ) === undefined || get(user, "roles[0].name") === "admin" ? (
           <b>Kiberxavfsizlikni ta’minlash</b>
         ) : (
           <Tooltip
             placement="topLeft"
             title={get(
-              get(item, "comment", []).find((item) => item.column_id === 9),
+              get(item, "reject[0].comment", []).find(
+                (item) => item.column_id === 9
+              ),
               "description",
               ""
             )}
@@ -454,8 +491,13 @@ const View = ({
           </Col>
           <Col md={2}>
             {hasAccess(["manager", "admin"], get(user, "roles", [])) &&
-              (get(item, "status") === 4 ||
+              (get(item, "status") === 4 &&
               get(user, "roles[0].name") === "manager" ? (
+                <Checkbox onChange={handleCheckboxChange9}>
+                  Izoh qo'shish
+                </Checkbox>
+              ) : get(item, "status") === 2 &&
+                get(user, "roles[0].name") === "admin" ? (
                 <Checkbox onChange={handleCheckboxChange9}>
                   Izoh qo'shish
                 </Checkbox>
@@ -480,14 +522,17 @@ const View = ({
     {
       key: "5",
       label:
-        get(item, "comment", []).find((itm) => itm.column_id === 10) ===
-          undefined || get(user, "roles[0].name") === "admin" ? (
+        get(item, "reject[0].comment", []).find(
+          (itm) => itm.column_id === 10
+        ) === undefined || get(user, "roles[0].name") === "admin" ? (
           <b>Axborot xavfsizligiga tahdidlar</b>
         ) : (
           <Tooltip
             placement="topLeft"
             title={get(
-              get(item, "comment", []).find((item) => item.column_id === 10),
+              get(item, "reject[0].comment", []).find(
+                (item) => item.column_id === 10
+              ),
               "description",
               ""
             )}
@@ -506,8 +551,13 @@ const View = ({
           </Col>
           <Col md={2}>
             {hasAccess(["manager", "admin"], get(user, "roles", [])) &&
-              (get(item, "status") === 4 ||
+              (get(item, "status") === 4 &&
               get(user, "roles[0].name") === "manager" ? (
+                <Checkbox onChange={handleCheckboxChange10}>
+                  Izoh qo'shish
+                </Checkbox>
+              ) : get(item, "status") === 2 &&
+                get(user, "roles[0].name") === "admin" ? (
                 <Checkbox onChange={handleCheckboxChange10}>
                   Izoh qo'shish
                 </Checkbox>
@@ -532,14 +582,17 @@ const View = ({
     {
       key: "6",
       label:
-        get(item, "comment", []).find((itm) => itm.column_id === 11) ===
-          undefined || get(user, "roles[0].name") === "admin" ? (
+        get(item, "reject[0].comment", []).find(
+          (itm) => itm.column_id === 11
+        ) === undefined || get(user, "roles[0].name") === "admin" ? (
           <b>Insident yuz berishi oqibatlari</b>
         ) : (
           <Tooltip
             placement="topLeft"
             title={get(
-              get(item, "comment", []).find((item) => item.column_id === 11),
+              get(item, "reject[0].comment", []).find(
+                (item) => item.column_id === 11
+              ),
               "description",
               ""
             )}
@@ -558,8 +611,13 @@ const View = ({
           </Col>
           <Col md={2}>
             {hasAccess(["manager", "admin"], get(user, "roles", [])) &&
-              (get(item, "status") === 4 ||
+              (get(item, "status") === 4 &&
               get(user, "roles[0].name") === "manager" ? (
+                <Checkbox onChange={handleCheckboxChange11}>
+                  Izoh qo'shish
+                </Checkbox>
+              ) : get(item, "status") === 2 &&
+                get(user, "roles[0].name") === "admin" ? (
                 <Checkbox onChange={handleCheckboxChange11}>
                   Izoh qo'shish
                 </Checkbox>
@@ -584,8 +642,9 @@ const View = ({
     {
       key: "7",
       label:
-        get(item, "comment", []).find((itm) => itm.column_id === 12) ===
-          undefined || get(user, "roles[0].name") === "admin" ? (
+        get(item, "reject[0].comment", []).find(
+          (itm) => itm.column_id === 12
+        ) === undefined || get(user, "roles[0].name") === "admin" ? (
           <b>
             Xavfsizlikni ta’minlash <br /> tashkiliy va texnik choralari
           </b>
@@ -593,7 +652,9 @@ const View = ({
           <Tooltip
             placement="topLeft"
             title={get(
-              get(item, "comment", []).find((item) => item.column_id === 12),
+              get(item, "reject[0].comment", []).find(
+                (item) => item.column_id === 12
+              ),
               "description",
               ""
             )}
@@ -619,8 +680,13 @@ const View = ({
           </Col>
           <Col md={2}>
             {hasAccess(["manager", "admin"], get(user, "roles", [])) &&
-              (get(item, "status") === 4 ||
+              (get(item, "status") === 4 &&
               get(user, "roles[0].name") === "manager" ? (
+                <Checkbox onChange={handleCheckboxChange12}>
+                  Izoh qo'shish
+                </Checkbox>
+              ) : get(item, "status") === 2 &&
+                get(user, "roles[0].name") === "admin" ? (
                 <Checkbox onChange={handleCheckboxChange12}>
                   Izoh qo'shish
                 </Checkbox>
@@ -835,13 +901,17 @@ const View = ({
           <Col md={3}>
             <Row>
               <Col md={12}>
-                {get(item, "comment", []).find((itm) => itm.column_id === 1) ===
-                  undefined || get(user, "roles[0].name") === "admin" ? (
+                {get(item, "reject[0].comment", []).find(
+                  (itm) => itm.column_id === 1
+                ) === undefined || get(user, "roles[0].name") === "admin" ? (
                   <h4>
                     To'liq nomi{" "}
                     {hasAccess(["manager", "admin"], get(user, "roles", [])) &&
-                      (get(item, "status") === 4 ||
+                      (get(item, "status") === 4 &&
                       get(user, "roles[0].name") === "manager" ? (
+                        <Checkbox onChange={handleCheckboxChange1} />
+                      ) : get(item, "status") === 2 &&
+                        get(user, "roles[0].name") === "admin" ? (
                         <Checkbox onChange={handleCheckboxChange1} />
                       ) : (
                         <div></div>
@@ -851,7 +921,7 @@ const View = ({
                   <Tooltip
                     placement="topLeft"
                     title={get(
-                      get(item, "comment", []).find(
+                      get(item, "reject[0].comment", []).find(
                         (item) => item.column_id === 1
                       ),
                       "description",
@@ -887,13 +957,17 @@ const View = ({
                 )}
               </Col>
               <Col md={12} className="mt-2">
-                {get(item, "comment", []).find((itm) => itm.column_id === 2) ===
-                  undefined || get(user, "roles[0].name") === "admin" ? (
+                {get(item, "reject[0].comment", []).find(
+                  (itm) => itm.column_id === 2
+                ) === undefined || get(user, "roles[0].name") === "admin" ? (
                   <h4>
                     Subyekt nomi{" "}
                     {hasAccess(["manager", "admin"], get(user, "roles", [])) &&
-                      (get(item, "status") === 4 ||
+                      (get(item, "status") === 4 &&
                       get(user, "roles[0].name") === "manager" ? (
+                        <Checkbox onChange={handleCheckboxChange2} />
+                      ) : get(item, "status") === 2 &&
+                        get(user, "roles[0].name") === "admin" ? (
                         <Checkbox onChange={handleCheckboxChange2} />
                       ) : (
                         <div></div>
@@ -903,7 +977,7 @@ const View = ({
                   <Tooltip
                     placement="topLeft"
                     title={get(
-                      get(item, "comment", []).find(
+                      get(item, "reject[0].comment", []).find(
                         (item) => item.column_id === 2
                       ),
                       "description",
@@ -944,13 +1018,17 @@ const View = ({
           <Col md={3}>
             <Row>
               <Col md={12}>
-                {get(item, "comment", []).find((itm) => itm.column_id === 3) ===
-                  undefined || get(user, "roles[0].name") === "admin" ? (
+                {get(item, "reject[0].comment", []).find(
+                  (itm) => itm.column_id === 3
+                ) === undefined || get(user, "roles[0].name") === "admin" ? (
                   <h5>
                     Boshqaruvchi{" "}
                     {hasAccess(["manager", "admin"], get(user, "roles", [])) &&
-                      (get(item, "status") === 4 ||
+                      (get(item, "status") === 4 &&
                       get(user, "roles[0].name") === "manager" ? (
+                        <Checkbox onChange={handleCheckboxChange3} />
+                      ) : get(item, "status") === 2 &&
+                        get(user, "roles[0].name") === "admin" ? (
                         <Checkbox onChange={handleCheckboxChange3} />
                       ) : (
                         <div></div>
@@ -960,7 +1038,7 @@ const View = ({
                   <Tooltip
                     placement="topLeft"
                     title={get(
-                      get(item, "comment", []).find(
+                      get(item, "reject[0].comment", []).find(
                         (item) => item.column_id === 3
                       ),
                       "description",
@@ -996,8 +1074,8 @@ const View = ({
                 )}
               </Col>
               <Col md={12} className="mt-2">
-                <h5>Ariza topshirilgan vaqt</h5>
-                {moment(item.created_at).format("DD-MM-yyyy")}
+                <h5>{t("mai_importance")}</h5>
+                {get(item, "importance.name", "mavjud emas")}
               </Col>
             </Row>
           </Col>
@@ -1005,13 +1083,17 @@ const View = ({
           <Col md={3}>
             <Row>
               <Col md={12}>
-                {get(item, "comment", []).find((itm) => itm.column_id === 4) ===
-                  undefined || get(user, "roles[0].name") === "admin" ? (
+                {get(item, "reject[0].comment", []).find(
+                  (itm) => itm.column_id === 4
+                ) === undefined || get(user, "roles[0].name") === "admin" ? (
                   <h5>
-                    Sertifikat{" "}
+                    {t("scope_and_purpose")}{" "}
                     {hasAccess(["manager", "admin"], get(user, "roles", [])) &&
-                      (get(item, "status") === 4 ||
+                      (get(item, "status") === 4 &&
                       get(user, "roles[0].name") === "manager" ? (
+                        <Checkbox onChange={handleCheckboxChange4} />
+                      ) : get(item, "status") === 2 &&
+                        get(user, "roles[0].name") === "admin" ? (
                         <Checkbox onChange={handleCheckboxChange4} />
                       ) : (
                         <div></div>
@@ -1021,7 +1103,7 @@ const View = ({
                   <Tooltip
                     placement="topLeft"
                     title={get(
-                      get(item, "comment", []).find(
+                      get(item, "reject[0].comment", []).find(
                         (item) => item.column_id === 4
                       ),
                       "description",
@@ -1029,7 +1111,7 @@ const View = ({
                     )}
                   >
                     <h5 className="comment-added">
-                      Sertifikat{" "}
+                      {t("scope_and_purpose")}{" "}
                       {hasAccess(
                         ["manager", "admin"],
                         get(user, "roles", [])
@@ -1043,17 +1125,7 @@ const View = ({
                     </h5>
                   </Tooltip>
                 )}
-                {item.certificates === null ? (
-                  "Mavjud emas"
-                ) : (
-                  <a href={get(item, "certificate[0].path", "")} download>
-                    Mavjud:{" "}
-                  </a>
-                )}
-                <i>
-                  {get(item, "certificate[0].from")} -{" "}
-                  {get(item, "certificate[0].to")}
-                </i>
+                {get(item, "purpose.name", "mavjud emas")}
                 {showTextarea4 && (
                   <Input
                     type="textarea"
@@ -1067,13 +1139,17 @@ const View = ({
                 )}
               </Col>
               <Col md={12} className="mt-2">
-                {get(item, "comment", []).find((itm) => itm.column_id === 5) ===
-                  undefined || get(user, "roles[0].name") === "admin" ? (
+                {get(item, "reject[0].comment", []).find(
+                  (itm) => itm.column_id === 5
+                ) === undefined || get(user, "roles[0].name") === "admin" ? (
                   <h5>
-                    Litsenziya{" "}
+                    {t("importance_file")}{" "}
                     {hasAccess(["manager", "admin"], get(user, "roles", [])) &&
-                      (get(item, "status") === 4 ||
+                      (get(item, "status") === 4 &&
                       get(user, "roles[0].name") === "manager" ? (
+                        <Checkbox onChange={handleCheckboxChange5} />
+                      ) : get(item, "status") === 2 &&
+                        get(user, "roles[0].name") === "admin" ? (
                         <Checkbox onChange={handleCheckboxChange5} />
                       ) : (
                         <div></div>
@@ -1083,7 +1159,7 @@ const View = ({
                   <Tooltip
                     placement="topLeft"
                     title={get(
-                      get(item, "comment", []).find(
+                      get(item, "reject[0].comment", []).find(
                         (item) => item.column_id === 5
                       ),
                       "description",
@@ -1091,7 +1167,7 @@ const View = ({
                     )}
                   >
                     <h5 className="comment-added">
-                      Litsenziya{" "}
+                      {t("importance_file")}{" "}
                       {hasAccess(
                         ["manager", "admin"],
                         get(user, "roles", [])
@@ -1105,16 +1181,16 @@ const View = ({
                     </h5>
                   </Tooltip>
                 )}
-                {item.licenses === null ? (
-                  "Mavjud emas"
-                ) : (
-                  <a href={get(item, "license[0].path", "")} download>
-                    Mavjud:{" "}
-                  </a>
-                )}
-                <i>
-                  {get(item, "license[0].from")} - {get(item, "license[0].to")}
-                </i>
+                <a
+                  href={`${config.API_URL}${get(
+                    item,
+                    "document[0].path",
+                    "mavjud emas"
+                  )}`}
+                  target="_blank"
+                >
+                  {t("view_file")}
+                </a>
                 {showTextarea5 && (
                   <Input
                     type="textarea"
