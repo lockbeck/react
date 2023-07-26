@@ -4,6 +4,7 @@ import { Route } from "react-router-dom";
 import { get } from 'lodash';
 
 import { isUserAuthenticated, getLoggedInUser, hasAccess } from "./helpers/authUtils";
+import AddProvider from "./components/view/AddProvider";
 
 // lazy load all the views
 const Dashboard = React.lazy(() => import("./pages/dashboards/Dashbord"));
@@ -178,6 +179,13 @@ const routes = [
     component: AddGoal,
     route: PrivateRoute,
     roles: ["admin","manager"],  
+  },
+  {
+    path: "/add_provider",
+    name: "AddProvider",
+    component: AddProvider,
+    route: PrivateRoute,
+    roles: ["manager"],  
   },
   {
     path: "/add_device",

@@ -7,6 +7,7 @@ import { withTranslation } from "react-i18next";
 import FileUpload from "./fileUpload/FileUpload";
 import PagesApi from "../pages/dashboards/PagesApi";
 import { get } from "lodash";
+import FileUpload2 from "./fileUpload/FileUpload2";
 
 const Telecomunication = ({ sendTelId = () => {}, ...props }) => {
   const { t, i18n } = props;
@@ -97,20 +98,8 @@ const Telecomunication = ({ sendTelId = () => {}, ...props }) => {
                 save={saveNetworkTopology}
               />
             </Col>
-            <Col className="mt-4 mb-3" lg={6}>
-              <Label for="count" className="mr-5">
-                {t("isConnectNetwork")}:
-              </Label>
-              <Input
-                id="name"
-                name="name"
-                type="checkbox"
-                onChange={(e) =>
-                  setData({ ...data, connect_net: e.target.checked })
-                }
-              />
-            </Col>
-            <Col className="mt-4 mb-3" lg={6}>
+           
+            {/* <Col className="mt-4 mb-3" lg={6}>
               <Label for="count" className="mr-5">
                 {t("isConnectOnetNet")}:
               </Label>
@@ -123,47 +112,85 @@ const Telecomunication = ({ sendTelId = () => {}, ...props }) => {
                 }
               />
             </Col>
-            {data.connect_net === true ? (
+            <Col className="mt-4 mb-3" lg={6}>
+              <Label for="count" className="mr-5">
+                {t("isConnectNetwork")}:
+              </Label>
+              <Input
+                id="name"
+                name="name"
+                type="checkbox"
+                onChange={(e) =>
+                  setData({ ...data, connect_net: e.target.checked })
+                }
+              />
+            </Col> */}
+          {/* {data.connect_net === true ? */}
+          {/* {data.connect_net === true ? ( */}
+          <Col className="mt-2" lg={12}>
+                <Label for="name" className="mt-1">
+                  {t("name_provide")}
+                </Label>
+                {/* <Input
+                  id="name"
+                  name="name"
+                  type="number"
+                  min = "0"
+                  step="1"
+                  onChange={(e) =>
+                    setData({ ...data, provider_count: e.target.value })
+                  }
+                /> */}
+                <Input
+                  required={true}
+                  id="stuff"
+                  name="stuff"
+                  type="select"
+                  // onChange={($e) =>
+                  //   setApplication({
+                  //     ...application,
+                  //     staffs: [get($e, "target.value", "")],
+                  //   })
+                  // }
+                >
+                   <option key='1' value="UZtelekom">
+                      UZtelekom
+                    </option>
+                  {/* {stuffs.map((stuff, i) => (
+                   
+                  ))} */}
+                </Input>
+                
+              </Col>
               <Col className="mt-2" lg={12}>
                 <Label for="count" className="mt-1">
-                  {t("count_network")}
+                  {t("count_node")}
                 </Label>
                 <Input
                   id="name"
                   name="name"
                   type="number"
+                  min = "0"
+                  step="1"
                   onChange={(e) =>
                     setData({ ...data, points_connect_net: e.target.value })
                   }
                 />
               </Col>
-            ) : (
+           
+          
+            {/* ) : (
               <div></div>
-            )}
-            {data.connect_net === true ? (
-              <Col className="mt-2" lg={12}>
-                <Label for="name" className="mt-1">
-                  {t("count_provider")}
-                </Label>
-                <Input
-                  id="name"
-                  name="name"
-                  type="number"
-                  onChange={(e) =>
-                    setData({ ...data, provider_count: e.target.value })
-                  }
-                />
+            )} */}
+
+            <Col className="mt-2" lg={12}>
+                <FileUpload2 label={t("contract")} save={saveTelecomunication} />
               </Col>
+            {/* {data.connect_net === true ? (
+             
             ) : (
               <div></div>
-            )}
-            {data.connect_net === true ? (
-              <Col className="mt-2" lg={12}>
-                <FileUpload label={t("contract")} save={saveTelecomunication} />
-              </Col>
-            ) : (
-              <div></div>
-            )}
+            )} */}
           </Row>
         </Modal>
       </div>

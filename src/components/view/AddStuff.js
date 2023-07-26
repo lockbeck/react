@@ -201,8 +201,10 @@ const AddStuff = ({
       },
     },
   ];
+  
 
   return (
+    
     <React.Fragment>
       <div className="application-content">
         <Row>
@@ -258,7 +260,7 @@ const AddStuff = ({
                     <Input
                       id="phone"
                       name="phone"
-                      type="text"
+                      type="number"
                       onChange={(e) =>
                         setFormData({ ...formData, phone: e.target.value })
                       }
@@ -266,6 +268,7 @@ const AddStuff = ({
                     />
                   </FormGroup>
                 </Col>
+                
                 <Col sm={12}>
                   <FormGroup>
                     <Label for="statue">{t("statue")}:</Label>

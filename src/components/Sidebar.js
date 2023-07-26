@@ -445,6 +445,33 @@ const SideNavContent = ({ roles, ...props }) => {
                     </NavLink>
                   )}
                 </li>
+                 {/* provider of mai */}
+                 <li>
+                  {pathname.search("/add_provider") === 0 ? (
+                    <NavLink
+                      to="/add_provider"
+                      className="waves-effect bg-light side-nav-link-ref"
+                      aria-expanded="true"
+                    >
+                      <ClusterOutlined
+                        style={{ fontSize: "15px", color: "#121211" }}
+                      />
+                      <span className="sub-menu-name"> {t("provider")}</span>
+                    </NavLink>
+                  ) : (
+                    <NavLink
+                      to="/add_provider"
+                      className="waves-effect "
+                      aria-expanded="true"
+                    >
+                      <ClusterOutlined
+                        style={{ fontSize: "15px", color: "#121211" }}
+                      />
+                      <span className="sub-menu-name"> {t("provider")}</span>
+                    </NavLink>
+                  )}
+                </li>
+
 
                 {/* importance */}
                 <li>

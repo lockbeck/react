@@ -13,12 +13,16 @@ import TextEditor from "./TextEditor";
 import FileUpload from "./fileUpload/FileUpload";
 import { withTranslation } from "react-i18next";
 import Technique from "./Technique";
+import FileUpload2 from "./fileUpload/FileUpload2";
+import FileUpload3 from "./fileUpload/FileUpload3";
 
-const CreateApplication = ({ getImportance, getPurpose, getSubject, getStuff, stuffs, purposes, importance, user, ...props }) => {
+const CreateApplication = ({ getImportance, getPurpose, getSubject, getStuff, 
+  stuffs, subjects,purposes, importance, user, ...props }) => {
   useEffect(() => {
     getImportance();
     getPurpose();
     getStuff();
+    // getSubject();
   }, []);
 
   const path = "api/application";
@@ -37,7 +41,7 @@ const CreateApplication = ({ getImportance, getPurpose, getSubject, getStuff, st
     organizational_and_technical_measures_to_ensure_security: "",
     importance_id: null,
     documents: [],
-    subject_id: get(user, "subject.id", ""),
+    subject_id: null,
   });
 
   const [api, contextHolder] = notification.useNotification();
@@ -127,6 +131,8 @@ const CreateApplication = ({ getImportance, getPurpose, getSubject, getStuff, st
       });
   };
 
+
+   
   return (
     <React.Fragment>
       <div className="add-application-content">
@@ -158,13 +164,25 @@ const CreateApplication = ({ getImportance, getPurpose, getSubject, getStuff, st
             <FormGroup>
                 <Label for="subject">{t("mai_subject")}</Label>
                 <Input
-                  required={true}
+                  // required={true}
                   id="subject"
                   name="subject"
-                  type="text"
-                  disabled
-                  defaultValue = {get(user, "subject.name","")}
-                />
+                  type="select"
+                  // disabled
+                  // defaultValue = {get(subjects, "subject.name","")}
+                  onChange={($e) =>
+                    setApplication({
+                      ...application,
+                      subject_id: get($e, "target.value", ""),
+                    })
+                  }
+                >
+                  {/* {subjects.map((item, i) => (
+                    <option key={i} value={item.id}>
+                      {item.name}
+                    </option>
+                  ))} */}
+                </Input>
               </FormGroup>
             </Col>
 
@@ -200,6 +218,8 @@ const CreateApplication = ({ getImportance, getPurpose, getSubject, getStuff, st
                   id="purpose"
                   name="purpose"
                   type="select"
+                  className="form-select test-select"
+
                   onChange={($e) =>
                     setApplication({
                       ...application,
@@ -208,7 +228,10 @@ const CreateApplication = ({ getImportance, getPurpose, getSubject, getStuff, st
                   }
                 >
                  {purposes.map((goal, i) => (
-                    <option key={i} value={goal.id}>
+                    <option
+                      key={i}
+                      value={goal.id} 
+                      className="myOption" >
                       {goal.name}
                     </option>
                   ))}
@@ -239,15 +262,19 @@ const CreateApplication = ({ getImportance, getPurpose, getSubject, getStuff, st
             </Col>
             <Col lg={6}>
               <FormGroup>
-                <FileUpload
+                
+                <FileUpload3
+            
                   label={t("importance_file")}
                   save={(params) =>
                     setApplication({
                       ...application,
                       documents: params.map(({id}) => id),
                     })
+                    
                   }
                 />
+                
               </FormGroup>
             </Col>
             <Col md={6} className="mt-2">
